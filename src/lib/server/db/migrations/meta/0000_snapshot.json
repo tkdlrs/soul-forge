@@ -1,9 +1,41 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e3183a18-faae-4164-8ba2-4f7009bf7df8",
-  "prevId": "1943dc0e-598a-442d-8b41-b9b513ee37cc",
+  "id": "b72bb5ec-df76-4415-b725-1f7c9edbf82d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "task": {
+      "name": "task",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "priority": {
+          "name": "priority",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "users": {
       "name": "users",
       "columns": {
@@ -11,13 +43,6 @@
           "name": "id",
           "type": "integer",
           "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
@@ -30,6 +55,13 @@
         },
         "last_name": {
           "name": "last_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -71,9 +103,7 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {
-      "\"users\".\"name\"": "\"users\".\"first_name\""
-    }
+    "columns": {}
   },
   "internal": {
     "indexes": {}

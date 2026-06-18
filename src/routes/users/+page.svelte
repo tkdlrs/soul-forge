@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { createUser, getUsers } from '../../db/queries/users';
     //
     let users = $state<
         Array<{
@@ -10,18 +9,37 @@
             email: string;
         }>
     >([]);
+    let firstName = $state<string>('');
+    let lastName = $state<string>('');
+    let email = $state<string>('');
     //
-    async function makeAUser() {
-        const data = {
-            email: 'tkd.lsanchez@gmail.com',
-            firstName: 'Levi',
-            lastName: 'Sanchez',
-        };
-        await createUser(data);
+    async function loadUsers() {
+        const response = await fetch('/api/users');
+        users = await response.json();
+    }
+    //
+    async function createUser() {
+        await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+            }),
+        });
+        //
+        firstName = '';
+        lastName = '';
+        email = '';
+        //
+        await loadUsers();
     }
     //
     onMount(async () => {
-        users = await getUsers();
+        await loadUsers();
     });
 </script>
 
@@ -30,7 +48,13 @@
         <div class="col-12">
             <h1>Users</h1>
             <p>This would be an index page for listing out</p>
-            <button onclick={makeAUser}>make a user</button>
+        </div>
+        <div class="col-12">
+            <input bind:value={firstName} placeholder="First Name" />
+            <input bind:value={lastName} placeholder="Last Name" />
+            <input bind:value={email} placeholder="email" />
+
+            <button onclick={createUser}>make a user</button>
         </div>
         <div class="col-12">
             <!--  -->

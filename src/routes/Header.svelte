@@ -44,6 +44,14 @@
                     </li>
                     <li
                         class="nav-item"
+                        aria-current={page.url.pathname === '/users'
+                            ? 'page'
+                            : undefined}
+                    >
+                        <a class="nav-link" href={resolve('/users')}> Users</a>
+                    </li>
+                    <li
+                        class="nav-item"
                         aria-current={page.url.pathname === '/about'
                             ? 'page'
                             : undefined}

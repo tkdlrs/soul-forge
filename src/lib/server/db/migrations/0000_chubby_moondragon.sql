@@ -1,7 +1,14 @@
+CREATE TABLE `task` (
+	`id` text PRIMARY KEY NOT NULL,
+	`title` text NOT NULL,
+	`priority` integer DEFAULT 1 NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY NOT NULL,
+	`first_name` text NOT NULL,
+	`last_name` text NOT NULL,
 	`email` text NOT NULL,
-	`name` text NOT NULL,
 	`created_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
 	`updated_at` integer
 );
