@@ -10,7 +10,9 @@
     <Header />
     <!--  -->
     <main class="container">
-        {@render children()}
+        <div class="pt-5">
+            {@render children()}
+        </div>
     </main>
     <!--  -->
 </div>

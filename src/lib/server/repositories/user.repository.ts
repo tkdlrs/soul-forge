@@ -35,7 +35,8 @@ export async function updateUser(
 
     return getUser(id);
 }
-
+//
 export async function deleteUser(id: number) {
     await db.delete(usersTable).where(eq(usersTable.id, id));
 }
+//

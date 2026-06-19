@@ -36,27 +36,31 @@
                     </li>
                     <li
                         class="nav-item"
-                        aria-current={page.url.pathname === '/about'
+                        aria-current={page.url.pathname === '/app/about'
                             ? 'page'
                             : undefined}
                     >
-                        <a class="nav-link" href={resolve('/about')}> About </a>
+                        <a class="nav-link" href={resolve('/app/about')}>
+                            About
+                        </a>
                     </li>
                     <li
                         class="nav-item"
-                        aria-current={page.url.pathname === '/users'
+                        aria-current={page.url.pathname === '/app/users'
                             ? 'page'
                             : undefined}
                     >
-                        <a class="nav-link" href={resolve('/users')}> Users</a>
+                        <a class="nav-link" href={resolve('/app/users')}>
+                            Users
+                        </a>
                     </li>
                     <li
                         class="nav-item"
-                        aria-current={page.url.pathname === '/about'
+                        aria-current={page.url.pathname === '/app/about'
                             ? 'page'
                             : undefined}
                     >
-                        <a class="nav-link" href={resolve('/skills')}>
+                        <a class="nav-link" href={resolve('/app/skills')}>
                             Skills
                         </a>
                     </li>
