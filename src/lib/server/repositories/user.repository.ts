@@ -1,17 +1,21 @@
+import { UserSchema, type UserCreateData } from '$lib/app/schemas/userSchema';
 import { db } from '$lib/server/db';
 import { usersTable, type InsertUser } from '$lib/server/db/schema/users';
 import { eq } from 'drizzle-orm';
+
 //
 export async function getUsers() {
     return db.select().from(usersTable);
 }
 //
 export async function createUser(data: InsertUser) {
-    const user = {
-        ...data,
-    };
-    const newUser = await db.insert(usersTable).values(user);
-    return newUser;
+    try {
+        const result = UserSchema.parse(data);
+        const newUser = await db.insert(usersTable).values(result);
+        return newUser;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
+    }
 }
 //
 export async function getUser(id: number) {
@@ -19,18 +23,11 @@ export async function getUser(id: number) {
         .select()
         .from(usersTable)
         .where(eq(usersTable.id, id));
-
+    //
     return result[0] ?? null;
 }
 //
-export async function updateUser(
-    id: number,
-    data: Partial<{
-        firstName: string;
-        lastName: string;
-        email: string;
-    }>,
-) {
+export async function updateUser(id: number, data: Partial<UserCreateData>) {
     await db.update(usersTable).set(data).where(eq(usersTable.id, id));
 
     return getUser(id);

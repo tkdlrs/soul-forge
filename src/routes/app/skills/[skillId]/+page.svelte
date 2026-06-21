@@ -1,4 +1,4 @@
-<h1>{data.skill.name}</h1>
+<!-- <h1>{data.skill.name}</h1>
 
 {#if data.activeSession}
     <form method="POST" action="?/stopSession">
@@ -9,4 +9,4 @@
     <form method="POST" action="?/startSession">
         <button>Start</button>
     </form>
-{/if}
+{/if} -->

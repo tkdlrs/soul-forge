@@ -1,11 +1,12 @@
 import { db } from '$lib/server/db/index.js';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import { randomUUID } from 'crypto';
-import { userInfo } from 'os';
 
 //
 export const actions = {
     startSession: async ({ params }) => {
+        // ToDo:// HOW USER ID?
+        //
         await db.insert(skillSessionsTable).values({
             id: randomUUID(),
             skillId: params.skillId,

@@ -11,6 +11,7 @@ export const skillsTable = sqliteTable('skills', {
         .references(() => usersTable.id),
     //
     name: text('name').notNull(),
+    icon: text('icon'),
     //
     createdAt: text('created_at')
         .default(sql`(CURRENT_TIMESTAMP)`)

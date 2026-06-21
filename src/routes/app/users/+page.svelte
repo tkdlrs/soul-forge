@@ -2,15 +2,10 @@
     import { onMount } from 'svelte';
     //
     import { resolve } from '$app/paths';
+    import type { UserWithId } from '$lib/app/schemas/userSchema';
     //
-    let users = $state<
-        Array<{
-            id: number;
-            firstName: string;
-            lastName: string;
-            email: string;
-        }>
-    >([]);
+    let users = $state<Array<UserWithId>>([]);
+    //
     let firstName = $state<string>('');
     let lastName = $state<string>('');
     let email = $state<string>('');
@@ -109,7 +104,7 @@
                                             <button
                                                 class="btn btn-sm btn-danger"
                                                 onclick={() =>
-                                                    deleteUser(user.id)}
+                                                    deleteUser(Number(user.id))}
                                             >
                                                 Delete
                                             </button>
