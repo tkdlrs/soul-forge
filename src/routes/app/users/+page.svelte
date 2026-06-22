@@ -75,7 +75,9 @@
                 <div class="col-12 col-lg-8">
                     <!--  -->
                     <div class="table-responsive">
-                        <table class="table table-border table-sm table-hover">
+                        <table
+                            class="table table-bordered table-sm table-hover"
+                        >
                             <thead>
                                 <tr>
                                     <th scope="col"> # </th>
