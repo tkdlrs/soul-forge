@@ -125,6 +125,7 @@
                                         <td> {@html skill.icon} </td>
                                         <td>
                                             <a
+                                                data-sveltekit-preload-data="false"
                                                 class=""
                                                 href={`/app/skills/${skill.id}`}
                                             >

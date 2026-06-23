@@ -1,18 +1,20 @@
 <script lang="ts">
-    import type { PageData } from '../$types';
+    import { enhance } from '$app/forms';
+    import type { SkillSessionPageData } from '$lib/app/schemas/skillSessionSchema';
     //
-    let { data }: { data: PageData } = $props();
+    let { data }: { data: SkillSessionPageData } = $props();
     $inspect(data);
+    //
+    let currentSessionId = $state<string | null>(null);
     //
 </script>
 
 <section class="p-5">
     <div class="row">
         <div class="col-12">
+            <p>Skill Name</p>
             <h1>
-                <!-- {data.skill.name} -->
-
-                Skill name
+                {data.skillName}
             </h1>
             <p>
                 This would be an index page for listing out all the skills
@@ -22,13 +24,38 @@
         <div class="col-12">
             <div class="my-5">
                 <!--  -->
-                {#if data.skillId}
+                {#if currentSessionId}
                     <form method="POST" action="?/stopSession">
-                        <input type="" name="sessionId" value={data.skillId} />
+                        <input
+                            type=""
+                            name="sessionId"
+                            value={currentSessionId}
+                        />
                         <button> Stop </button>
                     </form>
                 {:else}
-                    <form method="POST" action="?/startSession">
+                    <form
+                        method="POST"
+                        action="?/startSession"
+                        use:enhance={() => {
+                            return async ({ result }) => {
+                                console.log(
+                                    'client side in form knows result to be:',
+                                    result,
+                                );
+                                if (
+                                    result.type === 'success' &&
+                                    result?.data?.skillSessionId
+                                ) {
+                                    currentSessionId = String(
+                                        result.data.skillSessionId,
+                                    );
+                                }
+                                //
+                                return;
+                            };
+                        }}
+                    >
                         <button> Start </button>
                     </form>
                 {/if}

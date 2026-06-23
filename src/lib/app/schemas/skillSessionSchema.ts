@@ -19,3 +19,9 @@ export type SkillSesssionCreate = z.infer<typeof SkillSesssionCreateSchema>;
 export const SkillSessionWithIdSchema = withId(SkillSessionSchema);
 export type SkillSessionWithId = z.infer<typeof SkillSessionSchema>;
 //
+export const SkillSessionPageDataSchema = z.object({
+    skillSessions: z.array(SkillSessionWithIdSchema),
+    skillId: z.string(),
+    skillName: z.string(),
+});
+export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;

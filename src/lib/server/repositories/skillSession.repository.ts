@@ -10,11 +10,11 @@ export async function getSkillSessions(skillId: string) {
         .from(skillSessionsTable)
         .where(eq(skillSessionsTable.skillId, skillId));
 }
-//
-export async function updateSkillSession(
-    id: string,
-    data: Partial<SkillSesssionCreate>,
-) {
-    //
-}
-//
+// //
+// export async function updateSkillSession(
+//     id: string,
+//     data: Partial<SkillSesssionCreate>,
+// ) {
+//     //
+// }
+// //
