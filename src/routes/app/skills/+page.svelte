@@ -113,7 +113,7 @@
                                     <th scope="col"> Icon </th>
                                     <th scope="col"> Name </th>
                                     <th scope="col"> Hours </th>
-                                    <th scope="col"> Currancy Conversion </th>
+                                    <th scope="col"> Currency Conversion </th>
                                     <th scope="col"> Level </th>
                                     <th scope="col"> Options </th>
                                 </tr>

@@ -1,28 +1,9 @@
 <script lang="ts">
-    import {
-        SkillSessionWithIdSchema,
-        type SkillSessionWithId,
-    } from '$lib/app/schemas/skillSessionSchema';
-    import { onMount } from 'svelte';
-    import z from 'zod';
+    import type { PageData } from '../$types';
     //
-    let skillSessions = $state<Array<SkillSessionWithId>>([]);
-
+    let { data }: { data: PageData } = $props();
+    $inspect(data);
     //
-    async function loadSkillSession({ params }) {
-        try {
-            const response = await fetch(`/api/skills/${params.skillId}`);
-            const result = await response.json();
-            skillSessions = z.array(SkillSessionWithIdSchema).parse(result);
-            return;
-        } catch (err) {
-            throw new Error(`Error was ${err}`);
-        }
-    }
-    //
-    onMount(async () => {
-        await loadSkillSession({ params });
-    });
 </script>
 
 <section class="p-5">
@@ -41,18 +22,14 @@
         <div class="col-12">
             <div class="my-5">
                 <!--  -->
-                {#if data.activeSession}
+                {#if data.skillId}
                     <form method="POST" action="?/stopSession">
-                        <input
-                            type="hidden"
-                            name="sessionId"
-                            value={data.activeSession.id}
-                        />
-                        <button>Stop</button>
+                        <input type="" name="sessionId" value={data.skillId} />
+                        <button> Stop </button>
                     </form>
                 {:else}
                     <form method="POST" action="?/startSession">
-                        <button>Start</button>
+                        <button> Start </button>
                     </form>
                 {/if}
                 <!--  -->
@@ -73,16 +50,16 @@
                                     <th scope="col"> Start </th>
                                     <th scope="col"> End </th>
                                     <th scope="col"> Time </th>
-                                    <th scope="col"> Experieance points </th>
-                                    <th scope="col"> Pay equivant range </th>
+                                    <th scope="col"> Experience Points </th>
+                                    <th scope="col"> Pay Equivant Range </th>
 
                                     <th scope="col"> Options </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {#each skillSessions as session}
+                                {#each data.skillSessions as session}
                                     <tr>
-                                        <td> {session.stateDateTime} </td>
+                                        <td> {session.startDateTime} </td>
                                         <td> {session.endDateTime} </td>
                                         <td> calc time </td>
                                         <td> exp </td>

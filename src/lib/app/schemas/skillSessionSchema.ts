@@ -4,10 +4,10 @@ import { withId } from './_shared';
 
 //
 export const SkillSessionSchema = z.object({
-    userId: z.string(),
+    userId: z.number(),
     skillId: z.string(),
-    stateDateTime: z.date(),
-    endDateTime: z.date(),
+    startDateTime: z.coerce.date(),
+    endDateTime: z.coerce.date().nullable(),
 });
 //
 export const SkillSesssionCreateSchema = z.preprocess(
