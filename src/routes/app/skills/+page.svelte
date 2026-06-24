@@ -1,12 +1,13 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { resolve } from '$app/paths';
+    import z from 'zod';
+    //
     import {
         SkillSchema,
         SkillWithIdSchema,
         type SkillWithId,
     } from '$lib/app/schemas/skillSchema';
-    import { resolve } from '$app/paths';
-    import { onMount } from 'svelte';
-    import z from 'zod';
 
     //
     let skills = $state<Array<SkillWithId>>([]);

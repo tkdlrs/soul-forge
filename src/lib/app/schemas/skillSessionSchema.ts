@@ -17,11 +17,17 @@ export const SkillSesssionCreateSchema = z.preprocess(
 export type SkillSesssionCreate = z.infer<typeof SkillSesssionCreateSchema>;
 //
 export const SkillSessionWithIdSchema = withId(SkillSessionSchema);
-export type SkillSessionWithId = z.infer<typeof SkillSessionSchema>;
+export type SkillSessionWithId = z.infer<typeof SkillSessionWithIdSchema>;
 //
-export const SkillSessionPageDataSchema = z.object({
+export const SkillSessionsPageDataSchema = z.object({
     skillSessions: z.array(SkillSessionWithIdSchema),
     skillId: z.string(),
     skillName: z.string(),
 });
+export type SkillSessionsPageData = z.infer<typeof SkillSessionsPageDataSchema>;
+//
+export const SkillSessionPageDataSchema = z.object({
+    skillSession: SkillSessionWithIdSchema,
+});
 export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;
+//

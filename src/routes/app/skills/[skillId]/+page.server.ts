@@ -1,6 +1,6 @@
 import {
     SkillSessionWithIdSchema,
-    type SkillSessionPageData,
+    type SkillSessionsPageData,
 } from '$lib/app/schemas/skillSessionSchema.js';
 import { db } from '$lib/server/db/index.js';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
@@ -17,29 +17,39 @@ export const actions = {
         //
         const skillSessionId = randomUUID();
         //
-        const session = await db.insert(skillSessionsTable).values({
-            id: skillSessionId,
-            skillId: params.skillId,
-            userId: 1, // user.id,
-            startDateTime: new Date(),
-        });
+        const session = await db
+            .insert(skillSessionsTable)
+            .values({
+                id: skillSessionId,
+                skillId: params.skillId,
+                userId: 1, // user.id,
+                startDateTime: new Date(),
+            })
+            .returning();
         //
         console.log('session is ', session);
+        console.log('session[0] is', session[0]);
         //
         return {
             skillSessionId,
+            session: session[0],
         };
     },
     //
     stopSession: async ({ request }) => {
         const data = await request.formData();
         //
-        await db
+        const session = await db
             .update(skillSessionsTable)
             .set({
                 endDateTime: new Date(),
             })
-            .where(eq(skillSessionsTable.id, String(data.get('sessionId'))));
+            .where(eq(skillSessionsTable.id, String(data.get('sessionId'))))
+            .returning();
+        //
+        return {
+            session: session[0],
+        };
     },
 };
 
@@ -48,7 +58,7 @@ const paramsSchema = z.object({
     skillId: z.uuid(),
 });
 //
-export async function load({ fetch, params }): Promise<SkillSessionPageData> {
+export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
     try {
         console.log('params:', params);
         //

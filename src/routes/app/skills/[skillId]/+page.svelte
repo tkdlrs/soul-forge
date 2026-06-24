@@ -1,9 +1,16 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import type { SkillSessionPageData } from '$lib/app/schemas/skillSessionSchema';
+    import { resolve } from '$app/paths';
     //
-    let { data }: { data: SkillSessionPageData } = $props();
+    import type {
+        SkillSessionsPageData,
+        SkillSessionWithId,
+    } from '$lib/app/schemas/skillSessionSchema';
+    //
+    let { data }: { data: SkillSessionsPageData } = $props();
     $inspect(data);
+    //
+    let skillSessions = $state<SkillSessionWithId[]>(data.skillSessions);
     //
     let currentSessionId = $state<string | null>(null);
     //
@@ -25,7 +32,27 @@
             <div class="my-5">
                 <!--  -->
                 {#if currentSessionId}
-                    <form method="POST" action="?/stopSession">
+                    <form
+                        method="POST"
+                        action="?/stopSession"
+                        use:enhance={() => {
+                            return async ({ result }) => {
+                                if (result.type === 'success') {
+                                    // filter out the one with the same current session id
+                                    skillSessions = skillSessions.filter(
+                                        (item) => item.id != currentSessionId,
+                                    );
+                                    // clear out current session id
+                                    currentSessionId = '';
+                                    // readd the resulting data
+                                    skillSessions.push(
+                                        result?.data
+                                            ?.session as SkillSessionWithId,
+                                    );
+                                }
+                            };
+                        }}
+                    >
                         <input
                             type=""
                             name="sessionId"
@@ -44,11 +71,15 @@
                                     result,
                                 );
                                 if (
-                                    result.type === 'success' &&
-                                    result?.data?.skillSessionId
+                                    result.type === 'success'
+                                    // && result?.data?.skillSessionId
                                 ) {
-                                    currentSessionId = String(
-                                        result.data.skillSessionId,
+                                    currentSessionId =
+                                        String(result?.data?.skillSessionId) ||
+                                        '';
+                                    skillSessions.push(
+                                        result?.data
+                                            ?.session as SkillSessionWithId,
                                     );
                                 }
                                 //
@@ -84,13 +115,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {#each data.skillSessions as session}
+                                {#each skillSessions as session}
                                     <tr>
                                         <td> {session.startDateTime} </td>
                                         <td> {session.endDateTime} </td>
                                         <td> calc time </td>
                                         <td> exp </td>
                                         <td> $- $ </td>
+                                        <td>
+                                            <a
+                                                class="btn btn-sm btn-warning"
+                                                href={resolve(
+                                                    `/app/skill-sessions/${session.id}`,
+                                                )}
+                                            >
+                                                Edit
+                                            </a>
+                                        </td>
                                     </tr>
                                 {/each}
                             </tbody>
