@@ -4,7 +4,7 @@ import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import {
     SkillSessionWithIdSchema,
     type SkillSessionWithId,
-} from '$lib/app/schemas/skillSessionSchema';
+} from '$lib/schemas/skillSessionSchema';
 
 // ToDo:// also add in filtering by userId -later
 export async function getSkillSessions(

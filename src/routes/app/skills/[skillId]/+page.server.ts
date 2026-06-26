@@ -1,13 +1,13 @@
 import {
     SkillSessionWithIdSchema,
     type SkillSessionsPageData,
-} from '$lib/app/schemas/skillSessionSchema.js';
+} from '$lib/schemas/skillSessionSchema.js';
 import { db } from '$lib/server/db/index.js';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import { randomUUID } from 'crypto';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
-import { SkillWithIdSchema } from '$lib/app/schemas/skillSchema.js';
+import { SkillWithIdSchema } from '$lib/schemas/skillSchema.js';
 
 //
 export const actions = {

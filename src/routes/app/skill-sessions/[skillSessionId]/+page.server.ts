@@ -1,7 +1,7 @@
 import {
     SkillSessionWithIdSchema,
     type SkillSessionPageData,
-} from '$lib/app/schemas/skillSessionSchema.js';
+} from '$lib/schemas/skillSessionSchema.js';
 import z from 'zod';
 //
 export const actions = {
@@ -29,6 +29,7 @@ export async function load({ fetch, params }): Promise<SkillSessionPageData> {
         //
         return {
             skillSession: skillSessionData,
+            isLoading: false,
         };
     } catch (err) {
         //

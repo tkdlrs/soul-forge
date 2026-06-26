@@ -7,7 +7,11 @@
         SkillSchema,
         SkillWithIdSchema,
         type SkillWithId,
-    } from '$lib/app/schemas/skillSchema';
+    } from '$lib/schemas/skillSchema';
+    import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
+    //
+    // let { data }: {data:SkillPageData} = $props();
+    let { data } = $props();
 
     //
     let skills = $state<Array<SkillWithId>>([]);
@@ -15,16 +19,16 @@
     let name = $state<string>('');
     let icon = $state<string>('');
     //
-    async function loadSkills() {
-        try {
-            const response = await fetch('/api/skills');
-            const result = await response.json();
-            skills = z.array(SkillWithIdSchema).parse(result);
-            return;
-        } catch (err) {
-            throw new Error(`Error was ${err}`);
-        }
-    }
+    // async function loadSkills() {
+    //     try {
+    //         const response = await fetch('/api/skills');
+    //         const result = await response.json();
+    //         skills = z.array(SkillWithIdSchema).parse(result);
+    //         return;
+    //     } catch (err) {
+    //         throw new Error(`Error was ${err}`);
+    //     }
+    // }
     //
     async function createSkill() {
         //
@@ -74,9 +78,9 @@
     //
     let sessionMinutes = $derived<number>(0);
     //
-    onMount(async () => {
-        await loadSkills();
-    });
+    // onMount(async () => {
+    //     await loadSkills();
+    // });
 </script>
 
 <section class="p-5">
@@ -97,6 +101,7 @@
                         Make a Skill
                     </button>
                 </form>
+                <SkillForm data={{ name, icon }} isLoading={data.isLoading} />
             </div>
         </div>
         <div class="col-12">

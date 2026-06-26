@@ -1,4 +1,4 @@
-import { UserSchema, type UserCreateData } from '$lib/app/schemas/userSchema';
+import { UserSchema, type UserCreateData } from '$lib/schemas/userSchema';
 import { db } from '$lib/server/db';
 import { usersTable, type InsertUser } from '$lib/server/db/schema/users';
 import { eq } from 'drizzle-orm';

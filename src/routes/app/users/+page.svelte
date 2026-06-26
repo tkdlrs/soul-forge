@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     //
     import { resolve } from '$app/paths';
-    import type { UserWithId } from '$lib/app/schemas/userSchema';
+    import type { UserWithId } from '$lib/schemas/userSchema';
     //
     let users = $state<Array<UserWithId>>([]);
     //

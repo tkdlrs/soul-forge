@@ -1,4 +1,4 @@
-import type { SkillSessionWithId } from '$lib/app/schemas/skillSessionSchema.js';
+import type { SkillSessionWithId } from '$lib/schemas/skillSessionSchema.js';
 import { getSkillSession } from '$lib/server/repositories/skillSession.repository.js';
 import { json } from '@sveltejs/kit';
 

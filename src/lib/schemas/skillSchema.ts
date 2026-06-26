@@ -15,3 +15,11 @@ export type SkillCreate = z.infer<typeof SkillCreateSchema>;
 export const SkillWithIdSchema = withId(SkillSchema);
 export type SkillWithId = z.infer<typeof SkillWithIdSchema>;
 //
+/**
+ * ERROR TYPES
+ **/
+export type SkillErrors = {
+    name?: string | null;
+    icon?: string | null;
+    userId?: string | null;
+} | null;

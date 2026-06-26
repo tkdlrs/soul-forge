@@ -1,6 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import type { SkillSessionPageData } from '$lib/app/schemas/skillSessionSchema';
+    import type { SkillSessionPageData } from '$lib/schemas/skillSessionSchema';
     //
     let { data }: { data: SkillSessionPageData } = $props();
     //

@@ -5,7 +5,7 @@
     import type {
         SkillSessionsPageData,
         SkillSessionWithId,
-    } from '$lib/app/schemas/skillSessionSchema';
+    } from '$lib/schemas/skillSessionSchema';
     //
     let { data }: { data: SkillSessionsPageData } = $props();
     $inspect(data);
