@@ -10,22 +10,23 @@
     // Implementation
     let errorsObj = $state<SkillErrors>(null);
     // props...
-    let { data, isLoading } = $props();
-    // ToDo:// need to get the current skill's id somehow for edit
-
+    let { data, isLoading, action, method } = $props();
     // Form config
     const skillConfig = {
         // collection: '',
-        // slug: '',
+        slug: '/skills',
         schema: SkillSchema,
 
         initial: {
-            name: '',
-            icon: '',
+            name: data.name,
+            icon: data.icon,
             userId: 1,
         } satisfies SkillCreate,
         errors: null satisfies SkillErrors,
 
+        //
+        action,
+        method,
         //
     };
     //

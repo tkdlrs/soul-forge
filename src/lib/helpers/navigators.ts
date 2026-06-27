@@ -1,1 +1,1 @@
-export const currentAppURI = '/';
+export const currentAppURI = '/app';

@@ -8,10 +8,6 @@
     // Form Elements
     import ErrorSuccessWrapper from '../form-elements/ErrorSuccessWrapper.svelte';
     import SubmitBtn from '../form-elements/SubmitBtn.svelte';
-    // Database
-    // import { storeObjectInCollection } from '$lib/database/queries/storeFunctions';
-    // import { updateObjectInCollection } from '$lib/database/queries/updateFunctions';
-    // import { deleteObjFromCollection } from '$lib/database/queries/deleteFunctions';
     //
     import { currentAppURI } from '$lib/helpers/navigators.js';
     // Implementation
@@ -31,6 +27,7 @@
     //
     async function handleSubmit<T>(e: Event) {
         e.preventDefault();
+        console.log('calling handle submit');
         // Reset UI
         viewError = false;
         errorMessage = 'Error';
@@ -48,16 +45,18 @@
             console.log(
                 'here you would ran an action to POST or PUT a thing in the database',
             );
+            console.log(`config.action: ${config.action}`);
             console.log('Result is', result);
-            // if (config.action === 'POST') {
-            //     await storeObjectInCollection(`${config.collection}`, result);
-            // } else if (config.action === 'PUT' && config.docId) {
-            //     await updateObjectInCollection(
-            //         config.collection,
-            //         config.docId,
-            //         result,
-            //     );
-            // }
+            await fetch(config.action, {
+                method: config.method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(result),
+            });
+            console.log(
+                'made it after awaited fetch. 4 whatever that is worth',
+            );
             //
             successMessage = 'Success';
             isSubmitted = true;
@@ -87,7 +86,7 @@
             return;
         }
         //
-        window.location.assign(`${currentAppURI}${config.slug}/`);
+        window.location.assign(`${currentAppURI}${config.slug}`);
     }
     //
     // async function handleDelete(e: Event, docId: string) {

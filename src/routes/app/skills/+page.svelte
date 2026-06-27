@@ -10,43 +10,13 @@
     } from '$lib/schemas/skillSchema';
     import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
     //
-    // let { data }: {data:SkillPageData} = $props();
+    // let { data }: { data: SkillPageData } = $props();
     let { data } = $props();
-
     //
-    let skills = $state<Array<SkillWithId>>([]);
+    let skills = $state<Array<SkillWithId>>(data.skills);
     //
     let name = $state<string>('');
     let icon = $state<string>('');
-    //
-    // async function loadSkills() {
-    //     try {
-    //         const response = await fetch('/api/skills');
-    //         const result = await response.json();
-    //         skills = z.array(SkillWithIdSchema).parse(result);
-    //         return;
-    //     } catch (err) {
-    //         throw new Error(`Error was ${err}`);
-    //     }
-    // }
-    //
-    async function createSkill() {
-        //
-        await fetch('/api/skills', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name,
-                icon,
-                userId: 1,
-            }),
-        });
-        //
-        await loadSkills();
-        //
-    }
     //
     async function deleteSkill(id: string) {
         await fetch(`/api/skills/${id}`, {
@@ -56,7 +26,6 @@
             },
         });
         //
-        await loadSkills();
     }
     //
     function calculateSessionMinutes(start: Date, end: Date): number {
@@ -78,9 +47,6 @@
     //
     let sessionMinutes = $derived<number>(0);
     //
-    // onMount(async () => {
-    //     await loadSkills();
-    // });
 </script>
 
 <section class="p-5">
@@ -94,14 +60,12 @@
         </div>
         <div class="col-12">
             <div class="my-5">
-                <form onsubmit={createSkill}>
-                    <input bind:value={name} placeholder="Name" />
-                    <input bind:value={icon} placeholder="Icon" />
-                    <button class="btn btn-success btn-sm" type="submit">
-                        Make a Skill
-                    </button>
-                </form>
-                <SkillForm data={{ name, icon }} isLoading={data.isLoading} />
+                <SkillForm
+                    action="/api/skills"
+                    method="POST"
+                    data={{ name, icon }}
+                    isLoading={data.isLoading}
+                />
             </div>
         </div>
         <div class="col-12">
@@ -146,12 +110,20 @@
                                         <td> </td>
                                         <td>
                                             <a
+                                                class="btn btn-sm btn-success"
+                                                href={resolve(
+                                                    `/app/skills/train/${skill.id}`,
+                                                )}
+                                            >
+                                                Train
+                                            </a>
+                                            <a
                                                 class="btn btn-sm btn-warning"
                                                 href={resolve(
                                                     `/app/skills/${skill.id}`,
                                                 )}
                                             >
-                                                Edit / train
+                                                Edit
                                             </a>
                                             <button
                                                 class="btn btn-sm btn-danger"
