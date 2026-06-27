@@ -1,3 +1,6 @@
+/**
+ * API VERBS for Users resource
+ **/
 import { json } from '@sveltejs/kit';
 import { getUsers, createUser } from '$lib/server/repositories/user.repository';
 

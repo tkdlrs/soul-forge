@@ -1,8 +1,8 @@
-import {
-    SkillSessionWithIdSchema,
-    type SkillSessionPageData,
-} from '$lib/schemas/skillSessionSchema.js';
-import z from 'zod';
+/**
+ * Server Side Skill Sessions INDEX page
+ **/
+import z from 'zod/v4';
+import { type SkillSessionPageData } from '$lib/schemas/skillSessionSchema.js';
 //
 export const actions = {
     editSession: async ({ params }) => {

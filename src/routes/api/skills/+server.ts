@@ -1,3 +1,6 @@
+/**
+ * API VERBS for Skills resource
+ **/
 import {
     createSkill,
     getSkills,

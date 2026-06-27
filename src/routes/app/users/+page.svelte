@@ -1,4 +1,7 @@
 <script lang="ts">
+    /**
+     * App Frontend Users INDEX
+     **/
     import { onMount } from 'svelte';
     //
     import { resolve } from '$app/paths';
@@ -45,7 +48,7 @@
         //
         await loadUsers();
     }
-    //
+    // ToDo:// remove this for server side approach with a load method
     onMount(async () => {
         await loadUsers();
     });

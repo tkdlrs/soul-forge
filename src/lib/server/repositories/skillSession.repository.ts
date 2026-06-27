@@ -1,3 +1,7 @@
+/**
+ * Skill Session Repository.
+ * Functions for interacting with 'Skill Sessions' in the database
+ **/
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';

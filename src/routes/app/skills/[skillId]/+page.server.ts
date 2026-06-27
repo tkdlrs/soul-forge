@@ -1,3 +1,9 @@
+/**
+ * APP ServerSide Skill [id] SHOW
+ *
+ * Working with a specific 'Skill' (id) to create 'Skill Sessions' for that particular skill
+ *
+ **/
 import {
     SkillSessionWithIdSchema,
     type SkillSessionsPageData,

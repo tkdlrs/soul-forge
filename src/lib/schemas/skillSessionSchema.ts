@@ -1,4 +1,7 @@
-import z from 'zod';
+/**
+ * Zod Schema for a Skill Session
+ **/
+import z from 'zod/v4';
 import { trimStrings } from './_preprocessing';
 import { withId } from './_shared';
 
@@ -28,6 +31,7 @@ export type SkillSessionsPageData = z.infer<typeof SkillSessionsPageDataSchema>;
 //
 export const SkillSessionPageDataSchema = z.object({
     skillSession: SkillSessionWithIdSchema,
+    isLoading: z.boolean(),
 });
 export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;
 //

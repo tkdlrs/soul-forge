@@ -1,3 +1,6 @@
+/**
+ * Users database schema
+ **/
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
@@ -15,6 +18,8 @@ export const usersTable = sqliteTable('users', {
     updatedAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(
         () => new Date(),
     ),
+    //
+    // ToDo:// come back to this and set it up. Use a JwT
     // hashedPassword: text('hashed_password', { length: 256 })
     //     .notNull()
     //     .default('unset'),

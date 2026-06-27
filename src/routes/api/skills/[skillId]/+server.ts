@@ -1,3 +1,7 @@
+/**
+ * API VERBS for Skills [ ID ] resource
+ * Working on a specified Skill
+ **/
 import { updateSkill } from '$lib/server/repositories/skill.repository';
 import { getSkillSessions } from '$lib/server/repositories/skillSession.repository';
 import { json } from '@sveltejs/kit';
@@ -13,10 +17,7 @@ export async function GET({ params, request }) {
     return thing;
 }
 //
-// export async function POST({ request }) {
-//     //
-// }
-// // Allow user to update the skill name and icon.
+// Allow user to Edit/ Update the skill name and icon.
 // export async function PUT({ params, request }) {
 //     //
 //     const body = await request.json();

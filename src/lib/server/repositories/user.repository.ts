@@ -1,3 +1,7 @@
+/**
+ * User Repository.
+ * Functions for interacting with 'Users' in database.
+ **/
 import { UserSchema, type UserCreateData } from '$lib/schemas/userSchema';
 import { db } from '$lib/server/db';
 import { usersTable, type InsertUser } from '$lib/server/db/schema/users';

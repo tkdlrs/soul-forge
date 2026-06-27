@@ -1,4 +1,7 @@
 <script lang="ts">
+    /**
+     * App Frontend for Skill Sessions [ ID ] Edit
+     **/
     import { enhance } from '$app/forms';
     import type { SkillSessionPageData } from '$lib/schemas/skillSessionSchema';
     //

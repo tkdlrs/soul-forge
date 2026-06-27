@@ -1,4 +1,8 @@
 <script lang="ts">
+    /**
+     * Frontend 'Skill' page SHOW
+     * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
+     **/
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     //

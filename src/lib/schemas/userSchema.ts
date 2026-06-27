@@ -1,3 +1,6 @@
+/**
+ * Zod Schema for a User
+ **/
 import { z } from 'zod/v4';
 import { trimStrings } from './_preprocessing';
 import { withId } from './_shared';

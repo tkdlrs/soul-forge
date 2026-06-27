@@ -1,3 +1,6 @@
+/**
+ * Server Side Skills INDEX page
+ **/
 import z from 'zod/v4';
 import { SkillWithIdSchema } from '$lib/schemas/skillSchema.js';
 

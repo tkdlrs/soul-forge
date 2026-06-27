@@ -1,14 +1,17 @@
+/**
+ * Skill Repository.
+ * Functions for interacting with 'Skills' in database.
+ **/
 import { SkillSchema, type SkillCreate } from '$lib/schemas/skillSchema';
 import { db } from '$lib/server/db';
 import { skillsTable, type InsertSkill } from '$lib/server/db/schema/skills';
 import { randomUUID } from 'crypto';
 import { eq } from 'drizzle-orm';
-
+//
 //
 export async function getSkills() {
     return db.select().from(skillsTable);
 }
-
 //
 export async function createSkill(data: InsertSkill) {
     try {
