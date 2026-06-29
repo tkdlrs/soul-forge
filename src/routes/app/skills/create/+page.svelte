@@ -1,4 +1,7 @@
 <script lang="ts">
+    /**
+     * Frontend 'Skill' page CREATE
+     **/
     import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
     //
     let name = $state<string>('');
@@ -10,7 +13,7 @@
 <section class="p-5">
     <div class="row">
         <div class="col-12">
-            <h1>Create a Skill Session</h1>
+            <h1>Create a Skill</h1>
         </div>
         <div class="col-12">
             <div class="my-5">

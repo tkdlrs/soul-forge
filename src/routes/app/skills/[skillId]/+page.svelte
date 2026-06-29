@@ -1,149 +1,38 @@
 <script lang="ts">
     /**
-     * Frontend 'Skill' page SHOW
-     * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
+     * Frontend 'Skill' page EDIT
      **/
-    import { enhance } from '$app/forms';
-    import { resolve } from '$app/paths';
+    import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
+    import { SkillWithIdSchema } from '$lib/schemas/skillSchema';
     //
-    import type {
-        SkillSessionsPageData,
-        SkillSessionWithId,
-    } from '$lib/schemas/skillSessionSchema';
+    let name = $state<string>('');
+    let icon = $state<string>('');
     //
-    let { data }: { data: SkillSessionsPageData } = $props();
-    $inspect(data);
+    let { data } = $props();
     //
-    let skillSessions = $state<SkillSessionWithId[]>(data.skillSessions);
+    const skill = data.skill;
+    SkillWithIdSchema.parse(skill);
     //
-    let currentSessionId = $state<string | null>(null);
+    name = skill.name;
+    icon = skill.icon;
     //
+    const actionRoute = `/api/skills/${skill.id}`;
 </script>
 
 <section class="p-5">
     <div class="row">
         <div class="col-12">
-            <p>Skill Name</p>
-            <h1>
-                {data.skillName}
-            </h1>
-            <p>
-                This would be an index page for listing out all the skills
-                sessions
-            </p>
+            <h1>Edit Skill</h1>
         </div>
         <div class="col-12">
             <div class="my-5">
-                <!--  -->
-                {#if currentSessionId}
-                    <form
-                        method="POST"
-                        action="?/stopSession"
-                        use:enhance={() => {
-                            return async ({ result }) => {
-                                if (result.type === 'success') {
-                                    // filter out the one with the same current session id
-                                    skillSessions = skillSessions.filter(
-                                        (item) => item.id != currentSessionId,
-                                    );
-                                    // clear out current session id
-                                    currentSessionId = '';
-                                    // readd the resulting data
-                                    skillSessions.push(
-                                        result?.data
-                                            ?.session as SkillSessionWithId,
-                                    );
-                                }
-                            };
-                        }}
-                    >
-                        <input
-                            type=""
-                            name="sessionId"
-                            value={currentSessionId}
-                        />
-                        <button> Stop </button>
-                    </form>
-                {:else}
-                    <form
-                        method="POST"
-                        action="?/startSession"
-                        use:enhance={() => {
-                            return async ({ result }) => {
-                                console.log(
-                                    'client side in form knows result to be:',
-                                    result,
-                                );
-                                if (
-                                    result.type === 'success'
-                                    // && result?.data?.skillSessionId
-                                ) {
-                                    currentSessionId =
-                                        String(result?.data?.skillSessionId) ||
-                                        '';
-                                    skillSessions.push(
-                                        result?.data
-                                            ?.session as SkillSessionWithId,
-                                    );
-                                }
-                                //
-                                return;
-                            };
-                        }}
-                    >
-                        <button> Start </button>
-                    </form>
-                {/if}
-                <!--  -->
+                <SkillForm
+                    action={actionRoute}
+                    method="PUT"
+                    data={{ name, icon }}
+                    isLoading={data.isLoading}
+                />
             </div>
-        </div>
-        <div class="col-12">
-            <!--  -->
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-10">
-                    <!--  -->
-                    <div class="table-responsive">
-                        <table
-                            class="table table-bordered table-sm table-hover"
-                        >
-                            <thead class="table-dark text-white bg-primary">
-                                <tr>
-                                    <!-- <th scope="col"> # </th> -->
-                                    <th scope="col"> Start </th>
-                                    <th scope="col"> End </th>
-                                    <th scope="col"> Time </th>
-                                    <th scope="col"> Experience Points </th>
-                                    <th scope="col"> Pay Equivant Range </th>
-
-                                    <th scope="col"> Options </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each skillSessions as session}
-                                    <tr>
-                                        <td> {session.startDateTime} </td>
-                                        <td> {session.endDateTime} </td>
-                                        <td> calc time </td>
-                                        <td> exp </td>
-                                        <td> $- $ </td>
-                                        <td>
-                                            <a
-                                                class="btn btn-sm btn-warning"
-                                                href={resolve(
-                                                    `/app/skill-sessions/${session.id}`,
-                                                )}
-                                            >
-                                                Edit
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!--  -->
         </div>
     </div>
 </section>

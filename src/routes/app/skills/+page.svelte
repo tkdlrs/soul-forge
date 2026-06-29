@@ -13,12 +13,17 @@
     let skills = $state<Array<SkillWithId>>(data.skills);
     //
     async function deleteSkill(id: string) {
-        await fetch(`/api/skills/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        try {
+            await fetch(`/api/skills/${id}`, {
+                method: 'DELETE',
+            });
+            //
+            return window.location.assign(`${currentAppURI}/skills/`);
+        } catch (error) {
+            alert(`error`);
+            console.error(error);
+        }
+
         //
     }
     //
@@ -115,6 +120,7 @@
                                                 </div>
                                                 <div class="p-1">
                                                     <a
+                                                        data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-warning"
                                                         href={resolve(
                                                             `/app/skills/${skill.id}`,
@@ -125,6 +131,7 @@
                                                 </div>
                                                 <div class="p-1">
                                                     <button
+                                                        data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-danger"
                                                         onclick={() =>
                                                             deleteSkill(

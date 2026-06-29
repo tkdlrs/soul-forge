@@ -7,7 +7,7 @@ import {
 } from '$lib/server/repositories/skill.repository';
 import { randomUUID } from 'crypto';
 import { json } from '@sveltejs/kit';
-
+//
 //
 export async function GET() {
     const skills = await getSkills();
@@ -28,3 +28,7 @@ export async function POST({ request }) {
     return json(skill, { status: 201 });
 }
 //
+// export async function DELETE({ request }) {
+//     console.log('this was hit instead?');
+//     return;
+// }

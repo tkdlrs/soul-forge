@@ -41,6 +41,9 @@ export async function updateSkill(id: string, data: Partial<SkillCreate>) {
 }
 //
 export async function deleteSkill(id: string) {
-    await db.delete(skillsTable).where(eq(skillsTable.id, id));
+    return await db
+        .delete(skillsTable)
+        .where(eq(skillsTable.id, id))
+        .returning();
 }
 //
