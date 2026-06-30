@@ -13,11 +13,15 @@ export const SkillSchema = z.object({
 //
 export const SkillCreateSchema = z.preprocess(trimStrings, SkillSchema);
 export type SkillCreate = z.infer<typeof SkillCreateSchema>;
-
 //
 export const SkillWithIdSchema = withId(SkillSchema);
 export type SkillWithId = z.infer<typeof SkillWithIdSchema>;
 //
+export const SkillEditSchema = z.object({
+    name: z.string(),
+    icon: z.string(),
+});
+export type SkillEdit = z.infer<typeof SkillEditSchema>;
 /**
  * ERROR TYPES
  **/

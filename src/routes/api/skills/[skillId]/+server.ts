@@ -2,6 +2,7 @@
  * API VERBS for Skills [ ID ] resource
  * Working on a specified Skill
  **/
+import { SkillEditSchema } from '$lib/schemas/skillSchema.js';
 import {
     deleteSkill,
     getSkill,
@@ -28,23 +29,34 @@ export async function GET({ params, request }) {
 }
 //
 // Allow user to Edit/ Update the skill name and icon.
-// export async function PUT({ params, request }) {
-//     //
-//     const body = await request.json();
-//     //
-//     const skill = await updateSkill(id, {
-//         name: body.name,
-//         icon: body.icon,
-//     });
-// }
+export async function PUT({ params, request }) {
+    try {
+        //
+        const body = await request.json();
+        const skill = { name: body.name, icon: body.icon };
+        SkillEditSchema.parse(skill);
+        //
+        const skillId = params.skillId;
+        z.uuid().parse(skillId);
+        //
+        await updateSkill(skillId, skill);
+        //
+        return json(null, {
+            status: 204,
+        });
+    } catch (err) {
+        throw error(404, `Error was ${err}`);
+    }
+}
 //
 export async function DELETE({ params, request }) {
     try {
-        console.log('request:', request);
+        // console.log('request:', request);
+        console.log('params:', params);
         //
         const skillId = params.skillId;
         console.log(`Dellete things skill id be ${skillId}`);
-        z.uuid().parse(skillId);
+        // z.uuid().parse(skillId);
         //
         console.log(`next is to call delete skill with skill id ${skillId}`);
         await deleteSkill(skillId);

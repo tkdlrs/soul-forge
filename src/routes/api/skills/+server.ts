@@ -25,7 +25,9 @@ export async function POST({ request }) {
         userId: body.userId,
     });
     //
-    return json(skill, { status: 201 });
+    return json(skill, {
+        status: 201,
+    });
 }
 //
 // export async function DELETE({ request }) {

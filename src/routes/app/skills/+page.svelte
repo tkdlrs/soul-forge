@@ -14,11 +14,12 @@
     //
     async function deleteSkill(id: string) {
         try {
+            console.log(`client says that id is: ${id}`);
             await fetch(`/api/skills/${id}`, {
                 method: 'DELETE',
             });
             //
-            return window.location.assign(`${currentAppURI}/skills/`);
+            return window.location.assign(`${currentAppURI}/skills/#wtf`);
         } catch (error) {
             alert(`error`);
             console.error(error);
@@ -110,6 +111,7 @@
                                             <td class="d-flex">
                                                 <div class="p-1">
                                                     <a
+                                                        data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-success"
                                                         href={resolve(
                                                             `/app/skills/train/${skill.id}`,

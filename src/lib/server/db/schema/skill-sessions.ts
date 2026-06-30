@@ -18,10 +18,14 @@ export const skillSessionsTable = sqliteTable('skill_sessions', {
     //
     userId: integer('user_id')
         .notNull()
-        .references(() => usersTable.id),
+        .references(() => usersTable.id, {
+            onDelete: 'cascade',
+        }),
     skillId: text('skill_id')
         .notNull()
-        .references(() => skillsTable.id),
+        .references(() => skillsTable.id, {
+            onDelete: 'cascade',
+        }),
     //
     startDateTime: integer('start_datetime', {
         mode: 'timestamp',

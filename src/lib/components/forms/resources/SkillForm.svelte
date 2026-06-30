@@ -14,7 +14,7 @@
     // Form config
     const skillConfig = {
         // collection: '',
-        slug: '/skills',
+        slug: '/skills/',
         schema: SkillSchema,
 
         initial: {

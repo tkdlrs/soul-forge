@@ -41,9 +41,17 @@ export async function updateSkill(id: string, data: Partial<SkillCreate>) {
 }
 //
 export async function deleteSkill(id: string) {
-    return await db
-        .delete(skillsTable)
-        .where(eq(skillsTable.id, id))
-        .returning();
+    try {
+        console.log('database id:', id);
+        const deleted = await db
+            .delete(skillsTable)
+            .where(eq(skillsTable.id, id))
+            .returning();
+        console.log('AFTER DATABASE CALL');
+        console.log('deleted', deleted);
+        return;
+    } catch (err) {
+        console.error('deleteSkill failed:', err);
+    }
 }
 //
