@@ -1,6 +1,6 @@
 <script lang="ts">
     /**
-     * Frontend 'Skill' page CREATE
+     * App Frontend 'Skill' page CREATE
      **/
     import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
     //

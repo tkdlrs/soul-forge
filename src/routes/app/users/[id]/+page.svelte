@@ -1,27 +1,24 @@
 <script lang="ts">
+    /**
+     * App Frontend 'User' page SHOW & EDIT
+     **/
+    import UserForm from '$lib/components/forms/resources/UserForm.svelte';
+    import { UserWithIdSchema } from '$lib/schemas/userSchema.js';
+    //
+    let firstName = $state<string>('');
+    let lastName = $state<string>('');
+    let email = $state<string>('');
+    //
     let { data } = $props();
     //
-    let firstName = $state<string>(data.user.firstName);
-    let lastName = $state<string>(data.user.lastName);
-    let email = $state<string>(data.user.email);
+    const user = data.user;
+    UserWithIdSchema.parse(user);
     //
-    async function editUser(id: number) {
-        await fetch(`/api/users/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstName,
-                lastName,
-                email,
-            }),
-        });
-        //
-        window.location.assign('/app/users/');
-        return;
-        //
-    }
+    firstName = user.firstName;
+    lastName = user.lastName;
+    email = user.email;
+    //
+    const actionRoute = `/api/users/${user.id}`;
 </script>
 
 <div class="row">
@@ -35,14 +32,12 @@
         <p><strong>Email</strong>: {data.user.email}</p>
     </div>
     <div class="col-12 col-md-6">
-        <h2 class="h4 fw-bold">Edit</h2>
-        <form class="d-grid" onsubmit={() => editUser(data.user.id)}>
-            <input bind:value={firstName} placeholder="First Name" /> <br />
-            <input bind:value={lastName} placeholder="Last Name" /><br />
-            <input bind:value={email} placeholder="email" /><br />
-            <button class="btn btn-info btn-sm" type="submit">
-                Edit user
-            </button>
-        </form>
+        <h2 class="h4 fw-bold">Edit User</h2>
+        <UserForm
+            action={actionRoute}
+            method="PUT"
+            data={{ firstName, lastName, email }}
+            isLoading={data.isLoading}
+        />
     </div>
 </div>

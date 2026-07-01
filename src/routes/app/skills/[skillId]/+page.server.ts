@@ -2,7 +2,7 @@
  *  APP ServerSide Skill EDIT page.
  **/
 import { SkillWithIdSchema } from '$lib/schemas/skillSchema';
-import z from 'zod';
+import z from 'zod/v4';
 //
 export async function load({ fetch, params }) {
     try {

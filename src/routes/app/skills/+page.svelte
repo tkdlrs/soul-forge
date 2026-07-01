@@ -14,12 +14,11 @@
     //
     async function deleteSkill(id: string) {
         try {
-            console.log(`client says that id is: ${id}`);
             await fetch(`/api/skills/${id}`, {
                 method: 'DELETE',
             });
             //
-            return window.location.assign(`${currentAppURI}/skills/#wtf`);
+            return window.location.assign(`${currentAppURI}/skills/`);
         } catch (error) {
             alert(`error`);
             console.error(error);

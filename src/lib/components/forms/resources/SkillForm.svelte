@@ -1,4 +1,8 @@
 <script lang="ts">
+    /**
+     * Form for a Skill.
+     * For CREATE and EDIT.
+     **/
     import Input from '$lib/components/form-elements/Input.svelte';
     import {
         SkillSchema,

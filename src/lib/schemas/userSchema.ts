@@ -21,6 +21,13 @@ export const UserCreateSchema = z.preprocess(trimStrings, UserSchema);
 export type UserCreateData = z.infer<typeof UserCreateSchema>;
 
 //
-export const UserWithIdSchema = withId(UserSchema);
+export const UserWithIdSchema = UserSchema.extend({ id: z.number() });
 export type UserWithId = z.infer<typeof UserWithIdSchema>;
-//
+/**
+ *  ERROR TYPES
+ **/
+export type UserErrors = {
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+} | null;
