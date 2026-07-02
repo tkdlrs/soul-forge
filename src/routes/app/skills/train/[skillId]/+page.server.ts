@@ -7,6 +7,7 @@
 import {
     SkillSessionWithIdSchema,
     type SkillSessionsPageData,
+    type SkillSessionWithId,
 } from '$lib/schemas/skillSessionSchema.js';
 import { db } from '$lib/server/db/index.js';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
@@ -58,26 +59,31 @@ export const actions = {
         };
     },
 };
-
-//
-const paramsSchema = z.object({
-    skillId: z.uuid(),
-});
 //
 export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
     try {
-        console.log('params:', params);
+        // USER ID ToDo:// -somehow we must know this. For real. Not just a hard-coded number 1.
+        const userId = 1;
+
+        console.log('train params:', params);
         //
-        const { skillId } = paramsSchema.parse(params);
+        const skillId = params.skillId;
+        z.uuid().parse(skillId);
         //
         const response = await fetch(`/api/skills/${skillId}`);
         const result = await response.json();
         //
-        const skillSessions = z.array(SkillSessionWithIdSchema).parse(result);
+        let skillSessions: SkillSessionWithId[] = [];
+        if (result.length > 0) {
+            skillSessions = z.array(SkillSessionWithIdSchema).parse(result);
+        }
         // Get additional information about the skill itself.
         const skillsRequest = await fetch(`/api/skills`);
         const skillsResponse = await skillsRequest.json();
+        console.log('skillsResponse', skillsResponse);
+        //
         const skillsData = z.array(SkillWithIdSchema).parse(skillsResponse);
+        console.log('skillsData', skillsData);
         //
         const skillsSearch = skillsData.find((item) => item.id === skillId);
         let skillName = '';
@@ -91,6 +97,9 @@ export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
             skillSessions,
             skillId,
             skillName,
+            isLoading: false,
+            userId,
+            currentSessionId: crypto.randomUUID(),
         };
     } catch (err) {
         throw new Error(`Error was ${err}`);

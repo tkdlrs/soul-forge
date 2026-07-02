@@ -5,6 +5,7 @@
      **/
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
+    import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
     //
     import type {
         SkillSessionsPageData,
@@ -16,7 +17,13 @@
     //
     let skillSessions = $state<SkillSessionWithId[]>(data.skillSessions);
     //
-    let currentSessionId = $state<string | null>(null);
+    let userId = data.userId;
+    let skillId = data.skillId;
+    //
+    let currentSessionId = data.currentSessionId;
+    //
+    let startDateTime = null;
+    let endDateTime = null;
     //
 </script>
 
@@ -33,8 +40,24 @@
             </p>
         </div>
         <div class="col-12">
-            <div class="my-5">
+            <div class="my-5 row">
+                <div class="col-12 col-lg-4">
+                    <TrainASkillForm
+                        action="/api/skill"
+                        method="PUT"
+                        data={{
+                            skillId,
+                            userId,
+                            startDateTime,
+                            endDateTime,
+                            currentSessionId,
+                        }}
+                        isLoading={data.isLoading}
+                    />
+                </div>
+
                 <!--  -->
+                <!--
                 {#if currentSessionId}
                     <form
                         method="POST"
@@ -93,7 +116,7 @@
                     >
                         <button> Start </button>
                     </form>
-                {/if}
+                {/if} -->
                 <!--  -->
             </div>
         </div>

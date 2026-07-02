@@ -14,13 +14,14 @@ import z from 'zod';
 // Get all the sessions for a single skill that belongs to a single user
 export async function GET({ params, request }) {
     try {
-        console.log('params:', params);
-        console.log('request:', request);
+        // console.log('params:', params);
+        // console.log('request:', request);
         //
         const skillId = params.skillId;
         z.uuid().parse(skillId);
         //
         const skillData = await getSkill(skillId);
+        console.log('GET skillData:', skillData);
         //
         return json(skillData);
     } catch (err) {

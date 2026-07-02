@@ -92,15 +92,7 @@
                                         <tr>
                                             <!-- <th scope="row"> {skill.id} </th> -->
                                             <td> {@html skill.icon} </td>
-                                            <td>
-                                                <a
-                                                    data-sveltekit-preload-data="false"
-                                                    class=""
-                                                    href={`/app/skills/${skill.id}`}
-                                                >
-                                                    {skill.name}
-                                                </a>
-                                            </td>
+                                            <td> {skill.name} </td>
                                             <td>
                                                 do math to figure out hours and
                                                 minutes
