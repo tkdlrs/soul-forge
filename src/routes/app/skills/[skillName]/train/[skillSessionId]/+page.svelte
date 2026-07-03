@@ -9,21 +9,21 @@
     //
     import type {
         SkillSessionsPageData,
-        SkillSessionWithId,
+        SkillSession,
     } from '$lib/schemas/skillSessionSchema';
     //
     let { data }: { data: SkillSessionsPageData } = $props();
     $inspect(data);
     //
-    let skillSessions = $state<SkillSessionWithId[]>(data.skillSessions);
+    let skillSessions = $state<SkillSession[]>(data.skillSessions);
     //
     let userId = data.userId;
     let skillId = data.skillId;
     //
     let currentSessionId = data.currentSessionId;
     //
-    let startDateTime = null;
-    let endDateTime = null;
+    let startDateTime = $state<string | null>(null);
+    let endDateTime = $state<string | null>(null);
     //
 </script>
 
@@ -74,7 +74,7 @@
                                     // readd the resulting data
                                     skillSessions.push(
                                         result?.data
-                                            ?.session as SkillSessionWithId,
+                                            ?.session as SkillSession,
                                     );
                                 }
                             };
@@ -106,7 +106,7 @@
                                         '';
                                     skillSessions.push(
                                         result?.data
-                                            ?.session as SkillSessionWithId,
+                                            ?.session as SkillSession,
                                     );
                                 }
                                 //

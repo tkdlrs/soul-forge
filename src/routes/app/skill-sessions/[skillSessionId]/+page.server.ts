@@ -24,7 +24,7 @@ export async function load({ fetch, params }): Promise<SkillSessionPageData> {
         const result = await response.json();
         console.log(`result from skill session id load function is: `, result);
         //
-        // const skillSessionData = SkillSessionWithIdSchema.parse(result);
+        // const skillSessionData = SkillSessionSchema.parse(result);
         const skillSessionData = result;
         //
         return {

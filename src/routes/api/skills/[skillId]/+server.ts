@@ -2,10 +2,15 @@
  * API VERBS for Skills [ ID ] resource
  * Working on a specified Skill
  **/
-import { SkillEditSchema } from '$lib/schemas/skillSchema.js';
+import {
+    SkillEditSchema,
+    type SkillCreate,
+    type SkillWithId,
+} from '$lib/schemas/skillSchema.js';
 import {
     deleteSkill,
     getSkill,
+    getSkillByName,
     updateSkill,
 } from '$lib/server/repositories/skill.repository';
 import { error, json } from '@sveltejs/kit';
@@ -16,11 +21,22 @@ export async function GET({ params, request }) {
     try {
         // console.log('params:', params);
         // console.log('request:', request);
+        let skillData: SkillWithId = {
+            id: '',
+            userId: 0,
+            name: '',
+            icon: '',
+        };
         //
         const skillId = params.skillId;
-        z.uuid().parse(skillId);
+        const typeTest = z.uuid().safeParse(skillId);
+        if (typeTest.success) {
+            skillData = await getSkill(skillId);
+        } else {
+            skillData = await getSkillByName(skillId);
+        }
         //
-        const skillData = await getSkill(skillId);
+        //
         console.log('GET skillData:', skillData);
         //
         return json(skillData);

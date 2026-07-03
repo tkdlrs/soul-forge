@@ -8,6 +8,13 @@
       "when": 1782782307546,
       "tag": "0000_fast_leper_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1783047116947,
+      "tag": "0001_thankful_sphinx",
+      "breakpoints": true
     }
   ]
 }

@@ -6,14 +6,14 @@ import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import {
-    SkillSessionWithIdSchema,
-    type SkillSessionWithId,
+    SkillSessionSchema,
+    type SkillSession,
 } from '$lib/schemas/skillSessionSchema';
 
 // ToDo:// also add in filtering by userId -later
 export async function getSkillSessions(
     skillId: string,
-): Promise<SkillSessionWithId[]> {
+): Promise<SkillSession[]> {
     return await db
         .select()
         .from(skillSessionsTable)
@@ -26,7 +26,7 @@ export async function getSkillSession(skillSessionId: string) {
         .from(skillSessionsTable)
         .where(eq(skillSessionsTable.id, skillSessionId));
     //
-    // const skillSessionData = SkillSessionWithIdSchema.parse(skillSession);
+    // const skillSessionData = SkillSessionSchema.parse(skillSession);
     if (!skillSession) {
         throw new Error('skill session is missin');
     }

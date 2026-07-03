@@ -105,7 +105,7 @@
                                                         data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-success"
                                                         href={resolve(
-                                                            `/app/skills/train/${skill.id}`,
+                                                            `/app/skills/${skill.name.toLowerCase()}/train/${crypto.randomUUID()}`,
                                                         )}
                                                     >
                                                         Train

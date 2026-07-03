@@ -2,7 +2,7 @@
  * API VERBS for Skill Sessions [ ID ] resource
  * Working on a specified Skill Session.
  **/
-import type { SkillSessionWithId } from '$lib/schemas/skillSessionSchema.js';
+import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
 import { getSkillSession } from '$lib/server/repositories/skillSession.repository.js';
 import { json } from '@sveltejs/kit';
 

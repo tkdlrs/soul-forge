@@ -6,7 +6,7 @@ import { SkillSchema, type SkillCreate } from '$lib/schemas/skillSchema';
 import { db } from '$lib/server/db';
 import { skillsTable, type InsertSkill } from '$lib/server/db/schema/skills';
 import { randomUUID } from 'crypto';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 //
 //
 export async function getSkills() {
@@ -34,6 +34,15 @@ export async function getSkill(id: string) {
     return result[0] ?? null;
 }
 //
+export async function getSkillByName(name: string) {
+    const result = await db
+        .select()
+        .from(skillsTable)
+        .where(sql`lower(${skillsTable.name}) = lower(${name})`)
+        .limit(1);
+    //
+    return result[0] ?? null;
+} //
 export async function updateSkill(id: string, data: Partial<SkillCreate>) {
     await db.update(skillsTable).set(data).where(eq(skillsTable.id, id));
     //

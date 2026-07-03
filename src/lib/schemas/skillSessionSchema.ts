@@ -7,6 +7,7 @@ import { withId } from './_shared';
 
 //
 export const SkillSessionSchema = z.object({
+    id: z.uuid(),
     userId: z.number(),
     skillId: z.string(),
     startDateTime: z.coerce.date(),
@@ -17,13 +18,11 @@ export const SkillSesssionCreateSchema = z.preprocess(
     trimStrings,
     SkillSessionSchema,
 );
-export type SkillSessionCreate = z.infer<typeof SkillSesssionCreateSchema>;
-//
-export const SkillSessionWithIdSchema = withId(SkillSessionSchema);
-export type SkillSessionWithId = z.infer<typeof SkillSessionWithIdSchema>;
+export type SkillSession = z.infer<typeof SkillSesssionCreateSchema>;
+
 //
 export const SkillSessionsPageDataSchema = z.object({
-    skillSessions: z.array(SkillSessionWithIdSchema),
+    skillSessions: z.array(SkillSessionSchema),
     skillId: z.string(),
     skillName: z.string(),
     isLoading: z.boolean(),
@@ -33,7 +32,7 @@ export const SkillSessionsPageDataSchema = z.object({
 export type SkillSessionsPageData = z.infer<typeof SkillSessionsPageDataSchema>;
 //
 export const SkillSessionPageDataSchema = z.object({
-    skillSession: SkillSessionWithIdSchema,
+    skillSession: SkillSessionSchema,
     isLoading: z.boolean(),
 });
 export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;
