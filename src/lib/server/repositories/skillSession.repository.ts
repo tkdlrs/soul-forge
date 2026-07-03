@@ -2,7 +2,7 @@
  * Skill Session Repository.
  * Functions for interacting with 'Skill Sessions' in the database
  **/
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import {
@@ -12,12 +12,16 @@ import {
 
 // ToDo:// also add in filtering by userId -later
 export async function getSkillSessions(
-    skillId: string,
+    conditions: any[],
 ): Promise<SkillSession[]> {
-    return await db
-        .select()
-        .from(skillSessionsTable)
-        .where(eq(skillSessionsTable.skillId, skillId));
+    const query = db.select().from(skillSessionsTable);
+    if (conditions.length > 0) {
+        query.where(and(...conditions));
+    }
+    //
+    const sessions = await query;
+    //
+    return sessions;
 }
 //
 export async function getSkillSession(skillSessionId: string) {
@@ -31,11 +35,18 @@ export async function getSkillSession(skillSessionId: string) {
         throw new Error('skill session is missin');
     }
     return skillSession;
-} // //
-// export async function updateSkillSession(
-//     id: string,
-//     data: Partial<SkillSesssionCreate>,
-// ) {
-//     //
-// }
-// //
+}
+//
+export async function updateSkillSession(
+    id: string,
+    data: Partial<SkillSession>,
+) {
+    //
+    await db
+        .update(skillSessionsTable)
+        .set(data)
+        .where(eq(skillSessionsTable.id, id));
+    //
+    return;
+}
+//

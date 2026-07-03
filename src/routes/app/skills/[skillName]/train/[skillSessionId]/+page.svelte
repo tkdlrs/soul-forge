@@ -22,9 +22,18 @@
     //
     let currentSessionId = data.currentSessionId;
     //
-    let startDateTime = $state<string | null>(null);
-    let endDateTime = $state<string | null>(null);
+    const currentSkillSession = data.skillSessions.findIndex((item) => {
+        return item.id === currentSessionId;
+    });
     //
+    let startDateTime = $state<Date | null>(
+        data.skillSessions[currentSkillSession].startDateTime,
+    );
+    let endDateTime = $state<Date | null>(
+        data.skillSessions[currentSkillSession].endDateTime,
+    );
+    //
+    let action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
 </script>
 
 <section class="p-5">
@@ -43,7 +52,7 @@
             <div class="my-5 row">
                 <div class="col-12 col-lg-4">
                     <TrainASkillForm
-                        action="/api/skill"
+                        {action}
                         method="PUT"
                         data={{
                             skillId,

@@ -4,17 +4,13 @@
  * Working with a specific 'Skill' (id) to create 'Skill Sessions' for that particular skill
  *
  **/
+import z from 'zod/v4';
+import { SkillWithIdSchema } from '$lib/schemas/skillSchema.js';
 import {
     SkillSessionSchema,
     type SkillSessionsPageData,
     type SkillSession,
 } from '$lib/schemas/skillSessionSchema.js';
-import { db } from '$lib/server/db/index.js';
-import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
-import { randomUUID } from 'crypto';
-import { eq } from 'drizzle-orm';
-import z from 'zod/v4';
-import { SkillWithIdSchema } from '$lib/schemas/skillSchema.js';
 
 //
 // export const actions = {
@@ -72,21 +68,25 @@ export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
         const skillsRequest = await fetch(`/api/skills`);
         const skillsResponse = await skillsRequest.json();
         //
-        const skillsData = z.array(SkillWithIdSchema).parse(skillsResponse);
-        console.log('skillsData', skillsData);
+        const skillsCheck = z.array(SkillWithIdSchema).parse(skillsResponse);
+        console.log('skillsCheck', skillsCheck);
         //
-        const skillsSearch = skillsData.find(
+        const skillData = skillsCheck.find(
             (item) => item.name.toLowerCase() === skillName,
         );
-        if (!skillsSearch) {
+        if (!skillData) {
             throw new Error('Skill not found');
         }
         // ToDo:// This is wrong. would need to get the skill-sessions with a skillId key of the skill Id
         // that we are looking at.
-        const skillId = skillsSearch.id;
-        const response = await fetch(`/api/skills/${skillId}`);
-        const result = await response.json();
+        const skillId = skillData.id;
+        const skillSessionId = params.skillSessionId;
+        // throws error if data shape issue
+        z.uuid().parse(skillSessionId);
         //
+        const response = await fetch(`/api/skill-sessions?skillId=${skillId}`);
+        const result = await response.json();
+        // ...has all data for all 'Skill Sessions'...
         let skillSessions: SkillSession[] = [];
         if (result.length > 0) {
             skillSessions = z.array(SkillSessionSchema).parse(result);
@@ -96,7 +96,7 @@ export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
         return {
             skillSessions,
             skillId,
-            skillName: skillsSearch.name,
+            skillName: skillData.name,
             isLoading: false,
             userId,
             currentSessionId: params.skillSessionId,

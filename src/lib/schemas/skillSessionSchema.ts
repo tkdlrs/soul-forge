@@ -3,7 +3,6 @@
  **/
 import z from 'zod/v4';
 import { trimStrings } from './_preprocessing';
-import { withId } from './_shared';
 
 //
 export const SkillSessionSchema = z.object({
@@ -40,6 +39,7 @@ export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;
  * ERROR TYPES
  **/
 export type SkillSessionErrors = {
+    id?: string | null;
     userId?: string | null;
     skillId?: string | null;
     startDateTime?: string | null;

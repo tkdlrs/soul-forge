@@ -7,7 +7,7 @@
     import Input from '$lib/components/form-elements/Input.svelte';
     import {
         type SkillSessionErrors,
-        type SkillSessionCreate,
+        type SkillSession,
         SkillSesssionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
 
@@ -19,7 +19,7 @@
     // Form config
     const trainingSessionConfig = {
         //
-        slug: `/skills/train/${data.skillId}`,
+        slug: `/skills/${data.skillName.toLowerCase().replace(' ', '-')}/train/${data.skillId}`,
         schema: SkillSesssionCreateSchema,
 
         initial: {
@@ -27,8 +27,8 @@
             skillId: data.skillId,
             startDateTime: data.startDateTime,
             endDateTime: data.endDateTime,
-            currentSessionId: data.currentSessionId,
-        } satisfies SkillSessionCreate,
+            id: data.currentSessionId,
+        } satisfies SkillSession,
         errors: null satisfies SkillSessionErrors,
 
         //
@@ -37,7 +37,7 @@
         //
     };
     //
-    let formData = $state<SkillSessionCreate>(trainingSessionConfig.initial);
+    let formData = $state<SkillSession>(trainingSessionConfig.initial);
 </script>
 
 <FormWrapper
@@ -46,7 +46,7 @@
     bind:errorsObj
     bind:isLoading
 >
-    {#snippet children({ formData }: { formData: SkillSessionCreate })}
+    {#snippet children({ formData }: { formData: SkillSession })}
         <div class="form-row justify-content-between">
             <Input
                 text="User Id"
@@ -75,8 +75,8 @@
             <Input
                 text="Current Session Id"
                 id="current-session-id"
-                bind:defaultValue={formData.currentSessionId}
-                errorText={errorsObj?.currentSessionId}
+                bind:defaultValue={formData.id}
+                errorText={errorsObj?.id}
             />
         </div>
     {/snippet}

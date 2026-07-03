@@ -1,5 +1,5 @@
 /**
- * API VERBS for Skills resource
+ * API VERBS for 'Skills' resource
  **/
 import {
     createSkill,
@@ -10,9 +10,10 @@ import { json } from '@sveltejs/kit';
 //
 //
 export async function GET() {
-    const skills = await getSkills();
     //
-    return json(skills);
+    const skillSessions = await getSkills();
+    //
+    return json(skillSessions);
 }
 //
 export async function POST({ request }) {

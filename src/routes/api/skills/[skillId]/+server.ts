@@ -14,7 +14,7 @@ import {
     updateSkill,
 } from '$lib/server/repositories/skill.repository';
 import { error, json } from '@sveltejs/kit';
-import z from 'zod';
+import z from 'zod/v4';
 
 // Get all the sessions for a single skill that belongs to a single user
 export async function GET({ params, request }) {
