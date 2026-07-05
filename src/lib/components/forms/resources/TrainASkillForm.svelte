@@ -8,19 +8,19 @@
     import {
         type SkillSessionErrors,
         type SkillSession,
-        SkillSesssionCreateSchema,
+        SkillSessionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
 
     // Implementation
     let errorsObj = $state<SkillSessionErrors>(null);
     // props
     let { data, isLoading, action, method } = $props();
-    $inspect(data);
+    // $inspect(data);
     // Form config
     const trainingSessionConfig = {
         //
         slug: `/skills/${data.skillName.toLowerCase().replace(' ', '-')}/train/${data.skillId}`,
-        schema: SkillSesssionCreateSchema,
+        schema: SkillSessionCreateSchema,
 
         initial: {
             userId: data.userId,
@@ -65,12 +65,15 @@
                 id="start-date-time"
                 bind:defaultValue={formData.startDateTime}
                 errorText={errorsObj?.startDateTime}
+                type="datetime-local"
             />
             <Input
                 text="End Date Time"
                 id="end-date-time"
                 bind:defaultValue={formData.endDateTime}
                 errorText={errorsObj?.endDateTime}
+                required={false}
+                type="datetime-local"
             />
             <Input
                 text="Current Session Id"

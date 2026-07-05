@@ -31,22 +31,54 @@ export async function getSkillSession(skillSessionId: string) {
         .where(eq(skillSessionsTable.id, skillSessionId));
     //
     // const skillSessionData = SkillSessionSchema.parse(skillSession);
-    if (!skillSession) {
-        throw new Error('skill session is missin');
-    }
+    // if (!skillSession) {
+    //     throw new Error('skill session is missin');
+    // }
     return skillSession;
 }
 //
-export async function updateSkillSession(
-    id: string,
-    data: Partial<SkillSession>,
-) {
+async function createSkillSession(data: SkillSession) {
+    try {
+        console.log('Attempting to createSkillSession');
+        //
+        const newSkillSession = await db
+            .insert(skillSessionsTable)
+            .values({ ...data });
+        return newSkillSession;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
+    }
+}
+//
+export async function updateSkillSession(id: string, data: SkillSession) {
+    if (!id) {
+        throw new Error('Nope. Need an id. ');
+    }
+    if (!data.id) {
+        throw new Error('data needs an id');
+    }
+    if (!data.endDateTime) {
+        data.endDateTime = null;
+    }
+    console.log('='.repeat(100));
+    console.log(`Updated Skill Session called`);
+    // look for in database
+    const skillSessionData = await getSkillSession(data.id);
+    console.log('skillSessionData', skillSessionData);
+    // if doesn't exist we create.
+    if (!skillSessionData) {
+        console.log('if not skillSessionData then we call create');
+        await createSkillSession(data);
+    }
+    // if exists to this
+    else {
+        await db
+            .update(skillSessionsTable)
+            .set(data)
+            .where(eq(skillSessionsTable.id, id));
+    }
     //
-    await db
-        .update(skillSessionsTable)
-        .set(data)
-        .where(eq(skillSessionsTable.id, id));
-    //
+    console.log('='.repeat(100));
     return;
 }
 //

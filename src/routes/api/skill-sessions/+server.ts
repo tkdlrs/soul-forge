@@ -8,6 +8,9 @@ import { eq } from 'drizzle-orm';
 
 export async function GET({ url }) {
     let skillId = url.searchParams.get('skillId');
+    if (!skillId) {
+        skillId = '';
+    }
     //
     const conditions = [];
     if (skillId != '') {

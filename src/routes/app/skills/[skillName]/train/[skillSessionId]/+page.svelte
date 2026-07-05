@@ -13,25 +13,31 @@
     } from '$lib/schemas/skillSessionSchema';
     //
     let { data }: { data: SkillSessionsPageData } = $props();
-    $inspect(data);
+    // $inspect(data);
     //
     let skillSessions = $state<SkillSession[]>(data.skillSessions);
+    //
+    const skillName = data.skillName;
     //
     let userId = data.userId;
     let skillId = data.skillId;
     //
-    let currentSessionId = data.currentSessionId;
+    let currentSessionId = data?.currentSessionId;
     //
-    const currentSkillSession = data.skillSessions.findIndex((item) => {
-        return item.id === currentSessionId;
-    });
+    const currentSkillSession = data?.skillSessions.findIndex(
+        (item) => item.id === currentSessionId,
+    );
     //
-    let startDateTime = $state<Date | null>(
-        data.skillSessions[currentSkillSession].startDateTime,
-    );
-    let endDateTime = $state<Date | null>(
-        data.skillSessions[currentSkillSession].endDateTime,
-    );
+    let startDateTime = $state<Date | null>(null);
+    if (currentSkillSession != -1) {
+        startDateTime = data.skillSessions[currentSkillSession].startDateTime;
+    }
+
+    let endDateTime = $state<Date | null>(null);
+    if (currentSkillSession != -1) {
+        endDateTime = data.skillSessions[currentSkillSession].endDateTime;
+    }
+
     //
     let action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
 </script>
@@ -55,6 +61,8 @@
                         {action}
                         method="PUT"
                         data={{
+                            skillName,
+                            //
                             skillId,
                             userId,
                             startDateTime,

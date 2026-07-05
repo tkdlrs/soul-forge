@@ -86,6 +86,7 @@ export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
         //
         const response = await fetch(`/api/skill-sessions?skillId=${skillId}`);
         const result = await response.json();
+        console.log('app skills [skill name] train [id] result:', result);
         // ...has all data for all 'Skill Sessions'...
         let skillSessions: SkillSession[] = [];
         if (result.length > 0) {

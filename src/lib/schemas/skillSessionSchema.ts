@@ -13,11 +13,11 @@ export const SkillSessionSchema = z.object({
     endDateTime: z.coerce.date().nullable(),
 });
 //
-export const SkillSesssionCreateSchema = z.preprocess(
+export const SkillSessionCreateSchema = z.preprocess(
     trimStrings,
     SkillSessionSchema,
 );
-export type SkillSession = z.infer<typeof SkillSesssionCreateSchema>;
+export type SkillSession = z.infer<typeof SkillSessionCreateSchema>;
 
 //
 export const SkillSessionsPageDataSchema = z.object({
