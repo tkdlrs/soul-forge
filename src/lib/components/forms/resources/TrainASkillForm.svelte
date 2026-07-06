@@ -10,6 +10,7 @@
         type SkillSession,
         SkillSessionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
+    import { toDateTimeLocal } from '$lib/helpers/formatters';
 
     // Implementation
     let errorsObj = $state<SkillSessionErrors>(null);

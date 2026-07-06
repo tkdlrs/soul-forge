@@ -6,6 +6,7 @@
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
+    import { toDateTimeLocal } from '$lib/helpers/formatters';
     //
     import type {
         SkillSessionsPageData,
@@ -28,14 +29,24 @@
         (item) => item.id === currentSessionId,
     );
     //
-    let startDateTime = $state<Date | null>(null);
+    let startDateTime = $state<Date | string | null>(null);
     if (currentSkillSession != -1) {
-        startDateTime = data.skillSessions[currentSkillSession].startDateTime;
+        console.log('heello');
+        console.log('startDateTime', startDateTime);
+        startDateTime = toDateTimeLocal(
+            data.skillSessions[currentSkillSession].startDateTime,
+        );
+        console.log('startDateTime', startDateTime);
     }
 
-    let endDateTime = $state<Date | null>(null);
-    if (currentSkillSession != -1) {
-        endDateTime = data.skillSessions[currentSkillSession].endDateTime;
+    let endDateTime = $state<Date | string | null>(null);
+    if (
+        currentSkillSession != -1 &&
+        data.skillSessions[currentSkillSession].endDateTime != null
+    ) {
+        endDateTime = toDateTimeLocal(
+            data.skillSessions[currentSkillSession].endDateTime,
+        );
     }
 
     //

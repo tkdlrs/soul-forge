@@ -11,6 +11,7 @@ export async function load({ fetch, params }) {
         const response = await fetch('/api/skills');
         const result = await response.json();
         const skills = z.array(SkillWithIdSchema).parse(result);
+        // ToDo:// Determine if each skill is/has 'isActive' boolean and add that to the data.
         //
         return {
             skills,

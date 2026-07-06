@@ -1,3 +1,6 @@
+/**
+ *
+ **/
 export function printJSON(obj: any): string {
     return JSON.stringify(obj, null, 2);
 }
@@ -34,4 +37,10 @@ export function pascalCase(strOfWords: string) {
         .map((word: string) => upperCaseFirstLetter(word))
         .join('');
     return pascalCase;
+}
+// Format a date to local timezone
+export function toDateTimeLocal(date: Date) {
+    const offset = date.getTimezoneOffset();
+    const local = new Date(date.getTime() - offset * 60000);
+    return local.toISOString().slice(0, 16);
 }
