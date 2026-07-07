@@ -17,6 +17,14 @@ export type SkillCreate = z.infer<typeof SkillCreateSchema>;
 export const SkillWithIdSchema = withId(SkillSchema);
 export type SkillWithId = z.infer<typeof SkillWithIdSchema>;
 //
+export const SkillsWithActiveSkillSessionsSchema = SkillWithIdSchema.extend({
+    isActive: z.boolean(),
+    activeId: z.string(),
+});
+export type SkillsWithActiveSkillSessions = z.infer<
+    typeof SkillsWithActiveSkillSessionsSchema
+>;
+//
 export const SkillEditSchema = z.object({
     name: z.string(),
     icon: z.string(),

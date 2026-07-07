@@ -11,6 +11,7 @@ import {
     type SkillSessionsPageData,
     type SkillSession,
 } from '$lib/schemas/skillSessionSchema.js';
+import { withId } from '$lib/schemas/_shared.js';
 
 //
 // export const actions = {

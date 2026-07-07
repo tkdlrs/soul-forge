@@ -10,7 +10,6 @@
         type SkillSession,
         SkillSessionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
-    import { toDateTimeLocal } from '$lib/helpers/formatters';
 
     // Implementation
     let errorsObj = $state<SkillSessionErrors>(null);
@@ -20,7 +19,7 @@
     // Form config
     const trainingSessionConfig = {
         //
-        slug: `/skills/${data.skillName.toLowerCase().replace(' ', '-')}/train/${data.skillId}`,
+        slug: `/skills/${data.skillName.toLowerCase().replace(' ', '-')}/train/${data.currentSessionId}`,
         schema: SkillSessionCreateSchema,
 
         initial: {

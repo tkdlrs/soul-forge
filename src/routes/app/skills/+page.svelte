@@ -4,13 +4,16 @@
      **/
     import { resolve } from '$app/paths';
     //
-    import { type SkillWithId } from '$lib/schemas/skillSchema';
+    import {
+        type SkillsWithActiveSkillSessions,
+        type SkillWithId,
+    } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
     //
     // let { data }: { data: SkillPageData } = $props();
     let { data } = $props();
     //
-    let skills = $state<Array<SkillWithId>>(data.skills);
+    let skills = $state<Array<SkillsWithActiveSkillSessions>>(data.skills);
     //
     async function deleteSkill(id: string) {
         try {
@@ -95,8 +98,8 @@
                                             <td> {@html skill.icon} </td>
                                             <td> {skill.name} </td>
                                             <td>
-                                                <!-- ToDo:// finish this  skill.isActive -->
-                                                {#if true}
+                                                <!--    -->
+                                                {#if skill.isActive}
                                                     <div
                                                         class="text-danger d-flex justify-content-center"
                                                     >
@@ -116,8 +119,8 @@
                                                             />
                                                         </svg>
                                                     </div>
-                                                {/if}</td
-                                            >
+                                                {/if}
+                                            </td>
                                             <td>
                                                 do math to figure out hours and
                                                 minutes
@@ -130,7 +133,7 @@
                                                         data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-success"
                                                         href={resolve(
-                                                            `/app/skills/${skill.name.toLowerCase()}/train/${crypto.randomUUID()}`,
+                                                            `/app/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
                                                         )}
                                                     >
                                                         Train
