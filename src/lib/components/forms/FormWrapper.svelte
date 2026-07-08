@@ -38,15 +38,19 @@
         }
         //
         try {
+            // Check for any callbacks that help with determining formData
+            console.log(`config extra function call`);
+            if (config.hasOwnProperty('callback')) {
+                config.callback();
+            }
+
             // Generate form submission object
             const payload = formData;
             const result = config.schema.parse(payload);
-            // ToDo:// run an action here...
-            console.log(
-                'here you would ran an action to POST or PUT a thing in the database',
-            );
+            //
             console.log(`config.action: ${config.action}`);
             console.log('Result is', result);
+            // run an action here...
             await fetch(config.action, {
                 method: config.method,
                 headers: {
@@ -137,6 +141,7 @@
                                             type="button"
                                             class="btn btn-danger"
                                             onclick={(e) =>
+                                                // ToDo://
                                                 // handleDelete(e, config.docId)
                                                 console.log(
                                                     'this shoulda delete something. One day...',

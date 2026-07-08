@@ -35,6 +35,19 @@
         action,
         method,
         //
+        callback: () => {
+            const now = new Date();
+            // Set startDateTime
+            if (formData.startDateTime === null) {
+                formData.startDateTime = now;
+                return;
+            }
+            // set endDateTime
+            if (formData.endDateTime === null) {
+                formData.endDateTime = now;
+                return;
+            }
+        },
     };
     //
     let formData = $state<SkillSession>(trainingSessionConfig.initial);
@@ -65,6 +78,7 @@
                 id="start-date-time"
                 bind:defaultValue={formData.startDateTime}
                 errorText={errorsObj?.startDateTime}
+                required={false}
                 type="datetime-local"
             />
             <Input

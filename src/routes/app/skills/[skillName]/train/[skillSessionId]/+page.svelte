@@ -12,6 +12,7 @@
         SkillSessionsPageData,
         SkillSession,
     } from '$lib/schemas/skillSessionSchema';
+    import { onMount } from 'svelte';
     //
     let { data }: { data: SkillSessionsPageData } = $props();
     // $inspect(data);
@@ -48,9 +49,32 @@
             data.skillSessions[currentSkillSession].endDateTime,
         );
     }
-
+    //
+    function calculateSessionDuration(
+        startDateTime: Date,
+        endDateTime: Date | null,
+    ): string {
+        if (endDateTime === null) {
+            return `no endDateTime found`;
+        }
+        const start = startDateTime.getTime();
+        const end = endDateTime.getTime();
+        // milliseconds
+        const durationMilliseconds = end - start;
+        const durationMinutes = durationMilliseconds / 60000;
+        //
+        return `${Math.floor(durationMinutes)} minutes`;
+    }
     //
     let action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
+    //
+    onMount(() => {
+        if (endDateTime != null) {
+            window.location.assign(
+                `/app/skills/${data.skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
+            );
+        }
+    });
 </script>
 
 <section class="p-5">
@@ -85,66 +109,6 @@
                 </div>
 
                 <!--  -->
-                <!--
-                {#if currentSessionId}
-                    <form
-                        method="POST"
-                        action="?/stopSession"
-                        use:enhance={() => {
-                            return async ({ result }) => {
-                                if (result.type === 'success') {
-                                    // filter out the one with the same current session id
-                                    skillSessions = skillSessions.filter(
-                                        (item) => item.id != currentSessionId,
-                                    );
-                                    // clear out current session id
-                                    currentSessionId = '';
-                                    // readd the resulting data
-                                    skillSessions.push(
-                                        result?.data
-                                            ?.session as SkillSession,
-                                    );
-                                }
-                            };
-                        }}
-                    >
-                        <input
-                            type=""
-                            name="sessionId"
-                            value={currentSessionId}
-                        />
-                        <button> Stop </button>
-                    </form>
-                {:else}
-                    <form
-                        method="POST"
-                        action="?/startSession"
-                        use:enhance={() => {
-                            return async ({ result }) => {
-                                console.log(
-                                    'client side in form knows result to be:',
-                                    result,
-                                );
-                                if (
-                                    result.type === 'success'
-                                    // && result?.data?.skillSessionId
-                                ) {
-                                    currentSessionId =
-                                        String(result?.data?.skillSessionId) ||
-                                        '';
-                                    skillSessions.push(
-                                        result?.data
-                                            ?.session as SkillSession,
-                                    );
-                                }
-                                //
-                                return;
-                            };
-                        }}
-                    >
-                        <button> Start </button>
-                    </form>
-                {/if} -->
                 <!--  -->
             </div>
         </div>
@@ -159,7 +123,8 @@
                         >
                             <thead class="table-dark text-white bg-primary">
                                 <tr>
-                                    <!-- <th scope="col"> # </th> -->
+                                    <th scope="col"> # </th>
+                                    <!--  -->
                                     <th scope="col"> Start </th>
                                     <th scope="col"> End </th>
                                     <th scope="col"> Time </th>
@@ -172,9 +137,16 @@
                             <tbody>
                                 {#each skillSessions as session}
                                     <tr>
+                                        <td> {session.id} </td>
+                                        <!--  -->
                                         <td> {session.startDateTime} </td>
                                         <td> {session.endDateTime} </td>
-                                        <td> calc time </td>
+                                        <td>
+                                            {calculateSessionDuration(
+                                                session.startDateTime,
+                                                session.endDateTime,
+                                            )}
+                                        </td>
                                         <td> exp </td>
                                         <td> $- $ </td>
                                         <td>
