@@ -44,3 +44,26 @@ export function toDateTimeLocal(date: Date) {
     const local = new Date(date.getTime() - offset * 60000);
     return local.toISOString().slice(0, 16);
 }
+//
+export function calculateSessionDuration(
+    startDateTime: Date,
+    endDateTime: Date | null,
+): number {
+    if (endDateTime === null) {
+        return 0;
+    }
+    //
+    if (endDateTime.getTime() < startDateTime.getTime()) {
+        console.error('End before start');
+        throw new Error('End before start');
+    }
+    //
+    const start = startDateTime.getTime();
+    const end = endDateTime.getTime();
+    // milliseconds
+    const durationMilliseconds = end - start;
+    const durationMinutes = durationMilliseconds / 60000;
+    //
+    return durationMinutes;
+}
+//

@@ -14,6 +14,9 @@ export const actions = {
 //
 export async function load({ fetch, params }): Promise<SkillSessionPageData> {
     try {
+        // USER ID ToDo:// -somehow we must know this. For real. Not just a hard-coded number 1
+        const userId = 1;
+        //
         const { skillSessionId } = z
             .object({ skillSessionId: z.uuid() })
             .parse(params);
@@ -29,6 +32,8 @@ export async function load({ fetch, params }): Promise<SkillSessionPageData> {
         //
         return {
             skillSession: skillSessionData,
+            currentSessionId: skillSessionId,
+            //
             isLoading: false,
         };
     } catch (err) {

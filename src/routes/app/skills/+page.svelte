@@ -9,6 +9,8 @@
         type SkillWithId,
     } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
+    import { calculateSessionDuration } from '$lib/helpers/formatters.js';
+    import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
     //
     // let { data }: { data: SkillPageData } = $props();
     let { data } = $props();
@@ -29,25 +31,25 @@
 
         //
     }
+    const rawDataSkillSessions = data.skillSessions;
+    const skillIdToSkillSessionsMap: Record<string, SkillSession[]> = {};
     //
-    function calculateSessionMinutes(start: Date, end: Date): number {
-        if (end.getTime() < start.getTime())
-            throw new Error('End before start');
-        const milliseconds = end.getTime() - start.getTime();
-
-        return milliseconds / 60000;
+    for (const skillSessionData of rawDataSkillSessions) {
+        if (!skillIdToSkillSessionsMap[skillSessionData.skillId]) {
+            skillIdToSkillSessionsMap[skillSessionData.skillId] = [];
+        }
+        //
+        skillIdToSkillSessionsMap[skillSessionData.skillId].push(
+            skillSessionData,
+        );
+        //
     }
-    type SkillSessions = {
-        startDateTime: Date;
-        endDateTime: Date;
-    };
-    function getSkillsTotalMinutes(ranges: SkillSessions[]): number {
+    //
+    function getSkillsTotalMinutes(ranges: SkillSession[]): number {
         return ranges.reduce((total, { startDateTime, endDateTime }) => {
-            return total + calculateSessionMinutes(startDateTime, endDateTime);
+            return total + calculateSessionDuration(startDateTime, endDateTime);
         }, 0);
     }
-    //
-    let sessionMinutes = $derived<number>(0);
     //
 </script>
 
@@ -83,7 +85,7 @@
                                         <th scope="col"> Icon </th>
                                         <th scope="col"> Name </th>
                                         <th scope="col"> Active Session? </th>
-                                        <th scope="col"> Hours </th>
+                                        <th scope="col"> Time </th>
                                         <th scope="col">
                                             Currency Conversion
                                         </th>
@@ -93,6 +95,14 @@
                                 </thead>
                                 <tbody>
                                     {#each skills as skill}
+                                        {@const timeSpentOnSkill =
+                                            getSkillsTotalMinutes(
+                                                skillIdToSkillSessionsMap[
+                                                    skill.id
+                                                ],
+                                            )}
+                                        <!-- ToDo:// make this display hours, minutes and seconds. Not just minutes. -->
+                                        {@const formattedTimeSpentOnSkill = `${timeSpentOnSkill.toFixed(2)} minutes`}
                                         <tr>
                                             <!-- <th scope="row"> {skill.id} </th> -->
                                             <td> {@html skill.icon} </td>
@@ -122,8 +132,7 @@
                                                 {/if}
                                             </td>
                                             <td>
-                                                do math to figure out hours and
-                                                minutes
+                                                {formattedTimeSpentOnSkill}
                                             </td>
                                             <td> </td>
                                             <td> </td>

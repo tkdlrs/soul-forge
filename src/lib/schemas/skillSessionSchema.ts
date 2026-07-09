@@ -18,20 +18,27 @@ export const SkillSessionCreateSchema = z.preprocess(
     SkillSessionSchema,
 );
 export type SkillSession = z.infer<typeof SkillSessionCreateSchema>;
-
 //
-export const SkillSessionsPageDataSchema = z.object({
+// export const SkillSessionsPageDataSchema = z.object({
+
+// });
+// export type SkillSessionsPageData = z.infer<typeof SkillSessionsPageDataSchema>;
+//
+export const TrainSkillPageDataSchema = z.object({
     skillSessions: z.array(SkillSessionSchema),
     skillId: z.string(),
     skillName: z.string(),
-    isLoading: z.boolean(),
     userId: z.number(),
     currentSessionId: z.string(),
+    //
+    isLoading: z.boolean(),
 });
-export type SkillSessionsPageData = z.infer<typeof SkillSessionsPageDataSchema>;
+export type TrainSkillPageData = z.infer<typeof TrainSkillPageDataSchema>;
 //
 export const SkillSessionPageDataSchema = z.object({
     skillSession: SkillSessionSchema,
+    currentSessionId: z.string(),
+    //
     isLoading: z.boolean(),
 });
 export type SkillSessionPageData = z.infer<typeof SkillSessionPageDataSchema>;

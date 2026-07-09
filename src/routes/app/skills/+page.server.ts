@@ -16,11 +16,10 @@ import {
 export async function load({ fetch, params }) {
     //
     try {
+        //
         const response = await fetch('/api/skills');
         const result = await response.json();
         const skills = z.array(SkillWithIdSchema).parse(result);
-        // ToDo:// Determine if each skill is/has 'isActive' boolean and add that to the data.
-
         //
         const skillSessionResponse = await fetch(`/api/skill-sessions`);
         const skillSessionsResult = await skillSessionResponse.json();
@@ -34,7 +33,7 @@ export async function load({ fetch, params }) {
                 .parse(skillSessionsResult);
         }
         //
-        console.log('skillSessions', skillSessions);
+        // console.log('skillSessions', skillSessions);
         for (let sSession of skillSessions) {
             if (
                 sSession.endDateTime === null &&
@@ -47,7 +46,7 @@ export async function load({ fetch, params }) {
             }
         }
         //
-        console.log('skillsWithActiveSessions', skillsWithActiveSessions);
+        // console.log('skillsWithActiveSessions', skillsWithActiveSessions);
         const skillsWithActive: SkillsWithActiveSkillSessions[] = [];
         for (let i = 0; i < skills.length; i++) {
             if (skillsWithActiveSessions.includes(skills[i].id)) {
@@ -69,6 +68,8 @@ export async function load({ fetch, params }) {
         //
         return {
             skills: skillsWithActive,
+            skillSessions,
+            //
             isLoading: false,
         };
     } catch (err) {

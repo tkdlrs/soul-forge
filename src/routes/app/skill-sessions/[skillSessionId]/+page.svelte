@@ -2,16 +2,29 @@
     /**
      * App Frontend for Skill Sessions [ ID ] Edit
      **/
-    import { enhance } from '$app/forms';
+    import SkillSessionForm from '$lib/components/forms/resources/SkillSessionForm.svelte';
+    import { toDateTimeLocal } from '$lib/helpers/formatters';
     import type { SkillSessionPageData } from '$lib/schemas/skillSessionSchema';
     //
     let { data }: { data: SkillSessionPageData } = $props();
     //
+    let currentSessionId = data?.currentSessionId;
+    //
     const userId = $state<number>(data.skillSession.userId);
     let skillId = $state<string>(data.skillSession.skillId);
-    let startDateTime = $state<Date>(new Date(data.skillSession.startDateTime));
-    let endDateTime = $state<Date | null>(data.skillSession.endDateTime);
     //
+    let startDateTime = $state<Date | string | null>(null);
+    startDateTime = toDateTimeLocal(new Date(data.skillSession.startDateTime));
+    //
+    let endDateTime = $state<Date | string | null>(null);
+    const rawDataEndDateTime = data.skillSession.endDateTime
+        ? new Date(data.skillSession.endDateTime)
+        : null;
+    if (rawDataEndDateTime) {
+        endDateTime = toDateTimeLocal(rawDataEndDateTime);
+    }
+    //
+    const action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
 </script>
 
 <section class="p-5">
@@ -20,31 +33,18 @@
             <h1>Edit Skill Session</h1>
         </div>
         <div class="col-12">
-            <form
-                method="POST"
-                action="?/editSession"
-                use:enhance={() => {
-                    //
-                    return async ({ result }) => {
-                        console.log('result is:', result);
-                    };
+            <SkillSessionForm
+                {action}
+                method="PUT"
+                data={{
+                    skillId,
+                    userId,
+                    startDateTime,
+                    endDateTime,
+                    currentSessionId,
                 }}
-            >
-                <input bind:value={skillId} placeholder="skill Id" />
-                <input
-                    bind:value={startDateTime}
-                    placeholder="Start date time"
-                    type="datetime"
-                />
-                <input
-                    bind:value={endDateTime}
-                    placeholder="End date time"
-                    type="datetime"
-                />
-                <button class="btn btn-primary btn-sm" type="submit">
-                    Save
-                </button>
-            </form>
+                isLoading={data.isLoading}
+            />
         </div>
     </div>
 </section>

@@ -8,7 +8,7 @@ import z from 'zod/v4';
 import { SkillWithIdSchema } from '$lib/schemas/skillSchema.js';
 import {
     SkillSessionSchema,
-    type SkillSessionsPageData,
+    type TrainSkillPageData,
     type SkillSession,
 } from '$lib/schemas/skillSessionSchema.js';
 import { withId } from '$lib/schemas/_shared.js';
@@ -57,7 +57,7 @@ import { withId } from '$lib/schemas/_shared.js';
 //     },
 // };
 //
-export async function load({ fetch, params }): Promise<SkillSessionsPageData> {
+export async function load({ fetch, params }): Promise<TrainSkillPageData> {
     try {
         // USER ID ToDo:// -somehow we must know this. For real. Not just a hard-coded number 1.
         const userId = 1;

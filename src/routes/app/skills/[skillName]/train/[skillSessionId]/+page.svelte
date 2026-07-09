@@ -3,18 +3,20 @@
      * Frontend 'Skill' page SHOW
      * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
      **/
-    import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
-    import { toDateTimeLocal } from '$lib/helpers/formatters';
+    import {
+        calculateSessionDuration,
+        toDateTimeLocal,
+    } from '$lib/helpers/formatters';
     //
     import type {
-        SkillSessionsPageData,
+        TrainSkillPageData,
         SkillSession,
     } from '$lib/schemas/skillSessionSchema';
     import { onMount } from 'svelte';
     //
-    let { data }: { data: SkillSessionsPageData } = $props();
+    let { data }: { data: TrainSkillPageData } = $props();
     // $inspect(data);
     //
     let skillSessions = $state<SkillSession[]>(data.skillSessions);
@@ -50,23 +52,9 @@
         );
     }
     //
-    function calculateSessionDuration(
-        startDateTime: Date,
-        endDateTime: Date | null,
-    ): string {
-        if (endDateTime === null) {
-            return `no endDateTime found`;
-        }
-        const start = startDateTime.getTime();
-        const end = endDateTime.getTime();
-        // milliseconds
-        const durationMilliseconds = end - start;
-        const durationMinutes = durationMilliseconds / 60000;
-        //
-        return `${Math.floor(durationMinutes)} minutes`;
-    }
+
     //
-    let action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
+    const action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
     //
     onMount(() => {
         if (endDateTime != null) {
@@ -136,16 +124,20 @@
                             </thead>
                             <tbody>
                                 {#each skillSessions as session}
+                                    {@const durationInMinutes =
+                                        calculateSessionDuration(
+                                            session.startDateTime,
+                                            session.endDateTime,
+                                        )}
                                     <tr>
                                         <td> {session.id} </td>
                                         <!--  -->
                                         <td> {session.startDateTime} </td>
                                         <td> {session.endDateTime} </td>
                                         <td>
-                                            {calculateSessionDuration(
-                                                session.startDateTime,
-                                                session.endDateTime,
-                                            )}
+                                            {@html durationInMinutes > 0
+                                                ? `${Math.floor(durationInMinutes)}&nbsp;minutes`
+                                                : `no end found`}
                                         </td>
                                         <td> exp </td>
                                         <td> $- $ </td>
