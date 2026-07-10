@@ -1,3 +1,5 @@
+import type { SkillSession } from '$lib/schemas/skillSessionSchema';
+
 /**
  *
  **/
@@ -66,4 +68,48 @@ export function calculateSessionDuration(
     //
     return durationMinutes;
 }
+//
+export function formatTimeSpentOnSkill(totalMinutes: number): string {
+    // extract hours
+    const totalHours = Math.floor(totalMinutes / 60);
+    console.log('totalHours:', totalHours);
+    const remainingMinutes = Math.floor(totalMinutes - totalHours * 60);
+    console.log('remainingMinutes', remainingMinutes);
+    const remainingSecondsInMinutes =
+        totalMinutes - totalHours * 60 - remainingMinutes;
+    console.log('remainingSecondsInMinutes', remainingSecondsInMinutes);
+
+    //
+    const hoursTemplate =
+        Math.floor(totalHours) > 0 ? `${totalHours.toFixed(0)} hours` : '';
+    const minutesTemplate =
+        Math.floor(remainingMinutes) > 0
+            ? `${remainingMinutes.toFixed(0)} minutes`
+            : '';
+    //
+    return `${hoursTemplate} ${minutesTemplate}`;
+}
+//
+export function convertToCurrancyRange(totalMinutes: number): string {
+    const lowEndHourlyMinimumWageRate = 7.25; // 2026 Federal min and UT min
+    const highEndHourlyMinimumWageRate = 17.5; // 2026 Washington DC
+    //
+    const lowEndHourlyRateInPennies = lowEndHourlyMinimumWageRate * 100;
+    const highEndHourlyRateInPennies = highEndHourlyMinimumWageRate * 100;
+    //
+    const lowEndMinutesRateInPennies = lowEndHourlyRateInPennies / 60;
+    const highEndMinutesRateInPennies = highEndHourlyRateInPennies / 60;
+    //
+    const lowEnd = (lowEndMinutesRateInPennies * totalMinutes) / 100;
+    const highEnd = (highEndMinutesRateInPennies * totalMinutes) / 100;
+    //
+    return `$${lowEnd.toFixed(2)} &ndash; $${highEnd.toFixed(2)}`;
+}
+//
+export function getSkillsTotalMinutes(ranges: SkillSession[]): number {
+    return ranges.reduce((total, { startDateTime, endDateTime }) => {
+        return total + calculateSessionDuration(startDateTime, endDateTime);
+    }, 0);
+}
+//
 //

@@ -9,7 +9,12 @@
         type SkillWithId,
     } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
-    import { calculateSessionDuration } from '$lib/helpers/formatters.js';
+    import {
+        calculateSessionDuration,
+        convertToCurrancyRange,
+        formatTimeSpentOnSkill,
+        getSkillsTotalMinutes,
+    } from '$lib/helpers/formatters.js';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
     //
     // let { data }: { data: SkillPageData } = $props();
@@ -45,12 +50,6 @@
         //
     }
     //
-    function getSkillsTotalMinutes(ranges: SkillSession[]): number {
-        return ranges.reduce((total, { startDateTime, endDateTime }) => {
-            return total + calculateSessionDuration(startDateTime, endDateTime);
-        }, 0);
-    }
-    //
 </script>
 
 <section class="p-5">
@@ -84,10 +83,16 @@
                                         <!-- <th scope="col"> # </th> -->
                                         <th scope="col"> Icon </th>
                                         <th scope="col"> Name </th>
-                                        <th scope="col"> Active Session? </th>
+                                        <th scope="col"> Active Session </th>
                                         <th scope="col"> Time </th>
                                         <th scope="col">
-                                            Currency Conversion
+                                            Minimum Wage Conversion <br />
+                                            <small
+                                                class="text-small"
+                                                style="font-size: 0.66rem;"
+                                            >
+                                                (Range low to high)
+                                            </small>
                                         </th>
                                         <th scope="col"> Level </th>
                                         <th scope="col"> Options </th>
@@ -101,8 +106,15 @@
                                                     skill.id
                                                 ],
                                             )}
-                                        <!-- ToDo:// make this display hours, minutes and seconds. Not just minutes. -->
-                                        {@const formattedTimeSpentOnSkill = `${timeSpentOnSkill.toFixed(2)} minutes`}
+                                        {@const formattedTimeSpentOnSkill =
+                                            formatTimeSpentOnSkill(
+                                                timeSpentOnSkill,
+                                            )}
+                                        <!--  -->
+                                        {@const minimumWageRange =
+                                            convertToCurrancyRange(
+                                                timeSpentOnSkill,
+                                            )}
                                         <tr>
                                             <!-- <th scope="row"> {skill.id} </th> -->
                                             <td> {@html skill.icon} </td>
@@ -134,7 +146,9 @@
                                             <td>
                                                 {formattedTimeSpentOnSkill}
                                             </td>
-                                            <td> </td>
+                                            <td>
+                                                ~ {@html minimumWageRange}
+                                            </td>
                                             <td> </td>
                                             <td class="d-flex">
                                                 <div class="p-1">
