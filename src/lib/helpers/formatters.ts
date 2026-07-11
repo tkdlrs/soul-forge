@@ -72,12 +72,12 @@ export function calculateSessionDuration(
 export function formatTimeSpentOnSkill(totalMinutes: number): string {
     // extract hours
     const totalHours = Math.floor(totalMinutes / 60);
-    console.log('totalHours:', totalHours);
+    // console.log('totalHours:', totalHours);
     const remainingMinutes = Math.floor(totalMinutes - totalHours * 60);
-    console.log('remainingMinutes', remainingMinutes);
+    // console.log('remainingMinutes', remainingMinutes);
     const remainingSecondsInMinutes =
         totalMinutes - totalHours * 60 - remainingMinutes;
-    console.log('remainingSecondsInMinutes', remainingSecondsInMinutes);
+    // console.log('remainingSecondsInMinutes', remainingSecondsInMinutes);
 
     //
     const hoursTemplate =
@@ -111,5 +111,4 @@ export function getSkillsTotalMinutes(ranges: SkillSession[]): number {
         return total + calculateSessionDuration(startDateTime, endDateTime);
     }, 0);
 }
-//
 //

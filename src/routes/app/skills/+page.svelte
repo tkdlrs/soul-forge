@@ -16,6 +16,12 @@
         getSkillsTotalMinutes,
     } from '$lib/helpers/formatters.js';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
+    import {
+        levelProgress,
+        minutesToXP,
+        xpToLevel,
+        xpToNextLevel,
+    } from '$lib/helpers/rpgLeveling';
     //
     // let { data }: { data: SkillPageData } = $props();
     let { data } = $props();
@@ -37,7 +43,9 @@
         //
     }
     const rawDataSkillSessions = data.skillSessions;
-    const skillIdToSkillSessionsMap: Record<string, SkillSession[]> = {};
+    const skillIdToSkillSessionsMap = $state<Record<string, SkillSession[]>>(
+        {},
+    );
     //
     for (const skillSessionData of rawDataSkillSessions) {
         if (!skillIdToSkillSessionsMap[skillSessionData.skillId]) {
@@ -49,6 +57,21 @@
         );
         //
     }
+    //
+    console.log('skillIdToSkillSessionsMap', skillIdToSkillSessionsMap);
+    const totalTime = $derived.by(() => {
+        //
+        const skillMinutes: number[] = Object.keys(
+            skillIdToSkillSessionsMap,
+        ).map(
+            (
+                skill, //skillIdToSkillSessionsMap[skill],
+            ) => getSkillsTotalMinutes(skillIdToSkillSessionsMap[skill]),
+        );
+        console.log('skillMinutes', skillMinutes);
+        return skillMinutes.reduce((total, num) => total + num, 0);
+    });
+    $inspect(totalTime);
     //
 </script>
 
@@ -87,14 +110,19 @@
                                         <th scope="col"> Time </th>
                                         <th scope="col">
                                             Minimum Wage Conversion <br />
-                                            <small
-                                                class="text-small"
-                                                style="font-size: 0.66rem;"
-                                            >
+                                            <small style="font-size: 0.66rem;">
                                                 (Range low to high)
                                             </small>
                                         </th>
-                                        <th scope="col"> Level </th>
+                                        <th scope="col"> Current&nbsp;XP </th>
+                                        <th scope="col"> Current&nbsp;Lvl </th>
+                                        <th scope="col"> XP to Next Lvl </th>
+                                        <th scope="col">
+                                            Time to Next Lvl
+                                            <small style="font-size: 0.66rem;">
+                                                (hours)
+                                            </small>
+                                        </th>
                                         <th scope="col"> Options </th>
                                     </tr>
                                 </thead>
@@ -110,11 +138,18 @@
                                             formatTimeSpentOnSkill(
                                                 timeSpentOnSkill,
                                             )}
-                                        <!--  -->
+                                        <!-- Monies  -->
                                         {@const minimumWageRange =
                                             convertToCurrancyRange(
                                                 timeSpentOnSkill,
                                             )}
+                                        <!-- Experience points -->
+                                        {@const currentExp =
+                                            minutesToXP(timeSpentOnSkill)}
+                                        {@const currentLvl =
+                                            xpToLevel(currentExp).toFixed(0)}
+                                        {@const xpNextLvl =
+                                            xpToNextLevel(currentExp)}
                                         <tr>
                                             <!-- <th scope="row"> {skill.id} </th> -->
                                             <td> {@html skill.icon} </td>
@@ -147,9 +182,20 @@
                                                 {formattedTimeSpentOnSkill}
                                             </td>
                                             <td>
-                                                ~ {@html minimumWageRange}
+                                                {@html minimumWageRange}
                                             </td>
-                                            <td> </td>
+                                            <td>
+                                                {currentExp.toFixed(0)} <br />
+                                            </td>
+                                            <td>
+                                                {currentLvl} <br />
+                                            </td>
+                                            <td>
+                                                {xpNextLvl}
+                                            </td>
+                                            <td>
+                                                {(xpNextLvl / 60).toFixed(0)}
+                                            </td>
                                             <td class="d-flex">
                                                 <div class="p-1">
                                                     <a
@@ -189,6 +235,22 @@
                                         </tr>
                                     {/each}
                                 </tbody>
+                                <tfoot class="table-dark text-white">
+                                    <tr>
+                                        <td>Totals</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            {formatTimeSpentOnSkill(totalTime)}
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <!--  -->
