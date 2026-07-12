@@ -12,7 +12,7 @@ export function upperCaseFirstLetter(name: string) {
     return properName;
 }
 
-// // convert a string into slug/ kabob case
+// // convert a string into slug-kabob-spinal-case
 export function slugCase(name: string): string {
     if (!name) return '';
     const symbolsRegex = /[^a-z \-]/gi;
@@ -31,7 +31,7 @@ export function slugCase(name: string): string {
         return name.toString().toLowerCase().trim().replace(symbolsRegex, '');
     }
 }
-// convert a string to
+// convert a string to Pascal Case.
 export function pascalCase(strOfWords: string) {
     const slugify = slugCase(strOfWords);
     const arrWords = slugify.split('-');
@@ -46,8 +46,8 @@ export function toDateTimeLocal(date: Date) {
     const local = new Date(date.getTime() - offset * 60000);
     return local.toISOString().slice(0, 16);
 }
-//
-export function calculateSessionDuration(
+// Calculate the duration of a single 'skill session'
+function calculateSessionDuration(
     startDateTime: Date,
     endDateTime: Date | null,
 ): number {
@@ -64,35 +64,85 @@ export function calculateSessionDuration(
     const end = endDateTime.getTime();
     // milliseconds
     const durationMilliseconds = end - start;
-    const durationMinutes = durationMilliseconds / 60000;
+    // const durationMinutes = durationMilliseconds / 60000;
     //
-    return durationMinutes;
+    return durationMilliseconds;
 }
 //
-export function formatTimeSpentOnSkill(totalMinutes: number): string {
-    // extract hours
-    const totalHours = Math.floor(totalMinutes / 60);
-    // console.log('totalHours:', totalHours);
-    const remainingMinutes = Math.floor(totalMinutes - totalHours * 60);
-    // console.log('remainingMinutes', remainingMinutes);
-    const remainingSecondsInMinutes =
-        totalMinutes - totalHours * 60 - remainingMinutes;
-    // console.log('remainingSecondsInMinutes', remainingSecondsInMinutes);
-
+type DateDeltaParts = {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+};
+// export function getDateDeltaParts(a: Date, b: Date): DateDeltaParts {
+//     let remaining = Math.abs(b.getTime() - a.getTime());
+//     //
+//     const days = Math.floor(remaining / 86_400_00);
+//     remaining %= 86_400_00;
+//     //
+//     const hours = Math.floor(remaining / 3_600_000);
+//     remaining %= 3_600_000;
+//     //
+//     const minutes = Math.floor(remaining / 60_000);
+//     remaining %= 60_000;
+//     //
+//     const seconds = Math.floor(remaining / 1_000);
+//     remaining %= 1_000;
+//     //
+//     return {
+//         days,
+//         hours,
+//         minutes,
+//         seconds,
+//         milliseconds: remaining,
+//     };
+// }
+export function getDateDeltaParts(milliseconds: number): DateDeltaParts {
+    let remaining = milliseconds;
     //
-    const hoursTemplate =
-        Math.floor(totalHours) > 0 ? `${totalHours.toFixed(0)} hours` : '';
-    const minutesTemplate =
-        Math.floor(remainingMinutes) > 0
-            ? `${remainingMinutes.toFixed(0)} minutes`
-            : '';
+    const days = Math.floor(remaining / 86_400_00);
+    remaining %= 86_400_00;
     //
-    return `${hoursTemplate} ${minutesTemplate}`;
+    const hours = Math.floor(remaining / 3_600_000);
+    remaining %= 3_600_000;
+    //
+    const minutes = Math.floor(remaining / 60_000);
+    remaining %= 60_000;
+    //
+    const seconds = Math.floor(remaining / 1_000);
+    remaining %= 1_000;
+    //
+    return {
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds: remaining,
+    };
 }
-//
-export function convertToCurrancyRange(totalMinutes: number): string {
+/**
+ * Format a time provided in minutes to have the format:
+ *   `\d+ days \d+ hours \d+ minutes \d+ seconds`
+ **/
+export function formatTimeSpentOnSkill(milliseconds: number): string {
+    const { days, hours, minutes, seconds } = getDateDeltaParts(milliseconds);
+    //
+    const daysTemplate = days ? `${days}&nbsp;Days <br />` : '';
+    const hoursTemplate = hours ? `${hours}&nbsp;Hrs <br />` : '';
+    const minutesTemplate = minutes ? `${minutes}&nbsp;Mins <br />` : '';
+    const secondsTemplate = seconds ? `${seconds}&nbsp;Secs <br />` : '';
+    //
+    return `${daysTemplate} ${hoursTemplate} ${minutesTemplate} ${secondsTemplate}`;
+}
+// Get a currancy range for the minimum wage in the USA
+export function convertToCurrancyRange(milliseconds: number): string {
+    //
+    const totalMinutes = milliseconds / 60000;
+    //
     const lowEndHourlyMinimumWageRate = 7.25; // 2026 Federal min and UT min
-    const highEndHourlyMinimumWageRate = 17.5; // 2026 Washington DC
+    const highEndHourlyMinimumWageRate = 17.5; // 2026 Washington DC min
     //
     const lowEndHourlyRateInPennies = lowEndHourlyMinimumWageRate * 100;
     const highEndHourlyRateInPennies = highEndHourlyMinimumWageRate * 100;
@@ -103,10 +153,19 @@ export function convertToCurrancyRange(totalMinutes: number): string {
     const lowEnd = (lowEndMinutesRateInPennies * totalMinutes) / 100;
     const highEnd = (highEndMinutesRateInPennies * totalMinutes) / 100;
     //
-    return `$${lowEnd.toFixed(2)} &ndash; $${highEnd.toFixed(2)}`;
+    const lowEndIntlFormat = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    }).format(lowEnd);
+    const highEndIntlFormat = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    }).format(highEnd);
+    //
+    return `<div class="text-center">${lowEndIntlFormat}<br />&ndash;<br />${highEndIntlFormat}</div>`;
 }
 //
-export function getSkillsTotalMinutes(ranges: SkillSession[]): number {
+export function getSkillsTotalMilliseconds(ranges: SkillSession[]): number {
     return ranges.reduce((total, { startDateTime, endDateTime }) => {
         return total + calculateSessionDuration(startDateTime, endDateTime);
     }, 0);

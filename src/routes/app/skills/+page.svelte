@@ -10,10 +10,10 @@
     } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
     import {
-        calculateSessionDuration,
+        getDateDeltaParts,
         convertToCurrancyRange,
         formatTimeSpentOnSkill,
-        getSkillsTotalMinutes,
+        getSkillsTotalMilliseconds,
     } from '$lib/helpers/formatters.js';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
     import {
@@ -43,10 +43,10 @@
         //
     }
     const rawDataSkillSessions = data.skillSessions;
+    //
     const skillIdToSkillSessionsMap = $state<Record<string, SkillSession[]>>(
         {},
     );
-    //
     for (const skillSessionData of rawDataSkillSessions) {
         if (!skillIdToSkillSessionsMap[skillSessionData.skillId]) {
             skillIdToSkillSessionsMap[skillSessionData.skillId] = [];
@@ -58,20 +58,21 @@
         //
     }
     //
-    console.log('skillIdToSkillSessionsMap', skillIdToSkillSessionsMap);
-    const totalTime = $derived.by(() => {
-        //
-        const skillMinutes: number[] = Object.keys(
-            skillIdToSkillSessionsMap,
-        ).map(
+    const skillMinutes = $derived.by<number[]>(() =>
+        Object.keys(skillIdToSkillSessionsMap).map(
             (
                 skill, //skillIdToSkillSessionsMap[skill],
-            ) => getSkillsTotalMinutes(skillIdToSkillSessionsMap[skill]),
-        );
-        console.log('skillMinutes', skillMinutes);
-        return skillMinutes.reduce((total, num) => total + num, 0);
-    });
+            ) => getSkillsTotalMilliseconds(skillIdToSkillSessionsMap[skill]),
+        ),
+    );
+    //
+    console.log('skillIdToSkillSessionsMap', skillIdToSkillSessionsMap);
+    const totalTime = $derived.by(() =>
+        skillMinutes.reduce((total, num) => total + num, 0),
+    );
     $inspect(totalTime);
+    //
+    const totalWage = $derived.by(() => convertToCurrancyRange(totalTime));
     //
 </script>
 
@@ -129,7 +130,7 @@
                                 <tbody>
                                     {#each skills as skill}
                                         {@const timeSpentOnSkill =
-                                            getSkillsTotalMinutes(
+                                            getSkillsTotalMilliseconds(
                                                 skillIdToSkillSessionsMap[
                                                     skill.id
                                                 ],
@@ -179,9 +180,9 @@
                                                 {/if}
                                             </td>
                                             <td>
-                                                {formattedTimeSpentOnSkill}
+                                                {@html formattedTimeSpentOnSkill}
                                             </td>
-                                            <td>
+                                            <td class="text-nowrap">
                                                 {@html minimumWageRange}
                                             </td>
                                             <td>
@@ -241,9 +242,13 @@
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>
-                                            {formatTimeSpentOnSkill(totalTime)}
+                                            {@html formatTimeSpentOnSkill(
+                                                totalTime,
+                                            )}
                                         </td>
-                                        <td></td>
+                                        <td class="text-nowrap">
+                                            {@html totalWage}
+                                        </td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
