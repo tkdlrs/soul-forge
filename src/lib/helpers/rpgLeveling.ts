@@ -1,7 +1,11 @@
-// 10,000 hours = 600,000 minutes = 600,000 XP
+// 10,000 hours = 600,000 minutes = 600,000 XP ~means SCALE would need to be 600
+// if wanted level 100 to mean you did at least an hour a day for 90% of the year
+// 328.5 is 90% of 365.
+// 328.5 * 60 = 19_710.
+// scale becomes 19.71
 // Tuning
 const XP_PER_MINUTE = 1;
-const SCALE = 600;
+const SCALE = 19.71;
 const EXPONENT = 1.5;
 
 // Total XP earned from training time

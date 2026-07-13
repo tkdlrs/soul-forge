@@ -6,9 +6,14 @@
     import { resolve } from '$app/paths';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
     import {
-        calculateSessionDuration,
+        calculateSessionDurationInMilliseconds,
+        convertMillisecondsToMinutes,
+        convertToCurrancyRange,
+        formatDateTimeToLocale,
+        formatTimeSpentOnSkill,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
+    import { minutesToXP } from '$lib/helpers/rpgLeveling';
     //
     import type {
         TrainSkillPageData,
@@ -124,23 +129,48 @@
                             </thead>
                             <tbody>
                                 {#each skillSessions as session}
-                                    {@const durationInMinutes =
-                                        calculateSessionDuration(
+                                    {@const sessionDurationMilliseconds =
+                                        calculateSessionDurationInMilliseconds(
                                             session.startDateTime,
                                             session.endDateTime,
                                         )}
+                                    {@const sessionDurationMinutes =
+                                        convertMillisecondsToMinutes(
+                                            sessionDurationMilliseconds,
+                                        )}
+
+                                    <!-- Monies  -->
+                                    {@const minimumWageRange =
+                                        convertToCurrancyRange(
+                                            sessionDurationMilliseconds,
+                                        )}
+                                    <!-- Experience points -->
+                                    {@const currentExp = minutesToXP(
+                                        sessionDurationMinutes,
+                                    )}
                                     <tr>
                                         <td> {session.id} </td>
                                         <!--  -->
-                                        <td> {session.startDateTime} </td>
-                                        <td> {session.endDateTime} </td>
                                         <td>
-                                            {@html durationInMinutes > 0
-                                                ? `${Math.floor(durationInMinutes)}&nbsp;minutes`
+                                            {@html formatDateTimeToLocale(
+                                                session.startDateTime,
+                                            )}
+                                        </td>
+                                        <td>
+                                            {@html session.endDateTime
+                                                ? formatDateTimeToLocale(
+                                                      session.endDateTime,
+                                                  )
+                                                : ''}
+                                        </td>
+                                        <td>
+                                            {@html sessionDurationMilliseconds >
+                                            0
+                                                ? `${formatTimeSpentOnSkill(sessionDurationMilliseconds)}`
                                                 : `no end found`}
                                         </td>
-                                        <td> exp </td>
-                                        <td> $- $ </td>
+                                        <td> {currentExp.toFixed(0)} </td>
+                                        <td> {@html minimumWageRange} </td>
                                         <td>
                                             <a
                                                 class="btn btn-sm btn-warning"

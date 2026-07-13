@@ -47,7 +47,7 @@ export function toDateTimeLocal(date: Date) {
     return local.toISOString().slice(0, 16);
 }
 // Calculate the duration of a single 'skill session'
-function calculateSessionDuration(
+export function calculateSessionDurationInMilliseconds(
     startDateTime: Date,
     endDateTime: Date | null,
 ): number {
@@ -63,10 +63,14 @@ function calculateSessionDuration(
     const start = startDateTime.getTime();
     const end = endDateTime.getTime();
     // milliseconds
-    const durationMilliseconds = end - start;
-    // const durationMinutes = durationMilliseconds / 60000;
+    const durationMilliseconds = Math.abs(end - start);
     //
+    console.log('durationMilliseconds', durationMilliseconds);
     return durationMilliseconds;
+}
+//
+export function convertMillisecondsToMinutes(milliseconds: number): number {
+    return milliseconds / 60_000;
 }
 //
 type DateDeltaParts = {
@@ -102,17 +106,24 @@ type DateDeltaParts = {
 export function getDateDeltaParts(milliseconds: number): DateDeltaParts {
     let remaining = milliseconds;
     //
-    const days = Math.floor(remaining / 86_400_00);
-    remaining %= 86_400_00;
+    const conversionRates = {
+        days: 1000 * 60 * 60 * 24,
+        hours: 1000 * 60 * 60,
+        minutes: 1000 * 60,
+        seconds: 1000,
+    };
     //
-    const hours = Math.floor(remaining / 3_600_000);
-    remaining %= 3_600_000;
+    const days = Math.floor(remaining / conversionRates['days']);
+    remaining %= conversionRates['days'];
     //
-    const minutes = Math.floor(remaining / 60_000);
-    remaining %= 60_000;
+    const hours = Math.floor(remaining / conversionRates['hours']);
+    remaining %= conversionRates['hours'];
     //
-    const seconds = Math.floor(remaining / 1_000);
-    remaining %= 1_000;
+    const minutes = Math.floor(remaining / conversionRates['minutes']);
+    remaining %= conversionRates['minutes'];
+    //
+    const seconds = Math.floor(remaining / conversionRates['seconds']);
+    remaining %= conversionRates['seconds'];
     //
     return {
         days,
@@ -139,7 +150,8 @@ export function formatTimeSpentOnSkill(milliseconds: number): string {
 // Get a currancy range for the minimum wage in the USA
 export function convertToCurrancyRange(milliseconds: number): string {
     //
-    const totalMinutes = milliseconds / 60000;
+    const totalMinutes = milliseconds / 60_000;
+
     //
     const lowEndHourlyMinimumWageRate = 7.25; // 2026 Federal min and UT min
     const highEndHourlyMinimumWageRate = 17.5; // 2026 Washington DC min
@@ -167,7 +179,28 @@ export function convertToCurrancyRange(milliseconds: number): string {
 //
 export function getSkillsTotalMilliseconds(ranges: SkillSession[]): number {
     return ranges.reduce((total, { startDateTime, endDateTime }) => {
-        return total + calculateSessionDuration(startDateTime, endDateTime);
+        return (
+            total +
+            calculateSessionDurationInMilliseconds(startDateTime, endDateTime)
+        );
     }, 0);
 }
 //
+export function formatDateTimeToLocale(date: Date): string {
+    const formattedParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Denver',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        //
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short',
+    }).formatToParts(date);
+    //
+    const get = (type: string) =>
+        formattedParts.find((p) => p.type === type)?.value;
+    //
+    return `${get('year')}-${get('month')}-${get('day')} <br /> ${get('hour')}:${get('minute')}:${get('second')} ${get('timeZoneName')}`;
+}

@@ -14,6 +14,7 @@
         convertToCurrancyRange,
         formatTimeSpentOnSkill,
         getSkillsTotalMilliseconds,
+        convertMillisecondsToMinutes,
     } from '$lib/helpers/formatters.js';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
     import {
@@ -145,8 +146,11 @@
                                                 timeSpentOnSkill,
                                             )}
                                         <!-- Experience points -->
-                                        {@const currentExp =
-                                            minutesToXP(timeSpentOnSkill)}
+                                        {@const currentExp = minutesToXP(
+                                            convertMillisecondsToMinutes(
+                                                timeSpentOnSkill,
+                                            ),
+                                        )}
                                         {@const currentLvl =
                                             xpToLevel(currentExp).toFixed(0)}
                                         {@const xpNextLvl =
