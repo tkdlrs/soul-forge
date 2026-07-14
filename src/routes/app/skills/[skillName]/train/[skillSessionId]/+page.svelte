@@ -11,9 +11,16 @@
         convertToCurrancyRange,
         formatDateTimeToLocale,
         formatTimeSpentOnSkill,
+        getSkillsTotalMilliseconds,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
-    import { minutesToXP } from '$lib/helpers/rpgLeveling';
+    import {
+        levelProgress,
+        levelToXP,
+        minutesToXP,
+        xpToLevel,
+        xpToNextLevel,
+    } from '$lib/helpers/rpgLeveling';
     //
     import type {
         TrainSkillPageData,
@@ -26,6 +33,31 @@
     //
     let skillSessions = $state<SkillSession[]>(data.skillSessions);
     //
+    let arrayEachSkillSessionDurationInMilliseconds = $derived.by<number[]>(
+        () => {
+            return skillSessions.map((session) =>
+                calculateSessionDurationInMilliseconds(
+                    session.startDateTime,
+                    session.endDateTime,
+                ),
+            );
+        },
+    );
+    let currentMillisecondsOnSkill = $derived.by<number>(() =>
+        arrayEachSkillSessionDurationInMilliseconds.reduce(
+            (total, num) => total + num,
+            0,
+        ),
+    );
+    let currentMinutesOnSkill = $derived.by<number>(() =>
+        convertMillisecondsToMinutes(currentMillisecondsOnSkill),
+    );
+    let currentTotalXp = $derived.by<number>(() =>
+        minutesToXP(currentMinutesOnSkill),
+    );
+    //
+    let currentLevel = $derived.by<number>(() => xpToLevel(currentTotalXp));
+    //
     const skillName = data.skillName;
     //
     let userId = data.userId;
@@ -36,7 +68,11 @@
     const currentSkillSession = data?.skillSessions.findIndex(
         (item) => item.id === currentSessionId,
     );
-    //
+    /**
+     *
+     * FORM Stuff
+     *
+     **/
     let startDateTime = $state<Date | string | null>(null);
     if (currentSkillSession != -1) {
         console.log('heello');
@@ -73,122 +109,172 @@
 <section class="p-5">
     <div class="row">
         <div class="col-12">
-            <p>Skill Name</p>
-            <h1>
-                {data.skillName}
-            </h1>
-            <p>
-                This would be an index page for listing out all the skills
-                sessions
-            </p>
-        </div>
-        <div class="col-12">
-            <div class="my-5 row">
-                <div class="col-12 col-lg-4">
-                    <TrainASkillForm
-                        {action}
-                        method="PUT"
-                        data={{
-                            skillName,
-                            //
-                            skillId,
-                            userId,
-                            startDateTime,
-                            endDateTime,
-                            currentSessionId,
-                        }}
-                        isLoading={data.isLoading}
-                    />
-                </div>
-
-                <!--  -->
-                <!--  -->
-            </div>
-        </div>
-        <div class="col-12">
             <!--  -->
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-10">
-                    <!--  -->
-                    <div class="table-responsive">
-                        <table
-                            class="table table-bordered table-sm table-hover"
-                        >
-                            <thead class="table-dark text-white bg-primary">
-                                <tr>
-                                    <th scope="col"> # </th>
-                                    <!--  -->
-                                    <th scope="col"> Start </th>
-                                    <th scope="col"> End </th>
-                                    <th scope="col"> Time </th>
-                                    <th scope="col"> Experience Points </th>
-                                    <th scope="col"> Pay Equivant Range </th>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="card px-2 py-3">
+                        <div>
+                            <p>Skill Name</p>
+                            <h1>
+                                {data.skillName}
+                            </h1>
+                        </div>
+                        <div>
+                            <h2 class="">
+                                <span class="h5"> Current Level: </span>
+                                <span class="font-weight-bold">
+                                    {currentLevel}
+                                </span>
+                            </h2>
+                        </div>
 
-                                    <th scope="col"> Options </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each skillSessions as session}
-                                    {@const sessionDurationMilliseconds =
-                                        calculateSessionDurationInMilliseconds(
-                                            session.startDateTime,
-                                            session.endDateTime,
-                                        )}
-                                    {@const sessionDurationMinutes =
-                                        convertMillisecondsToMinutes(
-                                            sessionDurationMilliseconds,
-                                        )}
-
-                                    <!-- Monies  -->
-                                    {@const minimumWageRange =
-                                        convertToCurrancyRange(
-                                            sessionDurationMilliseconds,
-                                        )}
-                                    <!-- Experience points -->
-                                    {@const currentExp = minutesToXP(
-                                        sessionDurationMinutes,
+                        <div class="row align-middle align-items-center my-3">
+                            <div class="col-12 col-md-3">
+                                <p class="align-bottom p-0 m-0">Next Level:</p>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div
+                                    class="progress"
+                                    role="progressbar"
+                                    aria-label="Animated striped example"
+                                    aria-valuenow={levelProgress(
+                                        currentTotalXp,
                                     )}
-                                    <tr>
-                                        <td> {session.id} </td>
-                                        <!--  -->
-                                        <td>
-                                            {@html formatDateTimeToLocale(
-                                                session.startDateTime,
-                                            )}
-                                        </td>
-                                        <td>
-                                            {@html session.endDateTime
-                                                ? formatDateTimeToLocale(
-                                                      session.endDateTime,
-                                                  )
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {@html sessionDurationMilliseconds >
-                                            0
-                                                ? `${formatTimeSpentOnSkill(sessionDurationMilliseconds)}`
-                                                : `no end found`}
-                                        </td>
-                                        <td> {currentExp.toFixed(0)} </td>
-                                        <td> {@html minimumWageRange} </td>
-                                        <td>
-                                            <a
-                                                class="btn btn-sm btn-warning"
-                                                href={resolve(
-                                                    `/app/skill-sessions/${session.id}`,
-                                                )}
-                                            >
-                                                Edit
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                >
+                                    <div
+                                        class="progress-bar progress-bar-striped progress-bar-animated"
+                                        style="width: {levelProgress(
+                                            currentTotalXp,
+                                        )}%"
+                                    ></div>
+                                </div>
+                                <div class="text-center">
+                                    {xpToNextLevel(currentTotalXp)} / {levelToXP(
+                                        currentLevel + 1,
+                                    ).toFixed()}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <p>
+                    This would be an index page for listing out all the skills
+                    sessions.
+                </p>
+                <div>this is graph placeholder</div>
             </div>
-            <!--  -->
+            <div class="col-12">
+                <div class="my-5 row">
+                    <div class="col-12 col-lg-4">
+                        <TrainASkillForm
+                            {action}
+                            method="PUT"
+                            data={{
+                                skillName,
+                                //
+                                skillId,
+                                userId,
+                                startDateTime,
+                                endDateTime,
+                                currentSessionId,
+                            }}
+                            isLoading={data.isLoading}
+                        />
+                    </div>
+
+                    <!--  -->
+                    <!--  -->
+                </div>
+            </div>
+            <div class="col-12">
+                <!--  -->
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10">
+                        <!--  -->
+                        <div class="table-responsive">
+                            <table
+                                class="table table-bordered table-sm table-hover"
+                            >
+                                <thead class="table-dark text-white bg-primary">
+                                    <tr>
+                                        <th scope="col"> # </th>
+                                        <!--  -->
+                                        <th scope="col"> Start </th>
+                                        <th scope="col"> End </th>
+                                        <th scope="col"> Time </th>
+                                        <th scope="col"> Experience Points </th>
+                                        <th scope="col">
+                                            Pay Equivant Range
+                                        </th>
+
+                                        <th scope="col"> Options </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each skillSessions as session}
+                                        {@const sessionDurationMilliseconds =
+                                            calculateSessionDurationInMilliseconds(
+                                                session.startDateTime,
+                                                session.endDateTime,
+                                            )}
+                                        {@const sessionDurationMinutes =
+                                            convertMillisecondsToMinutes(
+                                                sessionDurationMilliseconds,
+                                            )}
+
+                                        <!-- Monies  -->
+                                        {@const minimumWageRange =
+                                            convertToCurrancyRange(
+                                                sessionDurationMilliseconds,
+                                            )}
+                                        <!-- Experience points -->
+                                        {@const currentExp = minutesToXP(
+                                            sessionDurationMinutes,
+                                        )}
+                                        <tr>
+                                            <td> {session.id} </td>
+                                            <!--  -->
+                                            <td>
+                                                {@html formatDateTimeToLocale(
+                                                    session.startDateTime,
+                                                )}
+                                            </td>
+                                            <td>
+                                                {@html session.endDateTime
+                                                    ? formatDateTimeToLocale(
+                                                          session.endDateTime,
+                                                      )
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {@html sessionDurationMilliseconds >
+                                                0
+                                                    ? `${formatTimeSpentOnSkill(sessionDurationMilliseconds)}`
+                                                    : `no end found`}
+                                            </td>
+                                            <td> {currentExp.toFixed(0)} </td>
+                                            <td> {@html minimumWageRange} </td>
+                                            <td>
+                                                <a
+                                                    class="btn btn-sm btn-warning"
+                                                    href={resolve(
+                                                        `/app/skill-sessions/${session.id}`,
+                                                    )}
+                                                >
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--  -->
+            </div>
         </div>
     </div>
 </section>

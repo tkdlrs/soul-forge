@@ -59,7 +59,7 @@
         //
     }
     //
-    const skillMinutes = $derived.by<number[]>(() =>
+    const skillMilliseconds = $derived.by<number[]>(() =>
         Object.keys(skillIdToSkillSessionsMap).map(
             (
                 skill, //skillIdToSkillSessionsMap[skill],
@@ -69,7 +69,7 @@
     //
     console.log('skillIdToSkillSessionsMap', skillIdToSkillSessionsMap);
     const totalTime = $derived.by(() =>
-        skillMinutes.reduce((total, num) => total + num, 0),
+        skillMilliseconds.reduce((total, num) => total + num, 0),
     );
     $inspect(totalTime);
     //
