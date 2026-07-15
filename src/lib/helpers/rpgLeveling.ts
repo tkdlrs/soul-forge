@@ -37,3 +37,20 @@ export function xpToNextLevel(totalXP: number): number {
     //
     return Math.max(0, Math.ceil(nextLevelXP - totalXP));
 }
+//
+export function currentXpEarnedAtLevel(totalXP: number): number {
+    const level = xpToLevel(totalXP);
+    //
+    const currentLevelXP = levelToXP(level);
+    //
+    return totalXP - currentLevelXP;
+}
+//
+export function remainingXpToNextLevel(totalXP: number): number {
+    const level = xpToLevel(totalXP);
+    //
+    const currentLevelXP = levelToXP(level);
+    const nextLevelXP = levelToXP(level + 1);
+    //
+    return nextLevelXP - currentLevelXP;
+}

@@ -15,9 +15,11 @@
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
     import {
+        currentXpEarnedAtLevel,
         levelProgress,
         levelToXP,
         minutesToXP,
+        remainingXpToNextLevel,
         xpToLevel,
         xpToNextLevel,
     } from '$lib/helpers/rpgLeveling';
@@ -93,7 +95,9 @@
         );
     }
     //
-
+    let levelProgressAsPercent = $derived<number>(
+        levelProgress(currentTotalXp) * 100,
+    );
     //
     const action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
     //
@@ -137,23 +141,23 @@
                                     class="progress"
                                     role="progressbar"
                                     aria-label="Animated striped example"
-                                    aria-valuenow={levelProgress(
-                                        currentTotalXp,
-                                    )}
+                                    aria-valuenow={levelProgressAsPercent}
                                     aria-valuemin="0"
                                     aria-valuemax="100"
                                 >
                                     <div
                                         class="progress-bar progress-bar-striped progress-bar-animated"
-                                        style="width: {levelProgress(
-                                            currentTotalXp,
-                                        )}%"
-                                    ></div>
+                                        style="width: {levelProgressAsPercent}%"
+                                    >
+                                        {levelProgressAsPercent.toFixed(0)}%
+                                    </div>
                                 </div>
                                 <div class="text-center">
-                                    {xpToNextLevel(currentTotalXp)} / {levelToXP(
-                                        currentLevel + 1,
-                                    ).toFixed()}
+                                    {currentXpEarnedAtLevel(
+                                        currentTotalXp,
+                                    ).toFixed(0)} / {remainingXpToNextLevel(
+                                        currentTotalXp,
+                                    ).toFixed(0)}
                                 </div>
                             </div>
                         </div>
