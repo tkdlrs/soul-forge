@@ -5,12 +5,13 @@
      **/
     import { resolve } from '$app/paths';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
+    import Tabs from '$lib/components/Tabs.svelte';
     import {
         calculateSessionDurationInMilliseconds,
         convertMillisecondsToMinutes,
         convertToCurrancyRange,
         formatDateTimeToLocale,
-        formatTimeSpentOnSkill,
+        formatTimeSpentInMilliseconds,
         getSkillsTotalMilliseconds,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
@@ -71,6 +72,24 @@
         (item) => item.id === currentSessionId,
     );
     /**
+     * TABS stuff
+     **/
+    let active = $state('profile');
+
+    const tabs = [
+        {
+            id: 'test',
+            title: 'Test',
+            content: test,
+        },
+        {
+            id: 'profile',
+            title: 'Profile',
+            content: profile,
+        },
+    ];
+
+    /**
      *
      * FORM Stuff
      *
@@ -108,8 +127,18 @@
             );
         }
     });
+    //
 </script>
 
+<!--  -->
+{#snippet profile()}
+    <h2>profile</h2>
+{/snippet}
+<!--  -->
+{#snippet test()}
+    <h2>test</h2>
+{/snippet}
+<!--  -->
 <section class="p-5">
     <div class="row">
         <div class="col-12">
@@ -122,6 +151,10 @@
                             <h1>
                                 {data.skillName}
                             </h1>
+                            <p class="lead">
+                                This would be an index page for listing out all
+                                the skills sessions.
+                            </p>
                         </div>
                         <div>
                             <h2 class="">
@@ -163,11 +196,17 @@
                         </div>
                     </div>
                 </div>
-                <p>
-                    This would be an index page for listing out all the skills
-                    sessions.
-                </p>
-                <div>this is graph placeholder</div>
+
+                <!--  -->
+                <!--  -->
+                <!--  -->
+                <div>
+                    <Tabs {tabs} bind:active></Tabs>
+                    <p>Current: {active}</p>
+                </div>
+                <!--  -->
+                <!--  -->
+                <!--  -->
             </div>
             <div class="col-12">
                 <div class="my-5 row">
@@ -255,7 +294,7 @@
                                             <td>
                                                 {@html sessionDurationMilliseconds >
                                                 0
-                                                    ? `${formatTimeSpentOnSkill(sessionDurationMilliseconds)}`
+                                                    ? `${formatTimeSpentInMilliseconds(sessionDurationMilliseconds)}`
                                                     : `no end found`}
                                             </td>
                                             <td> {currentExp.toFixed(0)} </td>

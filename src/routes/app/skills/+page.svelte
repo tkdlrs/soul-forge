@@ -12,7 +12,7 @@
     import {
         getDateDeltaParts,
         convertToCurrancyRange,
-        formatTimeSpentOnSkill,
+        formatTimeSpentInMilliseconds,
         getSkillsTotalMilliseconds,
         convertMillisecondsToMinutes,
     } from '$lib/helpers/formatters.js';
@@ -21,6 +21,7 @@
         levelProgress,
         minutesToXP,
         xpToLevel,
+        xpToMilliseconds,
         xpToNextLevel,
     } from '$lib/helpers/rpgLeveling';
     //
@@ -119,12 +120,7 @@
                                         <th scope="col"> Current&nbsp;XP </th>
                                         <th scope="col"> Current&nbsp;Lvl </th>
                                         <th scope="col"> XP to Next Lvl </th>
-                                        <th scope="col">
-                                            Time to Next Lvl
-                                            <small style="font-size: 0.66rem;">
-                                                (hours)
-                                            </small>
-                                        </th>
+                                        <th scope="col"> Time to Next Lvl </th>
                                         <th scope="col"> Options </th>
                                     </tr>
                                 </thead>
@@ -137,7 +133,7 @@
                                                 ],
                                             )}
                                         {@const formattedTimeSpentOnSkill =
-                                            formatTimeSpentOnSkill(
+                                            formatTimeSpentInMilliseconds(
                                                 timeSpentOnSkill,
                                             )}
                                         <!-- Monies  -->
@@ -199,7 +195,9 @@
                                                 {xpNextLvl}
                                             </td>
                                             <td>
-                                                {(xpNextLvl / 60).toFixed(0)}
+                                                {@html formatTimeSpentInMilliseconds(
+                                                    xpToMilliseconds(xpNextLvl),
+                                                )}
                                             </td>
                                             <td class="d-flex">
                                                 <div class="p-1">
@@ -246,7 +244,7 @@
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>
-                                            {@html formatTimeSpentOnSkill(
+                                            {@html formatTimeSpentInMilliseconds(
                                                 totalTime,
                                             )}
                                         </td>

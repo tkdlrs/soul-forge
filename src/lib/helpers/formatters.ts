@@ -65,7 +65,7 @@ export function calculateSessionDurationInMilliseconds(
     // milliseconds
     const durationMilliseconds = Math.abs(end - start);
     //
-    console.log('durationMilliseconds', durationMilliseconds);
+    // console.log('durationMilliseconds', durationMilliseconds);
     return durationMilliseconds;
 }
 //
@@ -137,7 +137,7 @@ export function getDateDeltaParts(milliseconds: number): DateDeltaParts {
  * Format a time provided in minutes to have the format:
  *   `\d+ days \d+ hours \d+ minutes \d+ seconds`
  **/
-export function formatTimeSpentOnSkill(milliseconds: number): string {
+export function formatTimeSpentInMilliseconds(milliseconds: number): string {
     const { days, hours, minutes, seconds } = getDateDeltaParts(milliseconds);
     //
     const daysTemplate = days ? `${days}&nbsp;Days <br />` : '';
@@ -204,3 +204,4 @@ export function formatDateTimeToLocale(date: Date): string {
     //
     return `${get('year')}-${get('month')}-${get('day')} <br /> ${get('hour')}:${get('minute')}:${get('second')} ${get('timeZoneName')}`;
 }
+//

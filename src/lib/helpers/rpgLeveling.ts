@@ -7,7 +7,11 @@
 const XP_PER_MINUTE = 1;
 const SCALE = 19.71;
 const EXPONENT = 1.5;
-
+const MS_PER_MINUTE = 60_000;
+//
+export function xpToMilliseconds(xp: number): number {
+    return xp * MS_PER_MINUTE;
+}
 // Total XP earned from training time
 export function minutesToXP(minutes: number): number {
     return minutes * XP_PER_MINUTE;
