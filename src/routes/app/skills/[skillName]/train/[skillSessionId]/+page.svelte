@@ -4,6 +4,7 @@
      * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
      **/
     import { resolve } from '$app/paths';
+    import BasicLineChart from '$lib/components/charts/BasicLineChart.svelte';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
     import Tabs from '$lib/components/Tabs.svelte';
     import {
@@ -74,18 +75,28 @@
     /**
      * TABS stuff
      **/
-    let active = $state('profile');
+    let active = $state('sales');
 
     const tabs = [
         {
-            id: 'test',
-            title: 'Test',
-            content: test,
+            id: 'current-view',
+            title: 'Current View',
+            content: currentView,
+        },
+        {
+            id: 'week-view',
+            title: 'Week View',
+            content: weekView,
         },
         {
             id: 'profile',
             title: 'Profile',
             content: profile,
+        },
+        {
+            id: 'sales',
+            title: 'Sales',
+            content: sales,
         },
     ];
     /**
@@ -130,12 +141,21 @@
 </script>
 
 <!--  -->
+{#snippet currentView()}
+    <h2>Current View</h2>
+{/snippet}<!--  -->
+{#snippet weekView()}
+    <h2>Week View</h2>
+{/snippet}
+
+<!--  -->
 {#snippet profile()}
     <h2>profile</h2>
 {/snippet}
 <!--  -->
-{#snippet test()}
-    <h2>test</h2>
+{#snippet sales()}
+    <h2>Sales</h2>
+    <BasicLineChart />
 {/snippet}
 <!--  -->
 <section class="p-5">
@@ -199,7 +219,7 @@
                 <!--  -->
                 <!--  -->
                 <!--  -->
-                <div>
+                <div class="my-5">
                     <Tabs {tabs} bind:active></Tabs>
                     <p>Current: {active}</p>
                 </div>
