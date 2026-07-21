@@ -39,6 +39,8 @@
         'Saturday',
     ];
     //
+    // streak... preserve...
+    //
     onMount(() => {
         //
         chart = new Chart(canvas, {
