@@ -4,7 +4,7 @@
      * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
      **/
     import { resolve } from '$app/paths';
-    import BasicLineChart from '$lib/components/charts/BasicLineChart.svelte';
+    import LineChart from '$lib/components/charts/LineChart.svelte';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
     import Tabs from '$lib/components/Tabs.svelte';
     import {
@@ -75,7 +75,7 @@
     /**
      * TABS stuff
      **/
-    let active = $state('sales');
+    let active = $state('current-view');
 
     const tabs = [
         {
@@ -99,6 +99,47 @@
             content: sales,
         },
     ];
+    //
+    const WEEKDAYS = $state<string[]>([
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+    ]);
+    const toy = [65, 59, NaN, 48, 56, 57, 40];
+    //
+    let currentViewLabels = $derived.by<string[]>(() => {
+        const today = new Date();
+        const len = WEEKDAYS.length;
+        //
+        const updatedArr = [];
+        for (let offset = -3; offset <= 3; offset++) {
+            const wrappedIndex = (today.getDay() + offset + len) % len;
+            const currentDay = WEEKDAYS[wrappedIndex];
+            updatedArr.push(currentDay);
+        }
+        //
+        return updatedArr;
+    });
+    $inspect(currentViewLabels);
+
+    let currentViewData = $derived.by<number[]>(() => {
+        const today = new Date();
+        const len = toy.length;
+        //
+        const updatedArr = [];
+        for (let offset = -3; offset <= 3; offset++) {
+            const wrappedIndex = (today.getDay() + offset + len) % len;
+            const current = toy[wrappedIndex];
+            updatedArr.push(current);
+        }
+        //
+        return updatedArr;
+    });
+
     /**
      *
      * FORM Stuff
@@ -143,6 +184,10 @@
 <!--  -->
 {#snippet currentView()}
     <h2>Current View</h2>
+    <p>
+        Current view display today. and three days before and three days after
+    </p>
+    <LineChart labels={currentViewLabels} data={currentViewData} />
 {/snippet}<!--  -->
 {#snippet weekView()}
     <h2>Week View</h2>
@@ -155,7 +200,7 @@
 <!--  -->
 {#snippet sales()}
     <h2>Sales</h2>
-    <BasicLineChart />
+    <LineChart labels={WEEKDAYS} data={toy} />
 {/snippet}
 <!--  -->
 <section class="p-5">
