@@ -126,9 +126,6 @@
     });
     $inspect(currentViewLabels);
     //
-    // streak.... i'm trying...
-    // it counts.
-    // I said so.
     //
     let currentViewData = $derived.by<number[]>(() => {
         const today = new Date();
