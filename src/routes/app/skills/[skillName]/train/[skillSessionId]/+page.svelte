@@ -36,6 +36,50 @@
     // $inspect(data);
     //
     let skillSessions = $state<SkillSession[]>(data.skillSessions);
+    skillSessions = skillSessions.sort(
+        (a, b) => b.startDateTime.getTime() - a.startDateTime.getTime(),
+    );
+    //
+    let dateToSessionDuration = $derived.by<Record<string, number>>(() => {
+        const output: Record<string, number> = {};
+        //
+        for (let i = 0; i < skillSessions.length; i++) {
+            const session = skillSessions[i];
+            if (!session.endDateTime) {
+                continue;
+            }
+            //
+            const START_ISO_DATE = new Date(session.startDateTime)
+                .toISOString()
+                .slice(0, 10);
+            const END_ISO_DATE = new Date(session.endDateTime)
+                .toISOString()
+                .slice(0, 10);
+            //
+            if (START_ISO_DATE !== END_ISO_DATE) {
+                throw new Error(
+                    'Skill Session Start and Skill Session End are on different days.',
+                );
+            }
+            //
+            if (output.hasOwnProperty(START_ISO_DATE) === true) {
+                output[START_ISO_DATE] +=
+                    calculateSessionDurationInMilliseconds(
+                        session.startDateTime,
+                        session.endDateTime,
+                    );
+            } else {
+                output[START_ISO_DATE] = calculateSessionDurationInMilliseconds(
+                    session.startDateTime,
+                    session.endDateTime,
+                );
+            }
+            //
+        }
+        //
+        return output;
+    });
+    $inspect(skillSessions);
     //
     let arrayEachSkillSessionDurationInMilliseconds = $derived.by<number[]>(
         () => {
@@ -126,20 +170,33 @@
     });
     $inspect(currentViewLabels);
     //
-    //
-    let currentViewData = $derived.by<number[]>(() => {
+    let currentViewData = $derived.by<Array<number | null>>(() => {
         const today = new Date();
-        const len = toy.length;
+        const TODAY_AS_ISO_STRING = today.toISOString().slice(0, 10);
+        const TODAY_YEAR_MONTH = TODAY_AS_ISO_STRING.slice(0, 8);
+        console.log('TODAY_YEAR_MONTH', TODAY_YEAR_MONTH);
+        const TODAY_DAY = Math.abs(Number(TODAY_AS_ISO_STRING.slice(7, 10)));
+        console.log('TODAY_DAY', TODAY_DAY);
         //
         const updatedArr = [];
         for (let offset = -3; offset <= 3; offset++) {
-            const wrappedIndex = (today.getDay() + offset + len) % len;
-            const current = toy[wrappedIndex];
-            updatedArr.push(current);
+            // const
+            const dateIndex = `${TODAY_YEAR_MONTH}${TODAY_DAY + offset}`;
+            console.log('dateIndex', dateIndex);
+            const currentInMilliseconds = dateToSessionDuration[dateIndex];
+            const currentInMinutes = convertMillisecondsToMinutes(
+                currentInMilliseconds,
+            );
+            if (currentInMilliseconds) {
+                updatedArr.push(currentInMinutes);
+            } else {
+                updatedArr.push(null);
+            }
         }
         //
         return updatedArr;
     });
+    $inspect(currentViewData);
 
     /**
      *
@@ -189,7 +246,8 @@
         Current view display today. and three days before and three days after
     </p>
     <LineChart labels={currentViewLabels} data={currentViewData} />
-{/snippet}<!--  -->
+{/snippet}
+<!--  -->
 {#snippet weekView()}
     <h2>Week View</h2>
 {/snippet}
@@ -342,7 +400,14 @@
                                             sessionDurationMinutes,
                                         )}
                                         <tr>
-                                            <td> {session.id} </td>
+                                            <td
+                                                style="max-width: 100px; 
+                                                overflow: hidden; 
+                                                text-overflow: ellipsis; 
+                                                white-space: nowrap;"
+                                            >
+                                                {session.id}
+                                            </td>
                                             <!--  -->
                                             <td>
                                                 {@html formatDateTimeToLocale(
