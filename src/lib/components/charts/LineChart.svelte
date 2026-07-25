@@ -6,8 +6,13 @@
     let canvas: HTMLCanvasElement;
     let chart: Chart;
     //
-    let { labels, data }: { labels: string[]; data: Array<number | null> } =
-        $props();
+    type Props = {
+        labels: string[];
+        data: Array<number | null>;
+        colorStringRGB?: string;
+    };
+    //
+    let { labels, data, colorStringRGB = '0, 0, 0' }: Props = $props();
     //
     let verticalMax = $derived.by<number>(() => {
         const dynamicMax = data.reduce((max: number, val: number | null) => {
@@ -42,8 +47,10 @@
                 datasets: [
                     {
                         data,
-                        borderColor: 'rgb(68, 148, 218)',
+                        borderColor: `rgba(${colorStringRGB})`,
                         spanGaps: false,
+                        backgroundColor: `rgba(${colorStringRGB}, .3)`,
+                        fill: true,
                     },
                 ],
             },
