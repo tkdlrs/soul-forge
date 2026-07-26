@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `hashed_password` text(256) DEFAULT 'unset' NOT NULL;

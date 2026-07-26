@@ -7,6 +7,7 @@
     import FormWrapper from '../FormWrapper.svelte';
     import Input from '$lib/components/form-elements/Input.svelte';
     import {
+        UserCreateSchema,
         UserSchema,
         type UserCreateData,
         type UserErrors,
@@ -19,12 +20,13 @@
     const userConfig = {
         //
         slug: '/users/',
-        schema: UserSchema,
+        schema: UserCreateSchema,
 
         initial: {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
+            password: data.password,
         } satisfies UserCreateData,
         errors: null satisfies UserErrors,
 
@@ -58,6 +60,19 @@
                 bind:defaultValue={formData.email}
                 errorText={errorsObj?.email}
             />
+            <Input
+                text="Password"
+                type="password"
+                id="password"
+                bind:defaultValue={formData.password}
+                errorText={errorsObj?.password}
+            />
         </div>
     {/snippet}
 </FormWrapper>
+<p>
+    first Name: {formData.firstName} <br />
+    last Name: {formData.lastName} <br />
+    email: {formData.email} <br />
+    password: {formData.password}
+</p>

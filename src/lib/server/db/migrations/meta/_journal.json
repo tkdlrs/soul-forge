@@ -15,6 +15,13 @@
       "when": 1783047116947,
       "tag": "0001_thankful_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785102795373,
+      "tag": "0002_fast_terrax",
+      "breakpoints": true
     }
   ]
 }

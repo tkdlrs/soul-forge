@@ -2,7 +2,10 @@
  * User Repository.
  * Functions for interacting with 'Users' in database.
  **/
-import { UserSchema, type UserCreateData } from '$lib/schemas/userSchema';
+import {
+    UserInsertToDatabaseSchema,
+    type UserCreateData,
+} from '$lib/schemas/userSchema';
 import { db } from '$lib/server/db';
 import { usersTable, type InsertUser } from '$lib/server/db/schema/users';
 import { eq } from 'drizzle-orm';
@@ -14,7 +17,7 @@ export async function getUsers() {
 //
 export async function createUser(data: InsertUser) {
     try {
-        const result = UserSchema.parse(data);
+        const result = UserInsertToDatabaseSchema.parse(data);
         const newUser = await db.insert(usersTable).values(result);
         return newUser;
     } catch (err) {

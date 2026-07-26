@@ -7,6 +7,7 @@
     let firstName = $state<string>('');
     let lastName = $state<string>('');
     let email = $state<string>('');
+    let password = $state<string>('');
     //
     let { data } = $props();
 </script>
@@ -21,7 +22,7 @@
                 <UserForm
                     action="/api/users"
                     method="POST"
-                    data={{ firstName, lastName, email }}
+                    data={{ firstName, lastName, email, password }}
                     isLoading={data.isLoading}
                 />
             </div>

@@ -19,10 +19,9 @@ export const usersTable = sqliteTable('users', {
         () => new Date(),
     ),
     //
-    // ToDo:// come back to this and set it up. Use a JwT
-    // hashedPassword: text('hashed_password', { length: 256 })
-    //     .notNull()
-    //     .default('unset'),
+    hashedPassword: text('hashed_password', { length: 256 })
+        .notNull()
+        .default('unset'),
 });
 
 export type InsertUser = typeof usersTable.$inferInsert;

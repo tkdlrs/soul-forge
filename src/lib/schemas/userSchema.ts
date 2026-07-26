@@ -17,9 +17,18 @@ export const UserSchema = z.object({
     email: z.email(),
 });
 //
-export const UserCreateSchema = z.preprocess(trimStrings, UserSchema);
+export const UserCreateSchema = z.preprocess(
+    trimStrings,
+    UserSchema.extend({
+        password: z.string(),
+    }),
+);
 export type UserCreateData = z.infer<typeof UserCreateSchema>;
-
+//
+export const UserInsertToDatabaseSchema = UserSchema.extend({
+    hashedPassword: z.string(),
+});
+export type UserInsertToDatabase = z.infer<typeof UserInsertToDatabaseSchema>;
 //
 export const UserWithIdSchema = UserSchema.extend({ id: z.number() });
 export type UserWithId = z.infer<typeof UserWithIdSchema>;
@@ -30,4 +39,5 @@ export type UserErrors = {
     firstName?: string | null;
     lastName?: string | null;
     email?: string | null;
+    password?: string | null;
 } | null;
