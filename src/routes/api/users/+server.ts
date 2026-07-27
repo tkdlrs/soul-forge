@@ -3,7 +3,7 @@
  **/
 import { json } from '@sveltejs/kit';
 import { getUsers, createUser } from '$lib/server/repositories/user.repository';
-import { hashPassword } from '$lib/state/auth.svelte.js';
+import { hashPassword } from '$lib/server/auth.js';
 import type { InsertUser } from '$lib/server/db/schema/users.js';
 
 export async function GET() {
