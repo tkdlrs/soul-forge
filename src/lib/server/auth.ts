@@ -2,6 +2,7 @@ import { BadRequestError, UserNotAuthenticatedError } from '$lib/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
+import crypto from 'crypto';
 //
 const TOKEN_ISSUER = 'soulforge';
 //
@@ -21,7 +22,7 @@ export async function checkPasswordHash(password: string, hash: string) {
 type payload = Pick<JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>;
 //
 export function makeJWT(
-    userID: string,
+    userID: number,
     expiresIn: number,
     secret: string,
 ): string {
@@ -30,7 +31,7 @@ export function makeJWT(
     const token = jwt.sign(
         {
             iss: TOKEN_ISSUER,
-            sub: userID,
+            sub: String(userID),
             iat: issuedAt,
             exp: expiresAt,
         } satisfies payload,
@@ -59,15 +60,15 @@ export function validateJWT(tokenString: string, secret: string): string {
     //
     return decoded.sub;
 }
-//
-export function getBearerToken(req: Request) {
-    const authHeader = req.get('Authorization');
-    if (!authHeader) {
-        throw new UserNotAuthenticatedError('Malformed authorization header');
-    }
-    //
-    return extractBearerToken(authHeader);
-}
+// This ended up over in `hooks.server.ts`
+// export function getBearerToken(req: Request) {
+//     const authHeader = req.get('Authorization');
+//     if (!authHeader) {
+//         throw new UserNotAuthenticatedError('Malformed authorization header');
+//     }
+//     //
+//     return extractBearerToken(authHeader);
+// }
 //
 export function extractBearerToken(header: string) {
     const splitAuth = header.split(' ');
@@ -76,5 +77,9 @@ export function extractBearerToken(header: string) {
     }
     //
     return splitAuth[1];
+}
+//
+export function makeRefreshToken() {
+    return crypto.randomBytes(32).toString('hex');
 }
 //

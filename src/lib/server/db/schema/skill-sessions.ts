@@ -34,7 +34,7 @@ export const skillSessionsTable = sqliteTable('skill_sessions', {
         mode: 'timestamp',
     }),
 });
-
+//
 export type InsertSkillSession = typeof skillSessionsTable.$inferInsert;
 export type SelectSkillSession = typeof skillSessionsTable.$inferSelect;
 //

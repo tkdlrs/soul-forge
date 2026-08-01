@@ -34,6 +34,14 @@ export async function getUser(id: number) {
     return result[0] ?? null;
 }
 //
+export async function getUserByEmail(email: string) {
+    const result = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.email, email));
+    return result[0] ?? null;
+}
+//
 export async function updateUser(id: number, data: Partial<UserCreateData>) {
     await db.update(usersTable).set(data).where(eq(usersTable.id, id));
 
