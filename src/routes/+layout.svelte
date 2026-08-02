@@ -3,11 +3,11 @@
 
     import 'bootstrap/dist/css/bootstrap.min.css';
     //
-    let { children } = $props();
+    let { children, data } = $props();
 </script>
 
 <div class="app">
-    <Header />
+    <Header user={data.user} />
     <!--  -->
     <main class="container">
         <div class="pt-5">

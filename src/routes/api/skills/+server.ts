@@ -14,9 +14,15 @@ import { getCurrentUser } from '$lib/server/auth.js';
 export async function GET() {
     const user = getCurrentUser();
     //
-    const skills = await getUsersSkills(user.id);
-    //
-    return json(skills);
+    try {
+        const skills = (await getUsersSkills(user.id)) || [];
+        //
+        return json(skills);
+    } catch (err) {
+        throw new Error(
+            `Error from GET method on 'skills' Index (limits to user) ${err} `,
+        );
+    }
 }
 //
 export async function POST({ request }) {

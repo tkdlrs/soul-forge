@@ -16,20 +16,8 @@ import {
 export async function load({ fetch, params }) {
     //
     try {
-        // `load` is server side and server side will never know what 'sessionStorage' is
-        // so I'm not sure how to get it so the requests have the 'accessToken' in their
-        // 'Authorization' header.
-        // ToDo:// figure out how to handle authentication.
-        const accessToken = sessionStorage.getItem('accessToken');
-        if (!accessToken) {
-            throw new Error('Not authenticated');
-        }
         //
-        const response = await fetch('/api/skills', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+        const response = await fetch('/api/skills');
         const result = await response.json();
         const skills = z.array(SkillWithIdSchema).parse(result);
         //

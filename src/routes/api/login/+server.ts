@@ -18,7 +18,7 @@ type LoginResponse = UserResponse & {
     refreshToken: string;
 };
 //
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
     type Parameters = {
         password: string;
         email: string;
@@ -60,6 +60,14 @@ export async function POST({ request }) {
     if (!saved) {
         throw new UserNotAuthenticatedError('Could not save refresh token');
     }
+    // Setting cookies.
+    cookies.set('accessToken', accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60, // hour
+    });
     //
     return json(
         {

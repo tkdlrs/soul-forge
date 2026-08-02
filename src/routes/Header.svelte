@@ -1,6 +1,9 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
+    import { form } from '$app/server';
     import { page } from '$app/state';
+    //
+    let { user } = $props();
 </script>
 
 <header>
@@ -64,11 +67,21 @@
                             Skills
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href={resolve('/app/login')}>
-                            Login
-                        </a>
-                    </li>
+                    {#if user}
+                        <li class="nav-item">
+                            <form action="/app/logout" method="POST">
+                                <button class="nav-link btn btn-link">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    {:else}
+                        <li class="nav-item">
+                            <a class="nav-link" href={resolve('/app/login')}>
+                                Login
+                            </a>
+                        </li>
+                    {/if}
                 </ul>
             </div>
         </div>

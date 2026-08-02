@@ -75,6 +75,7 @@ export function getBearerToken() {
 //
 export function getCurrentUser() {
     const { locals } = getRequestEvent();
+    console.log('locals from calling "getCurrentUser()"', locals);
     //
     if (!locals.user) {
         throw new UserNotAuthenticatedError('Malformed authorization header');

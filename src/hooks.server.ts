@@ -8,24 +8,25 @@ import { getUser } from '$lib/server/repositories/user.repository';
 export async function handle({ event, resolve }: Parameters<Handle>[0]) {
     //
     console.log('handle from hooks.sever.ts ran');
-    const auth = event.request.headers.get('Authorization');
-    console.log('auth is', auth);
+    const authToken = event.cookies.get('accessToken');
+    console.log('auth is', authToken);
     console.log('='.repeat(100));
     //
     event.locals.user = null;
-    event.locals.accessToken = null;
+    // event.locals.accessToken = null;
     //
-    if (auth?.startsWith('Bearer ')) {
-        const token = extractBearerToken(auth);
+    if (authToken) {
+        console.log('authToken before trying to get bearer?', authToken);
         try {
-            const userId = validateJWT(token, config.jwt.secret);
+            const userId = validateJWT(authToken, config.jwt.secret);
             console.log('userId (from validateJWT call)', userId);
             // get the user from their id
             const user = await getUser(Number(userId));
             //
             event.locals.user = user;
-            event.locals.accessToken = token;
+            // event.locals.accessToken = authToken;
         } catch (err) {
+            event.locals.user = null;
             // Invalid token; leave locals unathenticated.
             throw new Error('Invalid token');
         }
