@@ -3,6 +3,8 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
+import { getRequestEvent } from '$app/server';
+import { error } from 'console';
 //
 const TOKEN_ISSUER = 'soulforge';
 //
@@ -60,15 +62,26 @@ export function validateJWT(tokenString: string, secret: string): string {
     //
     return decoded.sub;
 }
-// This ended up over in `hooks.server.ts`
-// export function getBearerToken(req: Request) {
-//     const authHeader = req.get('Authorization');
-//     if (!authHeader) {
-//         throw new UserNotAuthenticatedError('Malformed authorization header');
-//     }
-//     //
-//     return extractBearerToken(authHeader);
-// }
+//
+export function getBearerToken() {
+    const { locals } = getRequestEvent();
+    //
+    if (!locals.accessToken) {
+        throw new UserNotAuthenticatedError('Malformed authorization header');
+    }
+    //
+    return locals.accessToken;
+}
+//
+export function getCurrentUser() {
+    const { locals } = getRequestEvent();
+    //
+    if (!locals.user) {
+        throw new UserNotAuthenticatedError('Malformed authorization header');
+    }
+    //
+    return locals.user;
+}
 //
 export function extractBearerToken(header: string) {
     const splitAuth = header.split(' ');

@@ -13,6 +13,15 @@ export async function getSkills() {
     return db.select().from(skillsTable);
 }
 //
+export async function getUsersSkills(userID: number) {
+    const result = db
+        .select()
+        .from(skillsTable)
+        .where(eq(skillsTable.userId, userID));
+    //
+    return result ?? null;
+}
+//
 export async function createSkill(data: InsertSkill) {
     try {
         const result = SkillSchema.parse(data);

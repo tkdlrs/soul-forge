@@ -19,7 +19,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav" data-sveltekit-preload-data="false">
                     <li
                         class="nav-item"
                         aria-current={page.url.pathname === '/'

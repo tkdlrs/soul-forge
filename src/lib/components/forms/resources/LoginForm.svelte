@@ -19,7 +19,7 @@
     // $inspect(data);
     // Form config
     const loginConfig = {
-        ///app/skill-sessions
+        ///app/
         slug: `/`,
         schema: LoginSchema,
 
@@ -33,6 +33,15 @@
         action,
         method,
         //
+        postCallback: (...args: any[]) => {
+            console.log('Post Call back');
+            console.log('args', args);
+            const actResult = args[0];
+            console.log('Action Result (aka actResult)', actResult);
+            const accessToken = actResult.token;
+            console.log('accessToken', accessToken);
+            sessionStorage.setItem('accessToken', accessToken);
+        },
     };
     //
     let formData = $state<Login>(loginConfig.initial);

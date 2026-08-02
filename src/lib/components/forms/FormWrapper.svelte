@@ -51,7 +51,7 @@
             console.log(`config.action: ${config.action}`);
             console.log('Result is', result);
             // run an action here...
-            await fetch(config.action, {
+            const actionResult = await fetch(config.action, {
                 method: config.method,
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,6 +61,13 @@
             console.log(
                 'made it after awaited fetch. 4 whatever that is worth',
             );
+            //
+            console.log('actionResult', actionResult);
+            if (config.hasOwnProperty('postCallback')) {
+                const actionResultData = await actionResult.json();
+                console.log('actionResultData', actionResultData);
+                config.postCallback(actionResultData);
+            }
             //
             successMessage = 'Success';
             isSubmitted = true;

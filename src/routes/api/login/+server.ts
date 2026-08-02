@@ -22,8 +22,6 @@ export async function POST({ request }) {
     type Parameters = {
         password: string;
         email: string;
-        token: string;
-        refreshToken: string;
     };
     //
     const body: Parameters = await request.json();
@@ -54,6 +52,9 @@ export async function POST({ request }) {
         config.jwt.secret,
     );
     const refreshToken = makeRefreshToken();
+    //
+    console.log('accessToken', accessToken);
+    console.log('refreshToken', refreshToken);
     //
     const saved = await saveRefreshToken(user.id, refreshToken);
     if (!saved) {

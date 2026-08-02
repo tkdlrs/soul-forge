@@ -11,7 +11,7 @@
     let password = $state<string>(data.login.password);
 
     //
-    const action = $state<string>(`/api/login`);
+    // const action = $state<string>(`/api/login`);
 </script>
 
 <section class="p-5">
@@ -21,7 +21,7 @@
         </div>
         <div class="col-12">
             <LoginForm
-                {action}
+                action="/api/login"
                 method="POST"
                 data={{
                     email,

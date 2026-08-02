@@ -4,16 +4,19 @@
 import {
     createSkill,
     getSkills,
+    getUsersSkills,
 } from '$lib/server/repositories/skill.repository';
 import { randomUUID } from 'crypto';
 import { json } from '@sveltejs/kit';
+import { getCurrentUser } from '$lib/server/auth.js';
 //
 //
 export async function GET() {
+    const user = getCurrentUser();
     //
-    const skillSessions = await getSkills();
+    const skills = await getUsersSkills(user.id);
     //
-    return json(skillSessions);
+    return json(skills);
 }
 //
 export async function POST({ request }) {
