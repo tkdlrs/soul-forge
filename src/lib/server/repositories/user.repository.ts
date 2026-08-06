@@ -1,6 +1,6 @@
 /**
  * User Repository.
- * Functions for interacting with 'Users' in database.
+ * Functions for interacting with 'Users' table in the database.
  **/
 import {
     UserInsertToDatabaseSchema,

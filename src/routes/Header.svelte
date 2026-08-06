@@ -1,6 +1,5 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import { form } from '$app/server';
     import { page } from '$app/state';
     //
     let { user } = $props();
@@ -37,38 +36,40 @@
                             Home
                         </a>
                     </li>
-                    <li
-                        class="nav-item"
-                        aria-current={page.url.pathname === '/app/about'
-                            ? 'page'
-                            : undefined}
-                    >
-                        <a class="nav-link" href={resolve('/app/about')}>
-                            About
-                        </a>
-                    </li>
-                    <li
-                        class="nav-item"
-                        aria-current={page.url.pathname === '/app/users'
-                            ? 'page'
-                            : undefined}
-                    >
-                        <a class="nav-link" href={resolve('/app/users')}>
-                            Users
-                        </a>
-                    </li>
-                    <li
-                        class="nav-item"
-                        aria-current={page.url.pathname === '/app/about'
-                            ? 'page'
-                            : undefined}
-                    >
-                        <a class="nav-link" href={resolve('/app/skills')}>
-                            Skills
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            aria-current={page.url.pathname === '/app/roles'
+                                ? 'page'
+                                : undefined}
+                            href={resolve('/app/roles')}
+                        >
+                            Roles
                         </a>
                     </li>
                     {#if user}
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/app/users'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a class="nav-link" href={resolve('/app/users')}>
+                                All Users
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/app/skills'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a class="nav-link" href={resolve('/app/skills')}>
+                                Skills
+                            </a>
+                        </li>
                         <li class="nav-item">
+                            <!-- svelte-ignore component_name_lowercase -->
                             <form action="/app/logout" method="POST">
                                 <button class="nav-link btn btn-link">
                                     Logout
@@ -76,6 +77,14 @@
                             </form>
                         </li>
                     {:else}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href={resolve('/app/users/create')}
+                            >
+                                Create Account
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href={resolve('/app/login')}>
                                 Login

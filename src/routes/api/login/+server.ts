@@ -51,6 +51,7 @@ export async function POST({ request, cookies }) {
         config.jwt.defaultDuration,
         config.jwt.secret,
     );
+    // ToDo:// make refreshtoken work
     const refreshToken = makeRefreshToken();
     //
     console.log('accessToken', accessToken);

@@ -1,6 +1,7 @@
 <script lang="ts">
+    // Componets
     import Header from './Header.svelte';
-
+    // CSS
     import 'bootstrap/dist/css/bootstrap.min.css';
     //
     let { children, data } = $props();

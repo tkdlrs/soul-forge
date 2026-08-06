@@ -30,6 +30,9 @@ export function makeJWT(
 ): string {
     const issuedAt = Math.floor(Date.now() / 1000);
     const expiresAt = issuedAt + expiresIn;
+    // ToDo:// the thing. Where the roles get added to this.
+    // OR maybe do it where it gets the user and their roles then assigns it
+    // (instead of putting roles in the JWT )
     const token = jwt.sign(
         {
             iss: TOKEN_ISSUER,
