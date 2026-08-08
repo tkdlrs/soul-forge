@@ -29,7 +29,6 @@ export async function POST({ request }) {
     const body = await request.json();
     //
     const skill = await createSkill({
-        id: randomUUID(),
         name: body.name,
         icon: body.icon,
         userId: body.userId,

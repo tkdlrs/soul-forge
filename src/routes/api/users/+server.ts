@@ -37,17 +37,17 @@ export async function POST({ request }) {
     } satisfies InsertUser);
     //
     if (!user) {
-        throw new Error('Could not crate user');
+        throw new Error('Could not create user');
     }
     //
     return json(
         {
-            id: user?.id,
+            id: user.id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            createdAt: user?.createdAt,
-            updatedAt: user?.updatedAt,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         } satisfies UserResponse,
         { status: 201 },
     );

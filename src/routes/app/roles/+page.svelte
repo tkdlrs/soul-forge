@@ -1,16 +1,18 @@
-<script>
+<script lang="ts">
     /**
      * App Frontend Roles INDEX
      **/
+    import { resolve } from '$app/paths';
     import { currentAppURI } from '$lib/helpers/navigators';
-    import { resolve } from 'path';
+    import { type RoleWithId } from '$lib/schemas/roleSchema.js';
     //
     let { data } = $props();
     //
-    let roles = $state<Array<RoleWithId>>(data.roles);
+    let roles = $state<RoleWithId[]>(data.roles);
     //
     async function deleteRole(id: string) {
         try {
+            console.log(`You tried to delete ${id}`);
             alert('set up delete');
         } catch (err) {
             alert('ERROR');

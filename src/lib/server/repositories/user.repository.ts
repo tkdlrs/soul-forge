@@ -18,8 +18,8 @@ export async function getUsers() {
 export async function createUser(data: InsertUser) {
     try {
         const result = UserInsertToDatabaseSchema.parse(data);
-        const newUser = await db.insert(usersTable).values(result);
-        return newUser;
+        const newUser = await db.insert(usersTable).values(result).returning();
+        return newUser[0];
     } catch (err) {
         throw new Error(`Error was ${err}`);
     }

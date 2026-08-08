@@ -20,5 +20,5 @@ export type RoleWithId = z.infer<typeof RoleWithIdSchema>;
  * ERROR TYPES
  **/
 export type RoleErrors = {
-    Name?: string | null;
+    name?: string | null;
 } | null;

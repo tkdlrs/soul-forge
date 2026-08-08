@@ -21,23 +21,25 @@
     const actionRoute = `/api/users/${user.id}`;
 </script>
 
-<div class="row">
-    <div class="col-12 mb-5">
-        <h1>User</h1>
+<section class="p-5">
+    <div class="row">
+        <div class="col-12 mb-5">
+            <h1>User</h1>
+        </div>
+        <div class="col-12 col-md-6">
+            <h2 class="h4 fw-bold">Show</h2>
+            <p><strong>First Name</strong>: {data.user.firstName}</p>
+            <p><strong>Last Name</strong>: {data.user.lastName}</p>
+            <p><strong>Email</strong>: {data.user.email}</p>
+        </div>
+        <div class="col-12 col-md-6">
+            <h2 class="h4 fw-bold">Edit User</h2>
+            <UserForm
+                action={actionRoute}
+                method="PUT"
+                data={{ firstName, lastName, email }}
+                isLoading={data.isLoading}
+            />
+        </div>
     </div>
-    <div class="col-12 col-md-6">
-        <h2 class="h4 fw-bold">Show</h2>
-        <p><strong>First Name</strong>: {data.user.firstName}</p>
-        <p><strong>Last Name</strong>: {data.user.lastName}</p>
-        <p><strong>Email</strong>: {data.user.email}</p>
-    </div>
-    <div class="col-12 col-md-6">
-        <h2 class="h4 fw-bold">Edit User</h2>
-        <UserForm
-            action={actionRoute}
-            method="PUT"
-            data={{ firstName, lastName, email }}
-            isLoading={data.isLoading}
-        />
-    </div>
-</div>
+</section>

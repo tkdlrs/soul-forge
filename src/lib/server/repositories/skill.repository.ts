@@ -22,7 +22,7 @@ export async function getUsersSkills(userID: number) {
     return result ?? null;
 }
 //
-export async function createSkill(data: InsertSkill) {
+export async function createSkill(data: SkillCreate) {
     try {
         const result = SkillSchema.parse(data);
         const newSkill = await db
