@@ -51,7 +51,8 @@ export async function getSkillByName(name: string) {
         .limit(1);
     //
     return result[0] ?? null;
-} //
+}
+//
 export async function updateSkill(id: string, data: Partial<SkillCreate>) {
     await db.update(skillsTable).set(data).where(eq(skillsTable.id, id));
     //

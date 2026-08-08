@@ -47,7 +47,7 @@
                         >
                             <thead>
                                 <tr>
-                                    <th scope="col"> # </th>
+                                    <!-- <th scope="col"> # </th> -->
                                     <th scope="col"> Name </th>
                                     <th scope="col"> Options </th>
                                 </tr>
@@ -55,7 +55,7 @@
                             <tbody>
                                 {#each roles as role}
                                     <tr>
-                                        <th scope="row"> {role.id} </th>
+                                        <!-- <th scope="row"> {role.id} </th> -->
                                         <td> {role.name}</td>
                                         <td>
                                             <a

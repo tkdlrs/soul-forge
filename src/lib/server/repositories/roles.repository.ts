@@ -6,6 +6,7 @@ import { RoleSchema, type Role } from '$lib/schemas/roleSchema';
 import { rolesTable, type InsertRole } from '$lib/server/db/schema/roles';
 import { db } from '$lib/server/db';
 import { randomUUID } from 'crypto';
+import { eq } from 'drizzle-orm';
 //
 export async function getRoles() {
     return db.select().from(rolesTable);
@@ -23,3 +24,19 @@ export async function createRole(data: Role) {
         throw new Error(`Error was ${err}`);
     }
 }
+//
+export async function getRole(id: string) {
+    const result = await db
+        .select()
+        .from(rolesTable)
+        .where(eq(rolesTable.id, id));
+    //
+    return result[0] ?? null;
+}
+//
+export async function updateRole(id: string, data: Partial<Role>) {
+    await db.update(rolesTable).set(data).where(eq(rolesTable.id, id));
+    //
+    return getRole(id);
+}
+//

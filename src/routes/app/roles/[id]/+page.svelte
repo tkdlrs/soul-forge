@@ -25,6 +25,7 @@
         </div>
         <div class="col-12 col-md-6">
             <h2 class="h4 fw-bold">Show</h2>
+            <p><strong>Name</strong>: {data.role.name}</p>
         </div>
         <div class="col-12 col-md-6">
             <h2 class="h4 fw-bold">Edit</h2>
