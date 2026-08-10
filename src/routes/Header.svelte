@@ -47,6 +47,18 @@
                             Roles
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            aria-current={page.url.pathname ===
+                            '/app/user-roles'
+                                ? 'page'
+                                : undefined}
+                            href={resolve('/app/user-roles')}
+                        >
+                            User Roles
+                        </a>
+                    </li>
                     {#if user}
                         <li
                             class="nav-item"

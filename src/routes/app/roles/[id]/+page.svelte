@@ -1,6 +1,6 @@
 <script lang="ts">
     /**
-     * App Frontend 'Role'
+     * App Frontend 'Role' SHOW and EDIT
      **/
     import RoleForm from '$lib/components/forms/resources/RoleForm.svelte';
     import { RoleWithIdSchema } from '$lib/schemas/roleSchema';
