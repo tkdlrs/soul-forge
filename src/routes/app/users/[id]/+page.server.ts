@@ -13,7 +13,6 @@ export async function load({ params, fetch }) {
         const result = await response.json();
         //
         //
-        //
         return {
             user: result,
             isLoading: false,

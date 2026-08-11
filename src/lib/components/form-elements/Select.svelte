@@ -18,7 +18,7 @@
 
 <Label {text} {id} {required} />
 <select
-    class="custom-select{errorText != null ? ' is-invalid' : ''}"
+    class="form-select{errorText != null ? ' is-invalid' : ''}"
     {id}
     name={pascalCase(text)}
     {required}

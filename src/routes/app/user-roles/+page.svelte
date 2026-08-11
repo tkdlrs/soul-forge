@@ -3,10 +3,16 @@
      * App Frontend 'UserRole'
      **/
     import { currentAppURI } from '$lib/helpers/navigators';
+    import type {
+        UserRolesBridgedWithId,
+        UserRoleWithId,
+    } from '$lib/schemas/userRolesSchema.js';
     //
     let { data } = $props();
     //
-    let userRoles = $state<any[]>(data.userRoles);
+    let userRolesBridged = $state<UserRolesBridgedWithId[]>(
+        data.userRolesBridged,
+    );
     //
     async function deleteUserRole(id: string) {
         try {
@@ -41,54 +47,50 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-8">
-                    <div class="table-responsive">
-                        <table
-                            class="table table-bordered table-sm table-hover"
-                        >
-                            <thead>
-                                <tr>
-                                    <th scope="col"> Id </th>
-                                    <th scope="col">
-                                        User
-                                        <small>
-                                            (name figure with outer join)
-                                        </small>
-                                    </th>
-                                    <th scope="col">
-                                        Role
-                                        <small>
-                                            (name figure with outer join)
-                                        </small>
-                                    </th>
-                                    <th scope="col"> Options </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each userRoles as ur}
-                                    <tr>
-                                        <td> {ur.id} </td>
-                                        <td> {ur.UserId} </td>
-                                        <td> {ur.RoleId} </td>
-                                        <td>
-                                            <div>
-                                                <button
-                                                    class="btn btn-sm btn-danger"
-                                                    onclick={() => {
-                                                        deleteUserRole(ur.id);
-                                                    }}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col"> Id </th>
+                            <th scope="col">
+                                User
+                                <small> (name figure with outer join) </small>
+                            </th>
+                            <th scope="col"> User Id </th>
+                            <th scope="col">
+                                Role
+                                <small> (name figure with outer join) </small>
+                            </th>
+                            <th scope="col"> Role Id </th>
+                            <th scope="col"> Options </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each userRolesBridged as urb}
+                            <tr>
+                                <td> {urb.id} </td>
+                                <td>
+                                    {urb.userFirstName}&nbsp;{urb.userLastName}
+                                </td>
+                                <td> {urb.userId} </td>
+                                <td> {urb.roleName} </td>
+                                <td> {urb.roleId} </td>
+                                <td>
+                                    <div>
+                                        <button
+                                            class="btn btn-sm btn-danger"
+                                            onclick={() => {
+                                                deleteUserRole(urb.id);
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
