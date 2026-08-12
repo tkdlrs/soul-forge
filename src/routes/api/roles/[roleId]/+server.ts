@@ -6,8 +6,12 @@ import z from 'zod/v4';
 import { RoleSchema, type RoleWithId } from '$lib/schemas/roleSchema.js';
 import { getRole, updateRole } from '$lib/server/repositories/roles.repository';
 import { error, json } from '@sveltejs/kit';
+import { requireRole } from '$lib/server/auth.js';
 //
 export async function GET({ params, request }) {
+    //
+    requireRole('Admin');
+    //
     try {
         //
         let roleData: RoleWithId = {

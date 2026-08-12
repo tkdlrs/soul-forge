@@ -52,15 +52,9 @@
                     <thead>
                         <tr>
                             <th scope="col"> Id </th>
-                            <th scope="col">
-                                User
-                                <small> (name figure with outer join) </small>
-                            </th>
+                            <th scope="col"> User Name </th>
                             <th scope="col"> User Id </th>
-                            <th scope="col">
-                                Role
-                                <small> (name figure with outer join) </small>
-                            </th>
+                            <th scope="col"> Role Name </th>
                             <th scope="col"> Role Id </th>
                             <th scope="col"> Options </th>
                         </tr>

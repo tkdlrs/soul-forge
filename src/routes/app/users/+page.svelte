@@ -1,6 +1,6 @@
 <script lang="ts">
     /**
-     * App Frontend Users INDEX
+     * App Frontend Users resource INDEX
      **/
     import { resolve } from '$app/paths';
     import { type UserWithId } from '$lib/schemas/userSchema';

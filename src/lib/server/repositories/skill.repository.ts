@@ -4,7 +4,7 @@
  **/
 import { SkillSchema, type SkillCreate } from '$lib/schemas/skillSchema';
 import { db } from '$lib/server/db';
-import { skillsTable, type InsertSkill } from '$lib/server/db/schema/skills';
+import { skillsTable } from '$lib/server/db/schema/skills';
 import { randomUUID } from 'crypto';
 import { eq, sql } from 'drizzle-orm';
 //

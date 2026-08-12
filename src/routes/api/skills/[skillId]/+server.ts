@@ -2,11 +2,8 @@
  * API VERBS for Skills [ ID ] resource
  * Working on a specified Skill
  **/
-import {
-    SkillEditSchema,
-    type SkillCreate,
-    type SkillWithId,
-} from '$lib/schemas/skillSchema.js';
+import z from 'zod/v4';
+import { SkillEditSchema, type SkillWithId } from '$lib/schemas/skillSchema.js';
 import {
     deleteSkill,
     getSkill,
@@ -14,7 +11,6 @@ import {
     updateSkill,
 } from '$lib/server/repositories/skill.repository';
 import { error, json } from '@sveltejs/kit';
-import z from 'zod/v4';
 
 // Get all the sessions for a single skill that belongs to a single user
 export async function GET({ params, request }) {

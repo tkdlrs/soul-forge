@@ -17,6 +17,7 @@ import { rolesTable } from '../db/schema/roles';
 export async function getUserRoles() {
     return db.select().from(userRolesTable);
 }
+//
 export async function getUserRolesBridged() {
     return db
         .select({
@@ -30,6 +31,17 @@ export async function getUserRolesBridged() {
         .from(userRolesTable)
         .innerJoin(usersTable, eq(userRolesTable.userId, usersTable.id))
         .innerJoin(rolesTable, eq(userRolesTable.roleId, rolesTable.id));
+}
+//
+export async function getSpecificUsersRoles(userId: number) {
+    return await db
+        .select({
+            roleId: userRolesTable.roleId,
+            roleName: rolesTable.name,
+        })
+        .from(userRolesTable)
+        .innerJoin(rolesTable, eq(userRolesTable.roleId, rolesTable.id))
+        .where(eq(userRolesTable.userId, userId));
 }
 //
 export async function createUserRole(data: UserRoleCreate) {

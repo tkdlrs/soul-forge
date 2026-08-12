@@ -58,6 +58,9 @@
                 },
                 body: JSON.stringify(result),
             });
+            if (!actionResult.ok) {
+                throw new Error('Request not OK');
+            }
             console.log(
                 'made it after awaited fetch. 4 whatever that is worth',
             );

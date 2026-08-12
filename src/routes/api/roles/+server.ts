@@ -2,17 +2,26 @@
  * API VERBS for Roles resource
  **/
 import type { Role } from '$lib/schemas/roleSchema';
+import { requireRole } from '$lib/server/auth';
 import type { InsertRole } from '$lib/server/db/schema/roles.js';
 import {
     createRole,
     getRoles,
 } from '$lib/server/repositories/roles.repository';
 import { json } from '@sveltejs/kit';
+import { error } from 'console';
 //
 export async function GET() {
-    const roles = await getRoles();
+    try {
+        requireRole('Admin');
+        //
+        const roles = await getRoles();
+        //
+        return json(roles);
+    } catch (err) {
+        throw err;
+    }
     //
-    return json(roles);
 }
 //
 export async function POST({ request }) {

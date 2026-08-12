@@ -4,7 +4,6 @@
 import type { InsertUserRole } from '$lib/server/db/schema/user-roles.js';
 import {
     createUserRole,
-    getUserRoles,
     getUserRolesBridged,
 } from '$lib/server/repositories/userRoles.repository.js';
 import { error, json } from '@sveltejs/kit';

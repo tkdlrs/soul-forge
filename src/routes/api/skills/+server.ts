@@ -3,10 +3,8 @@
  **/
 import {
     createSkill,
-    getSkills,
     getUsersSkills,
 } from '$lib/server/repositories/skill.repository';
-import { randomUUID } from 'crypto';
 import { json } from '@sveltejs/kit';
 import { getCurrentUser } from '$lib/server/auth.js';
 //

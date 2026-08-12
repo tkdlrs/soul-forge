@@ -100,3 +100,14 @@ export function makeRefreshToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 //
+export function requireRole(...roles: string[]) {
+    const { locals } = getRequestEvent();
+    //
+    if (!locals.user || locals.user === null) throw error(401, 'Unauthorized');
+    if (!locals.user.roles) throw error(401, 'Unauthorized');
+    //
+    if (!roles.every((role) => locals.user?.roles.includes(role)))
+        throw error(403, 'Forbidden');
+    //
+    return locals.user;
+}

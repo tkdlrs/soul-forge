@@ -9,6 +9,7 @@ declare global {
             user: {
                 id: number;
                 email: string;
+                roles: string[];
             } | null;
             //
             accessToken: string | null;

@@ -3,6 +3,7 @@ import type { Handle } from '@sveltejs/kit';
 import { extractBearerToken, validateJWT } from '$lib/server/auth';
 import { config } from '../src/config';
 import { getUser } from '$lib/server/repositories/user.repository';
+import { getSpecificUsersRoles } from '$lib/server/repositories/userRoles.repository';
 
 //
 export async function handle({ event, resolve }: Parameters<Handle>[0]) {
@@ -22,9 +23,17 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
             console.log('userId (from validateJWT call)', userId);
             // get the user from their id
             const user = await getUser(Number(userId));
+            if (!user) {
+                throw new Error('No user found');
+            }
             //
-            event.locals.user = user;
-            // event.locals.accessToken = authToken;
+            event.locals.user = { id: 0, email: '', roles: [] };
+            event.locals.user.id = user.id;
+            event.locals.user.email = user.email;
+            //
+            const userRoles = await getSpecificUsersRoles(user.id);
+            event.locals.user.roles = userRoles.map((item) => item.roleName);
+            console.log('event.locals.user.roles', event.locals.user.roles);
         } catch (err) {
             event.locals.user = null;
             // Invalid token; leave locals unathenticated.
