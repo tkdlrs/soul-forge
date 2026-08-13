@@ -4,7 +4,10 @@ import bootstrap from 'bootstrap';
 //
 declare global {
     namespace App {
-        // interface Error {}
+        interface Error {
+            message: string;
+            code?: string;
+        }
         interface Locals {
             user: {
                 id: number;

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { getRequestEvent } from '$app/server';
-import { error } from 'console';
+import { error } from '@sveltejs/kit';
 //
 const TOKEN_ISSUER = 'soulforge';
 //

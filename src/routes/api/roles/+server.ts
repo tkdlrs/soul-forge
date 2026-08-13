@@ -8,8 +8,7 @@ import {
     createRole,
     getRoles,
 } from '$lib/server/repositories/roles.repository';
-import { json } from '@sveltejs/kit';
-import { error } from 'console';
+import { isHttpError, json, error } from '@sveltejs/kit';
 //
 export async function GET() {
     try {
@@ -19,7 +18,11 @@ export async function GET() {
         //
         return json(roles);
     } catch (err) {
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;
+        // if (isHttpError(err)) throw err;
+        // console.error(err);
+        // error(500, 'Something went wrong');
     }
     //
 }

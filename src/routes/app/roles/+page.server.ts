@@ -3,17 +3,19 @@
  **/
 import z from 'zod/v4';
 import { RoleWithIdSchema } from '$lib/schemas/roleSchema';
+import { error } from '@sveltejs/kit';
 //
 export async function load({ fetch }) {
     try {
-        const repsonse = await fetch(`/api/roles`);
-        if (!repsonse.ok) {
-            console.log(repsonse);
-            throw new Error(
-                'App server side roles index page response not OK.',
-            );
+        const response = await fetch(`/api/roles`);
+        console.log('response', response);
+        console.log('response.body', response.body);
+        if (!response.ok) {
+            const body = await response.json();
+            error(response.status, body);
+            //
         }
-        const result = await repsonse.json();
+        const result = await response.json();
         const roles = z.array(RoleWithIdSchema).parse(result);
         //
         return {
@@ -21,6 +23,7 @@ export async function load({ fetch }) {
             isLoading: false,
         };
     } catch (err) {
-        throw new Error(`Error was ${err}`);
+        // console.log(`I caught the err. But I didn't catch no deputy. ${err}`);
+        throw err;
     }
 }
