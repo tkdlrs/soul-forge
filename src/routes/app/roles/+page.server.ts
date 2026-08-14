@@ -27,3 +27,7 @@ export async function load({ fetch }) {
         throw err;
     }
 }
+
+//
+// preserve the streak
+//
