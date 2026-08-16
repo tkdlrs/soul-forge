@@ -1,20 +1,27 @@
 <script lang="ts">
     /**
-     * App Frontend 'Role' SHOW and EDIT
+     * App Frontend 'Roles' SHOW and EDIT
      **/
     import RoleForm from '$lib/components/forms/resources/RoleForm.svelte';
     import { RoleWithIdSchema } from '$lib/schemas/roleSchema';
-    //
-    let name = $state<string>('');
+    import { onMount } from 'svelte';
     //
     let { data } = $props();
+    let name = $state<string>('');
+    let actionRoute = $state<string>('');
     //
-    const role = data.role;
-    RoleWithIdSchema.parse(role);
-    //
-    name = role.name;
-    //
-    const actionRoute = `/api/roles/${role.id}`;
+    onMount(() => {
+        try {
+            const role = data.role;
+            const checked = RoleWithIdSchema.parse(role);
+            //
+            name = checked.name;
+            actionRoute = `/api/roles/${role.id}`;
+        } catch (err) {
+            alert('ERROR');
+            console.error(err);
+        }
+    });
 </script>
 
 <!--  -->

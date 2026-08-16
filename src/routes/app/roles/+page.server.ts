@@ -13,7 +13,6 @@ export async function load({ fetch }) {
         if (!response.ok) {
             const body = await response.json();
             error(response.status, body);
-            //
         }
         const result = await response.json();
         const roles = z.array(RoleWithIdSchema).parse(result);
@@ -23,9 +22,7 @@ export async function load({ fetch }) {
             isLoading: false,
         };
     } catch (err) {
-        // console.log(`I caught the err. But I didn't catch no deputy. ${err}`);
         throw err;
     }
 }
-
 //

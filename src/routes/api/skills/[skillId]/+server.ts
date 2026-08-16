@@ -1,9 +1,21 @@
 /**
- * API VERBS for Skills [ ID ] resource
+ * API VERBS for 'Skills' [ ID ] resource
  * Working on a specified Skill
+ *
+ * Accessible by: 'Users'
+ *
+ * ---------------------------------------------------
+ * | GET    | Show      | view a Skill               |
+ * | PUT    | Edit      | change the data of a Skill |
+ * | DELETE | Remove    | kill a skill.              |
+ * ---------------------------------------------------
  **/
 import z from 'zod/v4';
-import { SkillEditSchema, type SkillWithId } from '$lib/schemas/skillSchema.js';
+import {
+    SkillEditSchema,
+    SkillWithIdSchema,
+    type SkillWithId,
+} from '$lib/schemas/skillSchema.js';
 import {
     deleteSkill,
     getSkill,
@@ -12,6 +24,7 @@ import {
 } from '$lib/server/repositories/skill.repository';
 import { error, json } from '@sveltejs/kit';
 
+// ToDo:// Add Authorization
 // Get all the sessions for a single skill that belongs to a single user
 export async function GET({ params, request }) {
     try {
@@ -32,10 +45,9 @@ export async function GET({ params, request }) {
             skillData = await getSkillByName(skillId);
         }
         //
+        const checkedSkillData = SkillWithIdSchema.parse(skillData);
         //
-        console.log('GET skillData:', skillData);
-        //
-        return json(skillData);
+        return json(checkedSkillData);
     } catch (err) {
         throw error(404, `Data not found`);
     }
@@ -68,7 +80,7 @@ export async function DELETE({ params, request }) {
         console.log('params:', params);
         //
         const skillId = params.skillId;
-        console.log(`Dellete things skill id be ${skillId}`);
+        console.log(`Delete things skill id be ${skillId}`);
         // z.uuid().parse(skillId);
         //
         console.log(`next is to call delete skill with skill id ${skillId}`);

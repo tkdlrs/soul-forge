@@ -2,6 +2,7 @@
     /**
      * App Frontend Skills INDEX
      **/
+    import { error } from '@sveltejs/kit';
     import { resolve } from '$app/paths';
     //
     import {
@@ -31,18 +32,22 @@
     let skills = $state<Array<SkillsWithActiveSkillSessions>>(data.skills);
     //
     async function deleteSkill(id: string) {
-        try {
-            await fetch(`/api/skills/${id}`, {
-                method: 'DELETE',
-            });
-            //
-            return window.location.assign(`${currentAppURI}/skills/`);
-        } catch (error) {
-            alert(`error`);
-            console.error(error);
+        if (confirm('Are you certain you want to delte this Skill?')) {
+            try {
+                const response = await fetch(`/api/skills/${id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) {
+                    const body = await response.json();
+                    error(response.status, body);
+                }
+                //
+                return window.location.assign(`${currentAppURI}/skills/`);
+            } catch (error) {
+                alert(`error`);
+                console.error(error);
+            }
         }
-
-        //
     }
     const rawDataSkillSessions = data.skillSessions;
     //

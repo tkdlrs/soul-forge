@@ -40,3 +40,12 @@ export async function updateRole(id: string, data: Partial<Role>) {
     return getRole(id);
 }
 //
+export async function deleteRole(id: string) {
+    try {
+        await db.delete(rolesTable).where(eq(rolesTable.id, id)).returning();
+        //
+        return;
+    } catch (err) {
+        console.error('issue');
+    }
+}

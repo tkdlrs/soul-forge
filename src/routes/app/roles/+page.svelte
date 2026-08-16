@@ -1,7 +1,8 @@
 <script lang="ts">
     /**
-     * App Frontend Roles INDEX
+     * App Frontend 'Roles' INDEX
      **/
+    import { error } from '@sveltejs/kit';
     import { resolve } from '$app/paths';
     import { currentAppURI } from '$lib/helpers/navigators';
     import { type RoleWithId } from '$lib/schemas/roleSchema.js';
@@ -11,12 +12,21 @@
     let roles = $state<RoleWithId[]>(data.roles);
     //
     async function deleteRole(id: string) {
-        try {
-            console.log(`You tried to delete ${id}`);
-            alert('set up delete');
-        } catch (err) {
-            alert('ERROR');
-            console.error(err);
+        if (confirm('Are you certain you want to delete this Role?')) {
+            try {
+                const response = await fetch(`/api/roles/${id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) {
+                    const body = await response.json();
+                    error(response.status, body);
+                }
+                //
+                return window.location.assign(`${currentAppURI}/roles/`);
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
         }
     }
 </script>
@@ -68,9 +78,8 @@
                                             </a>
                                             <button
                                                 class="btn btn-sm btn-danger"
-                                                onclick={() => {
-                                                    deleteRole(role.id);
-                                                }}
+                                                onclick={() =>
+                                                    deleteRole(role.id)}
                                             >
                                                 Delete
                                             </button>

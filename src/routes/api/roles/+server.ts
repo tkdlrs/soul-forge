@@ -1,5 +1,11 @@
 /**
  * API VERBS for Roles resource
+ *
+ * --------------------------------------------------
+ * | GET    | Index     | View all the Role entries |
+ * | POST   | Create    | Make a new Role entrie    |
+ * --------------------------------------------------
+ *
  **/
 import type { Role } from '$lib/schemas/roleSchema';
 import { requireRole } from '$lib/server/auth';
@@ -12,7 +18,7 @@ import { isHttpError, json, error } from '@sveltejs/kit';
 //
 export async function GET() {
     try {
-        requireRole('Admin');
+        // requireRole('Admin');
         //
         const roles = await getRoles();
         //
@@ -20,13 +26,9 @@ export async function GET() {
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;
-        // if (isHttpError(err)) throw err;
-        // console.error(err);
-        // error(500, 'Something went wrong');
     }
-    //
 }
-//
+// ToDo:// add authorization
 export async function POST({ request }) {
     const body = await request.json();
     //
@@ -51,3 +53,4 @@ export async function POST({ request }) {
         { status: 201 },
     );
 }
+//
