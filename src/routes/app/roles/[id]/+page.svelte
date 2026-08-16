@@ -10,18 +10,11 @@
     let name = $state<string>('');
     let actionRoute = $state<string>('');
     //
-    onMount(() => {
-        try {
-            const role = data.role;
-            const checked = RoleWithIdSchema.parse(role);
-            //
-            name = checked.name;
-            actionRoute = `/api/roles/${role.id}`;
-        } catch (err) {
-            alert('ERROR');
-            console.error(err);
-        }
-    });
+    const role = data.role;
+    const checked = RoleWithIdSchema.parse(role);
+    //
+    name = checked.name;
+    actionRoute = `/api/roles/${role.id}`;
 </script>
 
 <!--  -->

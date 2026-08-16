@@ -59,7 +59,11 @@
                 body: JSON.stringify(result),
             });
             if (!actionResult.ok) {
-                throw new Error('Request not OK');
+                console.log('actionResult', actionResult);
+                const actionBody = await actionResult.json();
+                throw new Error(
+                    `${actionResult.status} - ${actionBody.message}`,
+                );
             }
             console.log(
                 'made it after awaited fetch. 4 whatever that is worth',
@@ -95,6 +99,7 @@
             } else {
                 // freak out
                 console.error(`Error was: ${err}`);
+                errorMessage = String(err);
                 throw err;
             }
             return;

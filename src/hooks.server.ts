@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, HandleClientError } from '@sveltejs/kit';
 //
 import { extractBearerToken, validateJWT } from '$lib/server/auth';
 import { config } from '../src/config';

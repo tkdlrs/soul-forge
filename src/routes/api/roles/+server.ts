@@ -30,27 +30,32 @@ export async function GET() {
 }
 // ToDo:// add authorization
 export async function POST({ request }) {
-    const body = await request.json();
-    //
-    if (!body.name && typeof body.name !== 'string') {
-        throw new Error('Missing required fields');
+    try {
+        const body = await request.json();
+        //
+        if (!body.name && typeof body.name !== 'string') {
+            throw new Error('Missing required fields');
+        }
+        //
+        const role = await createRole({
+            name: body.name,
+        } satisfies Role);
+        if (!role) {
+            throw new Error('Could not create role');
+        }
+        //
+        return json(
+            {
+                id: role.id,
+                name: role.name,
+                createdAt: role.createdAt,
+                updatedAt: role.updatedAt,
+            } satisfies InsertRole,
+            { status: 201 },
+        );
+    } catch (err) {
+        console.log('caught: ', err, 'is HttpError', isHttpError(err));
+        throw err;
     }
-    //
-    const role = await createRole({
-        name: body.name,
-    } satisfies Role);
-    if (!role) {
-        throw new Error('Could not create role');
-    }
-    //
-    return json(
-        {
-            id: role.id,
-            name: role.name,
-            createdAt: role.createdAt,
-            updatedAt: role.updatedAt,
-        } satisfies InsertRole,
-        { status: 201 },
-    );
 }
 //

@@ -12,7 +12,11 @@
  *
  **/
 import z from 'zod/v4';
-import { RoleSchema, type RoleWithId } from '$lib/schemas/roleSchema.js';
+import {
+    RoleSchema,
+    RoleWithIdSchema,
+    type RoleWithId,
+} from '$lib/schemas/roleSchema.js';
 import {
     deleteRole,
     getRole,
@@ -23,7 +27,7 @@ import { requireRole } from '$lib/server/auth.js';
 //
 export async function GET({ params }) {
     try {
-        // requireRole('Admin');
+        requireRole('Admin');
         //
         let roleData: RoleWithId = {
             id: '',
@@ -34,10 +38,13 @@ export async function GET({ params }) {
         const checkedRoleId = z.uuid().parse(roleId);
         //
         roleData = await getRole(checkedRoleId);
+        console.log('roleData', roleData);
         //
-        const checkedRoleData = RoleSchema.parse(roleData);
+        const checkedRoleData = RoleWithIdSchema.parse(roleData);
         //
-        return json(checkedRoleData);
+        return json(checkedRoleData, {
+            status: 200,
+        });
     } catch (err) {
         console.log('caught: ', err, 'is HttpError:', isHttpError(err));
         throw err;
@@ -47,7 +54,7 @@ export async function GET({ params }) {
 // ToDo:// fix Authorization
 export async function PUT({ params, request }) {
     try {
-        // requireRole('Admin');
+        requireRole('Admin');
         //
         const body = await request.json();
         const role = { name: body.name };
@@ -59,7 +66,7 @@ export async function PUT({ params, request }) {
         //
         await updateRole(checkedRoleId, checkedUpdatedRole);
         //
-        return json(null, {
+        return new Response(null, {
             status: 204,
         });
     } catch (err) {
@@ -76,7 +83,7 @@ export async function DELETE({ params }) {
         //
         await deleteRole(roleId);
         //
-        return json(null, {
+        return new Response(null, {
             status: 204,
         });
     } catch (err) {

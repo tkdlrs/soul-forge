@@ -2,7 +2,6 @@
     /**
      * App Frontend 'Roles' INDEX
      **/
-    import { error } from '@sveltejs/kit';
     import { resolve } from '$app/paths';
     import { currentAppURI } from '$lib/helpers/navigators';
     import { type RoleWithId } from '$lib/schemas/roleSchema.js';
@@ -19,7 +18,9 @@
                 });
                 if (!response.ok) {
                     const body = await response.json();
-                    error(response.status, body);
+                    alert(`${response.status} - ${body.message}`);
+                    //
+                    return window.location.reload();
                 }
                 //
                 return window.location.assign(`${currentAppURI}/roles/`);
