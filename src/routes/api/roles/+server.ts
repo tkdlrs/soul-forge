@@ -1,5 +1,7 @@
 /**
- * API VERBS for Roles resource
+ * API VERBS for 'Roles' resource
+ *
+ * Accessible by: 'Admin'
  *
  * --------------------------------------------------
  * | GET    | Index     | View all the Role entries |
@@ -7,7 +9,8 @@
  * --------------------------------------------------
  *
  **/
-import type { Role } from '$lib/schemas/roleSchema';
+import z from 'zod/v4';
+import { RoleWithIdSchema, type Role } from '$lib/schemas/roleSchema';
 import { requireRole } from '$lib/server/auth';
 import type { InsertRole } from '$lib/server/db/schema/roles.js';
 import {
@@ -18,19 +21,22 @@ import { isHttpError, json, error } from '@sveltejs/kit';
 //
 export async function GET() {
     try {
-        // requireRole('Admin');
+        requireRole('Admin');
         //
-        const roles = await getRoles();
+        const roles = (await getRoles()) || [];
+        const checkedRolesData = z.array(RoleWithIdSchema).parse(roles);
         //
-        return json(roles);
+        return json(checkedRolesData);
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;
     }
 }
-// ToDo:// add authorization
+//
 export async function POST({ request }) {
     try {
+        requireRole('Admin');
+        //
         const body = await request.json();
         //
         if (!body.name && typeof body.name !== 'string') {
@@ -54,7 +60,7 @@ export async function POST({ request }) {
             { status: 201 },
         );
     } catch (err) {
-        console.log('caught: ', err, 'is HttpError', isHttpError(err));
+        console.log('caught: ', err, 'is HttpError:', isHttpError(err));
         throw err;
     }
 }

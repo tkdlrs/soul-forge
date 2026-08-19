@@ -8,8 +8,6 @@ import { error } from '@sveltejs/kit';
 export async function load({ fetch }) {
     try {
         const response = await fetch(`/api/roles`);
-        console.log('response', response);
-        console.log('response.body', response.body);
         if (!response.ok) {
             const body = await response.json();
             error(response.status, body);

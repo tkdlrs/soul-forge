@@ -22,14 +22,15 @@ import {
     getSkillByName,
     updateSkill,
 } from '$lib/server/repositories/skill.repository';
-import { error, json } from '@sveltejs/kit';
+import { error, isHttpError, json } from '@sveltejs/kit';
+import { requireRole } from '$lib/server/auth.js';
 
-// ToDo:// Add Authorization
+// ToDo:// Add Authorization and test it manually
 // Get all the sessions for a single skill that belongs to a single user
-export async function GET({ params, request }) {
+export async function GET({ params }) {
     try {
-        // console.log('params:', params);
-        // console.log('request:', request);
+        // requireRole('User');
+        //
         let skillData: SkillWithId = {
             id: '',
             userId: 0,
@@ -39,6 +40,7 @@ export async function GET({ params, request }) {
         //
         const skillId = params.skillId;
         const typeTest = z.uuid().safeParse(skillId);
+        //
         if (typeTest.success) {
             skillData = await getSkill(skillId);
         } else {
@@ -49,48 +51,51 @@ export async function GET({ params, request }) {
         //
         return json(checkedSkillData);
     } catch (err) {
-        throw error(404, `Data not found`);
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
 }
 //
 // Allow user to Edit/ Update the skill name and icon.
 export async function PUT({ params, request }) {
     try {
+        // requireRole('User');
         //
         const body = await request.json();
         const skill = { name: body.name, icon: body.icon };
-        SkillEditSchema.parse(skill);
         //
         const skillId = params.skillId;
-        z.uuid().parse(skillId);
+        const checkedSkillId = z.uuid().parse(skillId);
         //
-        await updateSkill(skillId, skill);
+        const checkedSkill = SkillEditSchema.parse(skill);
+        //
+        await updateSkill(checkedSkillId, checkedSkill);
         //
         return json(null, {
             status: 204,
         });
     } catch (err) {
-        throw error(404, `Error was ${err}`);
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
 }
 //
-export async function DELETE({ params, request }) {
+export async function DELETE({ params }) {
     try {
-        // console.log('request:', request);
-        console.log('params:', params);
+        // requireRole('User');
         //
         const skillId = params.skillId;
-        console.log(`Delete things skill id be ${skillId}`);
-        // z.uuid().parse(skillId);
         //
-        console.log(`next is to call delete skill with skill id ${skillId}`);
-        await deleteSkill(skillId);
-        console.log('after awaited skill delete');
+        console.log(`Delete things skill id be ${skillId}`);
+        const checkedSkillId = z.uuid().parse(skillId);
+        //
+        await deleteSkill(checkedSkillId);
         //
         return json(null, {
             status: 204,
         });
     } catch (err) {
-        throw error(400, `Error was ${err}`);
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
 }

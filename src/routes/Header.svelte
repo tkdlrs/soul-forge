@@ -1,6 +1,7 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
+    import { printJSON } from '$lib/helpers/formatters';
     //
     let { user } = $props();
 </script>
@@ -36,17 +37,20 @@
                             Home
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                            class="nav-link"
-                            aria-current={page.url.pathname === '/app/roles'
-                                ? 'page'
-                                : undefined}
-                            href={resolve('/app/roles')}
-                        >
-                            Roles
-                        </a>
-                    </li>
+                    {#if user && user.roles.includes('Admin')}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                aria-current={page.url.pathname === '/app/roles'
+                                    ? 'page'
+                                    : undefined}
+                                href={resolve('/app/roles')}
+                            >
+                                Roles
+                            </a>
+                        </li>
+                    {/if}
+
                     <li class="nav-item">
                         <a
                             class="nav-link"
@@ -59,6 +63,7 @@
                             User Roles
                         </a>
                     </li>
+                    <!--  -->
                     {#if user}
                         <li
                             class="nav-item"
@@ -88,7 +93,9 @@
                                 </button>
                             </form>
                         </li>
-                    {:else}
+                    {/if}
+                    <!--  -->
+                    {#if !user}
                         <li class="nav-item">
                             <a
                                 class="nav-link"

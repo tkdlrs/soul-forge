@@ -178,6 +178,8 @@ export function convertToCurrancyRange(milliseconds: number): string {
 }
 //
 export function getSkillsTotalMilliseconds(ranges: SkillSession[]): number {
+    if (!ranges || ranges.length === 1) return 0;
+    //
     return ranges.reduce((total, { startDateTime, endDateTime }) => {
         return (
             total +

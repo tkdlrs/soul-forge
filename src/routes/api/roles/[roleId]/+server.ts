@@ -38,7 +38,6 @@ export async function GET({ params }) {
         const checkedRoleId = z.uuid().parse(roleId);
         //
         roleData = await getRole(checkedRoleId);
-        console.log('roleData', roleData);
         //
         const checkedRoleData = RoleWithIdSchema.parse(roleData);
         //
