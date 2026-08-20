@@ -2,7 +2,7 @@
  * API VERBS for 'Roles' [ ID ] resource
  * Working on a specified Role.
  *
- * Accessible by: 'Admins'
+ * Accessible by: 'Admin'
  *
  * --------------------------------------------------
  * | GET    | Show      | view a Role               |

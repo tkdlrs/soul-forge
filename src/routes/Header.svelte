@@ -9,7 +9,7 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="/app">Soul Forge</a>
             <button
                 class="navbar-toggler"
                 type="button"
@@ -38,6 +38,16 @@
                         </a>
                     </li>
                     {#if user && user.roles.includes('Admin')}
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/app/users'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a class="nav-link" href={resolve('/app/users')}>
+                                All Users
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
@@ -63,18 +73,9 @@
                             User Roles
                         </a>
                     </li>
+
                     <!--  -->
                     {#if user}
-                        <li
-                            class="nav-item"
-                            aria-current={page.url.pathname === '/app/users'
-                                ? 'page'
-                                : undefined}
-                        >
-                            <a class="nav-link" href={resolve('/app/users')}>
-                                All Users
-                            </a>
-                        </li>
                         <li
                             class="nav-item"
                             aria-current={page.url.pathname === '/app/skills'

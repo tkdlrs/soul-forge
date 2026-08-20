@@ -24,16 +24,17 @@ export async function getSkillSessions(
     return sessions;
 }
 //
-export async function getSkillSession(skillSessionId: string) {
+export async function getSkillSession(skillSessionId: string, userId: number) {
     const [skillSession] = await db
         .select()
         .from(skillSessionsTable)
-        .where(eq(skillSessionsTable.id, skillSessionId));
+        .where(
+            and(
+                eq(skillSessionsTable.id, skillSessionId),
+                eq(skillSessionsTable.userId, userId),
+            ),
+        );
     //
-    // const skillSessionData = SkillSessionSchema.parse(skillSession);
-    // if (!skillSession) {
-    //     throw new Error('skill session is missin');
-    // }
     return skillSession;
 }
 //
@@ -63,7 +64,7 @@ export async function updateSkillSession(id: string, data: SkillSession) {
     console.log('='.repeat(100));
     console.log(`Updated Skill Session called`);
     // look for in database
-    const skillSessionData = await getSkillSession(data.id);
+    const skillSessionData = await getSkillSession(data.id, data.userId);
     console.log('skillSessionData', skillSessionData);
     // if doesn't exist we create.
     if (!skillSessionData) {

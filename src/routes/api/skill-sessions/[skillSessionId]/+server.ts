@@ -1,33 +1,51 @@
 /**
- * API VERBS for Skill Sessions [ ID ] resource
- * Working on a specified Skill Session.
+ * API VERBS for 'Skill Sessions' [ ID ] resource
+ * Working on a specified Skill Sessions.
+ *
+ * Accessible by: 'User'
+ *
+ * --------------------------------------------------------------
+ * | GET    | Show      | View a Skill Session                  |
+ * | PUT    | Edit      | change the data of a Skill session    |
+ * --------------------------------------------------------------
+ *
  **/
-import {
-    SkillSessionCreateSchema,
-    type SkillSession,
-} from '$lib/schemas/skillSessionSchema.js';
+import { SkillSessionCreateSchema } from '$lib/schemas/skillSessionSchema.js';
+import { requireRole } from '$lib/server/auth.js';
 import {
     getSkillSession,
     updateSkillSession,
 } from '$lib/server/repositories/skillSession.repository.js';
-import { json } from '@sveltejs/kit';
+import { isHttpError, json } from '@sveltejs/kit';
 
-//
-export async function GET({ params, request }) {
-    // console.log(`params:`, params);
-    // console.log(`request:`, request);
-    //
-    const skillSession = await getSkillSession(params.skillSessionId);
-    return json(skillSession);
-}
-// ToDo:// finish this
-export async function PUT({ params, request }) {
+// ToDo:// Test out the authorization manually
+export async function GET({ params, locals }) {
     try {
-        console.log('HI PUT PUT PUT.');
+        // requireRole('User');
+        //
+        const user = locals.user;
+        if (!user) {
+            throw new Error('User not found');
+        }
+        //
+        const skillSession = await getSkillSession(
+            params.skillSessionId,
+            user.id,
+        );
+        //
+        return json(skillSession);
+    } catch (err) {
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
+    }
+}
+//
+export async function PUT({ request }) {
+    try {
+        // requireRole('User');
         //
         const body = await request.json();
         const bodyChecked = SkillSessionCreateSchema.parse(body);
-        console.log('the bodyChecked', bodyChecked);
         //
         const skillSession = await updateSkillSession(
             bodyChecked.id,
@@ -38,7 +56,7 @@ export async function PUT({ params, request }) {
             status: 200,
         });
     } catch (err) {
-        //
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw new Error(`Error was ${err}`);
     }
 }

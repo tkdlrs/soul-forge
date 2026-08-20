@@ -3,7 +3,6 @@
  **/
 import { z } from 'zod/v4';
 import { trimStrings } from './_preprocessing';
-import { withId } from './_shared';
 //
 export const UserSchema = z.object({
     firstName: z
@@ -32,6 +31,9 @@ export type UserInsertToDatabase = z.infer<typeof UserInsertToDatabaseSchema>;
 //
 export const UserWithIdSchema = UserSchema.extend({ id: z.number() });
 export type UserWithId = z.infer<typeof UserWithIdSchema>;
+//
+export const UserEditSchema = z.preprocess(trimStrings, UserSchema);
+export type UserEdit = z.infer<typeof UserEditSchema>;
 /**
  *  ERROR TYPES
  **/

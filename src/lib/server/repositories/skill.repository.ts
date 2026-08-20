@@ -1,26 +1,31 @@
 /**
  * Skill Repository.
  * Functions for interacting with 'Skills' in database.
+ *
  **/
-import { SkillSchema, type SkillCreate } from '$lib/schemas/skillSchema';
+import {
+    SkillSchema,
+    type SkillCreate,
+    type SkillWithId,
+} from '$lib/schemas/skillSchema';
 import { db } from '$lib/server/db';
 import { skillsTable } from '$lib/server/db/schema/skills';
 import { randomUUID } from 'crypto';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 //
 //
-export async function getSkills() {
-    return db.select().from(skillsTable);
-}
-//
-export async function getUsersSkills(userID: number) {
-    const result = db
-        .select()
-        .from(skillsTable)
-        .where(eq(skillsTable.userId, userID));
+export async function getSkills(conditions: any[]): Promise<SkillWithId[]> {
+    const query = db.select().from(skillsTable);
+    if (conditions.length > 0) {
+        query.where(and(...conditions));
+    }
     //
-    return result ?? null;
+    const skills = await query;
+    //
+    return skills;
 }
+//
+
 //
 export async function createSkill(data: SkillCreate) {
     try {

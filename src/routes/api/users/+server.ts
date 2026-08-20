@@ -1,27 +1,38 @@
 /**
- * API VERBS for Users resource
+ * API VERBS for 'Users' resource
+ *
+ * Accessible by: 'Admin' and 'normies' when the want to create an account.
+ *
+ * --------------------------------------------------
+ * | GET    | Index     | View all the Users        |
+ * | POST   | Create    | Make a new Users          |
+ * --------------------------------------------------
  **/
-import { json } from '@sveltejs/kit';
+import { isHttpError, json } from '@sveltejs/kit';
 import { getUsers, createUser } from '$lib/server/repositories/user.repository';
-import { hashPassword } from '$lib/server/auth.js';
+import { hashPassword, requireRole } from '$lib/server/auth.js';
 import type { InsertUser } from '$lib/server/db/schema/users.js';
-
+import { UserCreateSchema } from '$lib/schemas/userSchema.js';
+//
 export async function GET() {
-    const users = await getUsers();
-    //
-    return json(users);
+    try {
+        requireRole('Admin');
+        //
+        const users = await getUsers();
+        //
+        return json(users);
+    } catch (err) {
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
+    }
 }
 //
 export type UserResponse = Omit<InsertUser, 'hashedPassword'>;
 //
 export async function POST({ request }) {
     try {
+        //
         const body = await request.json();
-        console.log('body', body);
-        console.log('body.firstName', body.firstName);
-        console.log('body.lastName', body.lastName);
-        console.log('body.email', body.email);
-        console.log('body.password', body.password);
         //
         if (
             !body.firstName ||
@@ -32,13 +43,21 @@ export async function POST({ request }) {
             throw new Error('Missing required fields');
         }
         //
-        const hashedPassword = await hashPassword(body.password);
-        console.log('hashedPassword', hashedPassword);
-        //
-        const user = await createUser({
+        const newUser = {
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
+            password: body.password,
+        };
+        const checkedUser = UserCreateSchema.parse(newUser);
+        //
+        const hashedPassword = await hashPassword(checkedUser.password);
+        console.log('hashedPassword', hashedPassword);
+        //
+        const user = await createUser({
+            firstName: checkedUser.firstName,
+            lastName: checkedUser.lastName,
+            email: checkedUser.email,
             hashedPassword,
         } satisfies InsertUser);
         //

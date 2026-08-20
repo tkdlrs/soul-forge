@@ -1,8 +1,8 @@
 /**
  * API VERBS for 'Skills' [ ID ] resource
- * Working on a specified Skill
+ * Working on a specified Skills
  *
- * Accessible by: 'Users'
+ * Accessible by: 'User'
  *
  * ---------------------------------------------------
  * | GET    | Show      | view a Skill               |
@@ -30,6 +30,7 @@ import { requireRole } from '$lib/server/auth.js';
 export async function GET({ params }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill belongs to current user.
         //
         let skillData: SkillWithId = {
             id: '',

@@ -12,16 +12,18 @@
  **/
 import z from 'zod/v4';
 import {
+    getSkills,
     createSkill,
-    getUsersSkills,
 } from '$lib/server/repositories/skill.repository';
 import { isHttpError, json } from '@sveltejs/kit';
-import { getCurrentUser, requireRole } from '$lib/server/auth.js';
+import { requireRole } from '$lib/server/auth.js';
 import {
     SkillCreateSchema,
     SkillWithIdSchema,
 } from '$lib/schemas/skillSchema.js';
-//
+import { skillsTable } from '$lib/server/db/schema/skills';
+import { eq } from 'drizzle-orm';
+
 //
 export async function GET({ locals }) {
     try {
@@ -31,8 +33,11 @@ export async function GET({ locals }) {
         if (!user) {
             throw new Error('User not found');
         }
-        // const user = getCurrentUser(); // remove this after confirming it works.
-        const skills = (await getUsersSkills(user.id)) || [];
+        //
+        const conditions = [];
+        conditions.push(eq(skillsTable.userId, user.id));
+        //
+        const skills = (await getSkills(conditions)) || [];
         const checkedSkills = z.array(SkillWithIdSchema).parse(skills);
         //
         return json(checkedSkills);
