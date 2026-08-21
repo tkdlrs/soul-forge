@@ -1,47 +1,85 @@
 /**
- * API VERBS for UserRoles resource
+ * API VERBS for 'UserRoles' resource
+ *
+ * Accessible by: 'Admin'
+ *
+ * ------------------------------------------------------
+ * | GET    | Index     | View all the 'UserRoles'      |
+ * | POST   | Create    | Assign a user a role          |
+ * -------------------------------------------------------
+ *
  **/
+import z from 'zod/v4';
+import { isHttpError, json } from '@sveltejs/kit';
+import { requireRole } from '$lib/server/auth.js';
+import {
+    UserRoleCreateSchema,
+    UserRoleWithIdSchema,
+} from '$lib/schemas/userRolesSchema.js';
 import type { InsertUserRole } from '$lib/server/db/schema/user-roles.js';
 import {
     createUserRole,
     getUserRolesBridged,
 } from '$lib/server/repositories/userRoles.repository.js';
-import { error, json } from '@sveltejs/kit';
 //
-export async function GET({ params, request }) {
+export async function GET() {
     try {
-        const userRoles = (await getUserRolesBridged()) || [];
+        requireRole('Admin');
         //
-        return json(userRoles);
+        const userRoles = (await getUserRolesBridged()) || [];
+        const checkedUserRoles = z.array(UserRoleWithIdSchema).parse(userRoles);
+        //
+        return json(checkedUserRoles);
     } catch (err) {
-        throw error(404, 'Data not found');
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
 }
 //
 export async function POST({ request }) {
-    const body = await request.json();
-    //
-    if (!body.userId || !body.roleId) {
-        throw new Error('Missing reuqired fields');
+    try {
+        requireRole('Admin');
+        //
+        const body = await request.json();
+        if (!body.userId || !body.roleId) {
+            return json(
+                {
+                    message: `Missing required fields. Unable to create 'userRole'.`,
+                },
+                { status: 400 },
+            );
+        }
+        //
+        const newUserRole = {
+            userId: body.userId,
+            roleId: body.roleId,
+        };
+        const checkedUserRole = UserRoleCreateSchema.parse(newUserRole);
+        //
+        const userRole = (await createUserRole(
+            checkedUserRole,
+        )) satisfies InsertUserRole;
+        //
+        if (!userRole) {
+            return json(
+                { error: `Could not create 'userRole'` },
+                { status: 400 },
+            );
+        }
+        //
+        return json(
+            {
+                id: userRole.id,
+                userId: userRole.userId,
+                roleId: userRole.roleId,
+                createdAt: userRole.createdAt,
+                updatedAt: userRole.updatedAt,
+            } satisfies InsertUserRole,
+            { status: 201 },
+        );
+    } catch (err) {
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
-    //
-    const userRole = (await createUserRole({
-        userId: body.userId,
-        roleId: body.roleId,
-    })) satisfies InsertUserRole;
-    //
-    if (!userRole) {
-        throw new Error(`Could not create userRole`);
-    }
-    //
-    return json(
-        {
-            id: userRole.id,
-            userId: userRole.userId,
-            roleId: userRole.roleId,
-            createdAt: userRole.createdAt,
-            updatedAt: userRole.updatedAt,
-        } satisfies InsertUserRole,
-        { status: 201 },
-    );
 }
+//

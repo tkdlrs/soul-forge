@@ -1,5 +1,5 @@
 /**
- * APP ServerSide Users CREATE page
+ * APP ServerSide 'Users' CREATE page
  **/
 export async function load() {
     try {
@@ -7,6 +7,6 @@ export async function load() {
             isLoading: false,
         };
     } catch (err) {
-        throw new Error(`Error was ${err}`);
+        throw err;
     }
 }

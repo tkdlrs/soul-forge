@@ -7,20 +7,23 @@
  * | GET    | Index     | View all the Users        |
  * | POST   | Create    | Make a new Users          |
  * --------------------------------------------------
+ *
  **/
+import z from 'zod/v4';
 import { isHttpError, json } from '@sveltejs/kit';
 import { getUsers, createUser } from '$lib/server/repositories/user.repository';
 import { hashPassword, requireRole } from '$lib/server/auth.js';
 import type { InsertUser } from '$lib/server/db/schema/users.js';
-import { UserCreateSchema } from '$lib/schemas/userSchema.js';
+import { UserCreateSchema, UserWithIdSchema } from '$lib/schemas/userSchema.js';
 //
 export async function GET() {
     try {
         requireRole('Admin');
         //
-        const users = await getUsers();
+        const users = (await getUsers()) || [];
+        const checkedUsers = z.array(UserWithIdSchema).parse(users);
         //
-        return json(users);
+        return json(checkedUsers);
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;
@@ -31,16 +34,21 @@ export type UserResponse = Omit<InsertUser, 'hashedPassword'>;
 //
 export async function POST({ request }) {
     try {
+        // Anyone is allowed to create an account.
         //
         const body = await request.json();
-        //
         if (
             !body.firstName ||
             !body.lastName ||
             !body.email ||
             !body.password
         ) {
-            throw new Error('Missing required fields');
+            return json(
+                {
+                    message: `Missing required fields. Unable to create 'user'.`,
+                },
+                { status: 400 },
+            );
         }
         //
         const newUser = {
@@ -52,7 +60,6 @@ export async function POST({ request }) {
         const checkedUser = UserCreateSchema.parse(newUser);
         //
         const hashedPassword = await hashPassword(checkedUser.password);
-        console.log('hashedPassword', hashedPassword);
         //
         const user = await createUser({
             firstName: checkedUser.firstName,
@@ -62,7 +69,10 @@ export async function POST({ request }) {
         } satisfies InsertUser);
         //
         if (!user) {
-            throw new Error('Could not create user');
+            return json(
+                { message: `Could not create 'User'.` },
+                { status: 400 },
+            );
         }
         //
         return json(
@@ -77,7 +87,8 @@ export async function POST({ request }) {
             { status: 201 },
         );
     } catch (err) {
-        throw new Error('something went the bad');
+        console.log('caught:', err, 'is HttpError:', isHttpError(err));
+        throw err;
     }
 }
 //

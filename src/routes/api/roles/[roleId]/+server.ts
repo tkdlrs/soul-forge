@@ -22,7 +22,7 @@ import {
     getRole,
     updateRole,
 } from '$lib/server/repositories/roles.repository';
-import { error, isHttpError, json } from '@sveltejs/kit';
+import { isHttpError, json } from '@sveltejs/kit';
 import { requireRole } from '$lib/server/auth.js';
 //
 export async function GET({ params }) {
@@ -55,19 +55,21 @@ export async function PUT({ params, request }) {
     try {
         requireRole('Admin');
         //
-        const body = await request.json();
-        const role = { name: body.name };
-        //
         const roleId = params.roleId;
         const checkedRoleId = z.uuid().parse(roleId);
         //
-        const checkedUpdatedRole = RoleSchema.parse(role);
+        const body = await request.json();
+        if (!body.name) {
+            return json(
+                { message: `Missing require fields. Unable to update 'Role'.` },
+                { status: 400 },
+            );
+        }
+        const modifiedRole = { name: body.name };
+        const checkedUpdatedRole = RoleSchema.parse(modifiedRole);
+        const role = await updateRole(checkedRoleId, checkedUpdatedRole);
         //
-        await updateRole(checkedRoleId, checkedUpdatedRole);
-        //
-        return new Response(null, {
-            status: 204,
-        });
+        return json(role);
     } catch (err) {
         console.log('caught: ', err, 'is HttpError', isHttpError(err));
         throw err;
@@ -79,10 +81,11 @@ export async function DELETE({ params }) {
         requireRole('Admin');
         //
         const roleId = params.roleId;
+        // ToDo:// check this
         //
         await deleteRole(roleId);
         //
-        return new Response(null, {
+        return json(null, {
             status: 204,
         });
     } catch (err) {

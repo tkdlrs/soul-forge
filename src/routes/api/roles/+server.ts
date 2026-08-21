@@ -17,7 +17,7 @@ import {
     createRole,
     getRoles,
 } from '$lib/server/repositories/roles.repository';
-import { isHttpError, json, error } from '@sveltejs/kit';
+import { isHttpError, json } from '@sveltejs/kit';
 //
 export async function GET() {
     try {
@@ -40,14 +40,22 @@ export async function POST({ request }) {
         const body = await request.json();
         //
         if (!body.name && typeof body.name !== 'string') {
-            throw new Error('Missing required fields');
+            return json(
+                {
+                    message: `Missing required fields. Unable to create 'Role'.`,
+                },
+                { status: 400 },
+            );
         }
         //
         const role = await createRole({
             name: body.name,
         } satisfies Role);
         if (!role) {
-            throw new Error('Could not create role');
+            return json(
+                { message: `Could not create 'Role'.` },
+                { status: 400 },
+            );
         }
         //
         return json(

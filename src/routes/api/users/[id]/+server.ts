@@ -1,6 +1,6 @@
 /**
  * API VERBS for 'Users' [ ID ] resource
- * Working on a specified Users
+ * Working on a specified 'Users'
  *
  * Accessible by: 'Admin'
  *
@@ -52,13 +52,19 @@ export async function PUT({ params, request }) {
         }
         //
         const body = await request.json();
+        if (!body.firstName || !body.lastName || !body.email) {
+            return json(
+                { message: `Missing required fields. Unable to update 'user'` },
+                { status: 400 },
+            );
+        }
+        //
         const modifiedUser = {
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
         };
         const checkedUser = UserEditSchema.parse(modifiedUser);
-        //
         const user = await updateUser(id, checkedUser);
         //
         return json(user);
@@ -67,7 +73,7 @@ export async function PUT({ params, request }) {
         throw err;
     }
 }
-// ToDo:// get this to error on client
+//
 export async function DELETE({ params }) {
     try {
         requireRole('Admin');
@@ -79,7 +85,7 @@ export async function DELETE({ params }) {
         //
         await deleteUser(id);
         //
-        return new Response(null, {
+        return json(null, {
             status: 204,
         });
     } catch (err) {
