@@ -13,7 +13,6 @@ import { skillsTable } from '$lib/server/db/schema/skills';
 import { randomUUID } from 'crypto';
 import { and, eq, sql } from 'drizzle-orm';
 //
-//
 export async function getSkills(conditions: any[]): Promise<SkillWithId[]> {
     const query = db.select().from(skillsTable);
     if (conditions.length > 0) {
@@ -24,8 +23,6 @@ export async function getSkills(conditions: any[]): Promise<SkillWithId[]> {
     //
     return skills;
 }
-//
-
 //
 export async function createSkill(data: SkillCreate) {
     try {

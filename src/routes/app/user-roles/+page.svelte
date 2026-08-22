@@ -3,10 +3,7 @@
      * App Frontend 'UserRole'
      **/
     import { currentAppURI } from '$lib/helpers/navigators';
-    import type {
-        UserRolesBridgedWithId,
-        UserRoleWithId,
-    } from '$lib/schemas/userRolesSchema.js';
+    import type { UserRolesBridgedWithId } from '$lib/schemas/userRolesSchema.js';
     //
     let { data } = $props();
     //
@@ -15,12 +12,23 @@
     );
     //
     async function deleteUserRole(id: string) {
-        try {
-            console.log(`You tried to delte ${id}`);
-            alert(`set up delete`);
-        } catch (err) {
-            alert('ERROR');
-            console.error(err);
+        if (confirm(`Are you certain you want to delete this UserRole?`)) {
+            try {
+                const response = await fetch(`/api/user-roles/${id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) {
+                    const body = await response.json();
+                    alert(`${response.status} - ${body.message}`);
+                    //
+                    return window.location.reload();
+                }
+                //
+                return window.location.assign(`${currentAppURI}/user-roles/`);
+            } catch (err) {
+                alert('ERROR');
+                console.error(err);
+            }
         }
     }
 </script>

@@ -41,16 +41,13 @@ export async function GET({ params }) {
         //
         const checkedRoleData = RoleWithIdSchema.parse(roleData);
         //
-        return json(checkedRoleData, {
-            status: 200,
-        });
+        return json(checkedRoleData);
     } catch (err) {
         console.log('caught: ', err, 'is HttpError:', isHttpError(err));
         throw err;
     }
 }
-// Allow user to Edit/ Update the role name.
-// ToDo:// fix Authorization
+//
 export async function PUT({ params, request }) {
     try {
         requireRole('Admin');
@@ -65,6 +62,7 @@ export async function PUT({ params, request }) {
                 { status: 400 },
             );
         }
+        //
         const modifiedRole = { name: body.name };
         const checkedUpdatedRole = RoleSchema.parse(modifiedRole);
         const role = await updateRole(checkedRoleId, checkedUpdatedRole);
@@ -81,15 +79,14 @@ export async function DELETE({ params }) {
         requireRole('Admin');
         //
         const roleId = params.roleId;
-        // ToDo:// check this
+        const checkedRoleId = z.uuid().parse(roleId);
         //
-        await deleteRole(roleId);
+        await deleteRole(checkedRoleId);
         //
-        return json(null, {
-            status: 204,
-        });
+        return new Response(null, { status: 204 });
     } catch (err) {
         console.log('caught: ', err, 'is HttpError', isHttpError(err));
         throw err;
     }
 }
+//

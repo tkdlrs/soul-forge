@@ -56,7 +56,7 @@
             //
             return result;
         } catch (err) {
-            alert('ERROR');
+            alert('Error');
             console.error('Could not get user Id options');
         }
     }

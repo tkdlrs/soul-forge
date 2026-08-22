@@ -17,13 +17,13 @@ import { eq } from 'drizzle-orm';
 export async function GET({ url, locals }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill session belongs to current user.
         //
         const user = locals.user;
         if (!user) {
             throw new Error('User not found');
         }
         const conditions = [];
-        //
         conditions.push(eq(skillSessionsTable.userId, user.id));
         //
         let skillId = url.searchParams.get('skillId');

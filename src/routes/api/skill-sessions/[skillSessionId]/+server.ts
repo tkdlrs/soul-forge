@@ -22,11 +22,13 @@ import { isHttpError, json } from '@sveltejs/kit';
 export async function GET({ params, locals }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill session belongs to current user.
         //
         const user = locals.user;
         if (!user) {
             throw new Error('User not found');
         }
+        // ToDo:// ZOD CHECK
         //
         const skillSession = await getSkillSession(
             params.skillSessionId,
@@ -43,10 +45,12 @@ export async function GET({ params, locals }) {
 export async function PUT({ request }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill session belongs to current user.
         //
         const body = await request.json();
         const bodyChecked = SkillSessionCreateSchema.parse(body);
         //
+        // ToDo:// ZOD CHECK
         const skillSession = await updateSkillSession(
             bodyChecked.id,
             bodyChecked,
@@ -60,3 +64,4 @@ export async function PUT({ request }) {
         throw new Error(`Error was ${err}`);
     }
 }
+//

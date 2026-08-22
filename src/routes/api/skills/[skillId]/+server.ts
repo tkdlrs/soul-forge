@@ -1,6 +1,6 @@
 /**
  * API VERBS for 'Skills' [ ID ] resource
- * Working on a specified Skills
+ * Working on a specified 'Skills'
  *
  * Accessible by: 'User'
  *
@@ -61,20 +61,18 @@ export async function GET({ params }) {
 export async function PUT({ params, request }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill belongs to current user.
         //
         const body = await request.json();
-        const skill = { name: body.name, icon: body.icon };
+        const modifiedSkill = { name: body.name, icon: body.icon };
         //
         const skillId = params.skillId;
         const checkedSkillId = z.uuid().parse(skillId);
+        const checkedSkill = SkillEditSchema.parse(modifiedSkill);
         //
-        const checkedSkill = SkillEditSchema.parse(skill);
+        const skill = await updateSkill(checkedSkillId, checkedSkill);
         //
-        await updateSkill(checkedSkillId, checkedSkill);
-        //
-        return json(null, {
-            status: 204,
-        });
+        return json(skill);
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;
@@ -84,17 +82,14 @@ export async function PUT({ params, request }) {
 export async function DELETE({ params }) {
     try {
         // requireRole('User');
+        // ToDo:// add a check that this skill belongs to current user.
         //
         const skillId = params.skillId;
-        //
-        console.log(`Delete things skill id be ${skillId}`);
         const checkedSkillId = z.uuid().parse(skillId);
         //
         await deleteSkill(checkedSkillId);
         //
-        return json(null, {
-            status: 204,
-        });
+        return new Response(null, { status: 204 });
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
         throw err;

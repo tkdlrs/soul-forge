@@ -11,6 +11,7 @@
  * --------------------------------------------------
  *
  **/
+import z from 'zod/v4';
 import { isHttpError, json } from '@sveltejs/kit';
 import {
     getUser,
@@ -79,15 +80,11 @@ export async function DELETE({ params }) {
         requireRole('Admin');
         //
         const id = Number(params.id);
-        if (Number.isNaN(id)) {
-            return json({ error: 'Invalid user id' }, { status: 400 });
-        }
+        const checkedId = z.coerce.number().parse(id);
         //
-        await deleteUser(id);
+        await deleteUser(checkedId);
         //
-        return json(null, {
-            status: 204,
-        });
+        return new Response(null, { status: 204 });
     } catch (err) {
         console.log('caught:', err, 'is HttpError', isHttpError(err));
         throw err;

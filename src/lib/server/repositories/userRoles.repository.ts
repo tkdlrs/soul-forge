@@ -12,8 +12,7 @@ import { userRolesTable } from '../db/schema/user-roles';
 import { usersTable } from '../db/schema/users';
 import { eq } from 'drizzle-orm';
 import { rolesTable } from '../db/schema/roles';
-
-// ToDo:// use and outer join to get the user name and role name from the other tables.
+//
 export async function getUserRoles() {
     return db.select().from(userRolesTable);
 }
@@ -59,4 +58,8 @@ export async function createUserRole(data: UserRoleCreate) {
     } catch (err) {
         throw new Error(`Error was ${err}`);
     }
+}
+//
+export async function deleteUserRole(userRoleId: string) {
+    await db.delete(userRolesTable).where(eq(userRolesTable.id, userRoleId));
 }

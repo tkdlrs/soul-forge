@@ -12,9 +12,15 @@
     //
     async function deleteUser(id: number) {
         try {
-            await fetch(`/api/users/${id}`, {
+            const response = await fetch(`/api/users/${id}`, {
                 method: 'DELETE',
             });
+            if (!response.ok) {
+                const body = await response.json();
+                alert(`${response.status} - ${body.message}`);
+                //
+                return window.location.reload();
+            }
             //
             return window.location.assign(`${currentAppURI}/users/`);
         } catch (err) {

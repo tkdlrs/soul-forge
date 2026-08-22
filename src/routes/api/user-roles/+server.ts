@@ -14,7 +14,7 @@ import { isHttpError, json } from '@sveltejs/kit';
 import { requireRole } from '$lib/server/auth.js';
 import {
     UserRoleCreateSchema,
-    UserRoleWithIdSchema,
+    UserRolesBridgedWithIdSchema,
 } from '$lib/schemas/userRolesSchema.js';
 import type { InsertUserRole } from '$lib/server/db/schema/user-roles.js';
 import {
@@ -27,7 +27,9 @@ export async function GET() {
         requireRole('Admin');
         //
         const userRoles = (await getUserRolesBridged()) || [];
-        const checkedUserRoles = z.array(UserRoleWithIdSchema).parse(userRoles);
+        const checkedUserRoles = z
+            .array(UserRolesBridgedWithIdSchema)
+            .parse(userRoles);
         //
         return json(checkedUserRoles);
     } catch (err) {

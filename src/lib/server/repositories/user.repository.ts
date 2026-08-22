@@ -9,7 +9,6 @@ import {
 import { db } from '$lib/server/db';
 import { usersTable, type InsertUser } from '$lib/server/db/schema/users';
 import { eq } from 'drizzle-orm';
-
 //
 export async function getUsers() {
     return db.select().from(usersTable);
@@ -44,7 +43,6 @@ export async function getUserByEmail(email: string) {
 //
 export async function updateUser(id: number, data: Partial<UserCreateData>) {
     await db.update(usersTable).set(data).where(eq(usersTable.id, id));
-
     return getUser(id);
 }
 //

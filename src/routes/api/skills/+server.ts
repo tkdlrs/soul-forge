@@ -6,7 +6,6 @@
  * ----------------------------------------------------------------------
  * | GET    | Index     | View all the Skill entries (for current user) |
  * | POST   | Create    | Make a new Skill (for current user)           |
- * |
  * ----------------------------------------------------------------------
  *
  **/
@@ -23,7 +22,6 @@ import {
 } from '$lib/schemas/skillSchema.js';
 import { skillsTable } from '$lib/server/db/schema/skills';
 import { eq } from 'drizzle-orm';
-
 //
 export async function GET({ locals }) {
     try {
@@ -77,7 +75,3 @@ export async function POST({ request, locals }) {
     }
 }
 //
-// export async function DELETE({ request }) {
-//     console.log('this was hit instead?');
-//     return;
-// }
