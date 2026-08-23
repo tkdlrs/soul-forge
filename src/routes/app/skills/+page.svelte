@@ -2,7 +2,6 @@
     /**
      * App Frontend Skills INDEX
      **/
-    import { error } from '@sveltejs/kit';
     import { resolve } from '$app/paths';
     //
     import {
@@ -39,13 +38,15 @@
                 });
                 if (!response.ok) {
                     const body = await response.json();
-                    error(response.status, body);
+                    alert(`${response.status} - ${body.message} `);
+                    //
+                    return window.location.reload();
                 }
                 //
                 return window.location.assign(`${currentAppURI}/skills/`);
-            } catch (error) {
-                alert(`error`);
-                console.error(error);
+            } catch (err) {
+                alert(`Error`);
+                console.error(err);
             }
         }
     }
@@ -204,40 +205,42 @@
                                                     xpToMilliseconds(xpNextLvl),
                                                 )}
                                             </td>
-                                            <td class="d-flex">
-                                                <div class="p-1">
-                                                    <a
-                                                        data-sveltekit-preload-data="false"
-                                                        class="btn btn-sm btn-success"
-                                                        href={resolve(
-                                                            `/app/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
-                                                        )}
-                                                    >
-                                                        Train
-                                                    </a>
-                                                </div>
-                                                <div class="p-1">
-                                                    <a
-                                                        data-sveltekit-preload-data="false"
-                                                        class="btn btn-sm btn-warning"
-                                                        href={resolve(
-                                                            `/app/skills/${skill.id}`,
-                                                        )}
-                                                    >
-                                                        Edit
-                                                    </a>
-                                                </div>
-                                                <div class="p-1">
-                                                    <button
-                                                        data-sveltekit-preload-data="false"
-                                                        class="btn btn-sm btn-danger"
-                                                        onclick={() =>
-                                                            deleteSkill(
-                                                                skill.id,
+                                            <td>
+                                                <div class="d-flex">
+                                                    <div class="p-1">
+                                                        <a
+                                                            data-sveltekit-preload-data="false"
+                                                            class="btn btn-sm btn-success"
+                                                            href={resolve(
+                                                                `/app/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
                                                             )}
-                                                    >
-                                                        Delete
-                                                    </button>
+                                                        >
+                                                            Train
+                                                        </a>
+                                                    </div>
+                                                    <div class="p-1">
+                                                        <a
+                                                            data-sveltekit-preload-data="false"
+                                                            class="btn btn-sm btn-warning"
+                                                            href={resolve(
+                                                                `/app/skills/${skill.id}`,
+                                                            )}
+                                                        >
+                                                            Edit
+                                                        </a>
+                                                    </div>
+                                                    <div class="p-1">
+                                                        <button
+                                                            data-sveltekit-preload-data="false"
+                                                            class="btn btn-sm btn-danger"
+                                                            onclick={() =>
+                                                                deleteSkill(
+                                                                    skill.id,
+                                                                )}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

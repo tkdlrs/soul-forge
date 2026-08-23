@@ -57,16 +57,27 @@ import { withId } from '$lib/schemas/_shared.js';
 //     },
 // };
 //
-export async function load({ fetch, params }): Promise<TrainSkillPageData> {
+export async function load({
+    fetch,
+    params,
+    locals,
+}): Promise<TrainSkillPageData> {
     try {
-        // USER ID ToDo:// -somehow we must know this. For real. Not just a hard-coded number 1.
-        const userId = 1;
+        // USER ID
+        const userId = locals.user?.id;
+        if (!userId) {
+            throw new Error('user id not provided. Unable to continue');
+        }
         //
         console.log('train params:', params);
         // Use the 'Skill Name' to figure out the Skill's ID
         const skillName = params.skillName;
         // z.uuid().parse(skillId);
         const skillsRequest = await fetch(`/api/skills`);
+        if (!skillsRequest.ok) {
+            console.log('the Skill request was not okay');
+            throw new Error('the Skill request was not okay');
+        }
         const skillsResponse = await skillsRequest.json();
         //
         const skillsCheck = z.array(SkillWithIdSchema).parse(skillsResponse);

@@ -69,21 +69,27 @@
                                         <!-- <th scope="row"> {role.id} </th> -->
                                         <td> {role.name}</td>
                                         <td>
-                                            <a
-                                                href={resolve(
-                                                    `/app/roles/${role.id}`,
-                                                )}
-                                                class="btn btn-sm btn-warning"
-                                            >
-                                                Edit
-                                            </a>
-                                            <button
-                                                class="btn btn-sm btn-danger"
-                                                onclick={() =>
-                                                    deleteRole(role.id)}
-                                            >
-                                                Delete
-                                            </button>
+                                            <div class="d-flex">
+                                                <div class="p-1">
+                                                    <a
+                                                        href={resolve(
+                                                            `/app/roles/${role.id}`,
+                                                        )}
+                                                        class="btn btn-sm btn-warning"
+                                                    >
+                                                        Edit
+                                                    </a>
+                                                </div>
+                                                <div class="p-1">
+                                                    <button
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick={() =>
+                                                            deleteRole(role.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 {/each}

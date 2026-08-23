@@ -50,28 +50,27 @@
             //
             console.log(`config.action: ${config.action}`);
             console.log('Result is', result);
+            console.log(`config.method: ${config.method}`);
             // run an action here...
-            const actionResult = await fetch(config.action, {
+            const actionResponse = await fetch(config.action, {
                 method: config.method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(result),
             });
-            if (!actionResult.ok) {
-                console.log('actionResult', actionResult);
-                const actionBody = await actionResult.json();
-                throw new Error(
-                    `${actionResult.status} - ${actionBody.message}`,
-                );
+            if (!actionResponse.ok) {
+                console.log('actionResult', actionResponse);
+                const body = await actionResponse.json();
+                throw new Error(`${actionResponse.status} - ${body.message}`);
             }
             console.log(
                 'made it after awaited fetch. 4 whatever that is worth',
             );
             //
-            console.log('actionResult', actionResult);
+            console.log('actionResult', actionResponse);
             if (config.hasOwnProperty('postCallback')) {
-                const actionResultData = await actionResult.json();
+                const actionResultData = await actionResponse.json();
                 console.log('actionResultData', actionResultData);
                 config.postCallback(actionResultData);
             }

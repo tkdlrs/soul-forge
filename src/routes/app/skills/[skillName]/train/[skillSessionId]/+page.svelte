@@ -16,6 +16,7 @@
         getSkillsTotalMilliseconds,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
+    import { currentAppURI } from '$lib/helpers/navigators';
     import {
         currentXpEarnedAtLevel,
         levelProgress,
@@ -116,6 +117,27 @@
     const currentSkillSession = data?.skillSessions.findIndex(
         (item) => item.id === currentSessionId,
     );
+    //
+    async function deleteSkillSession(id: string, name: string) {
+        if (confirm('Are you certain you want to delete this Skill Session?')) {
+            try {
+                const response = await fetch(`/api/skill-sessions/${id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) {
+                    const body = await response.json();
+                    alert(`${response.status} - ${body.message}`);
+                    //
+                    return window.location.reload();
+                }
+                //
+                return window.location.assign(`${currentAppURI}/skills/`);
+            } catch (err) {
+                alert('Error');
+                console.error(err);
+            }
+        }
+    }
     /**
      * TABS stuff
      **/
@@ -490,17 +512,45 @@
                                             <td> {currentExp.toFixed(0)} </td>
                                             <td> {@html minimumWageRange} </td>
                                             <td>
-                                                <a
-                                                    class="btn btn-sm btn-warning"
-                                                    href={resolve(
-                                                        `/app/skill-sessions/${session.id}`,
-                                                    )}
-                                                >
-                                                    Edit
-                                                </a>
+                                                <div class="d-flex">
+                                                    <div class="p-1">
+                                                        <a
+                                                            class="btn btn-sm btn-warning"
+                                                            href={resolve(
+                                                                `/app/skill-sessions/${session.id}`,
+                                                            )}
+                                                        >
+                                                            Edit
+                                                        </a>
+                                                    </div>
+                                                    <div class="p-1">
+                                                        <button
+                                                            data-sveltekit-preload-data="false"
+                                                            class="btn btn-sm btn-danger"
+                                                            onclick={() =>
+                                                                deleteSkillSession(
+                                                                    session.id,
+                                                                    skillName,
+                                                                )}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     {/each}
+                                </tbody>
+                                <tbody class="table-dark text-white bg-primary">
+                                    <tr>
+                                        <td>Totals</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

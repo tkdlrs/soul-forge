@@ -16,7 +16,7 @@ import { eq } from 'drizzle-orm';
 
 export async function GET({ url, locals }) {
     try {
-        // requireRole('User');
+        requireRole('User');
         // ToDo:// add a check that this skill session belongs to current user.
         //
         const user = locals.user;

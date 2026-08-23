@@ -71,7 +71,7 @@ export async function updateSkillSession(id: string, data: SkillSession) {
         console.log('if not skillSessionData then we call create');
         await createSkillSession(data);
     }
-    // if exists to this
+    // if exists do this
     else {
         await db
             .update(skillSessionsTable)
@@ -83,3 +83,16 @@ export async function updateSkillSession(id: string, data: SkillSession) {
     return;
 }
 //
+export async function deleteSkillSession(id: string) {
+    try {
+        await db
+            .delete(skillSessionsTable)
+            .where(eq(skillSessionsTable.id, id))
+            .returning();
+        //
+        return;
+    } catch (err) {
+        console.error('issue');
+        throw err;
+    }
+}

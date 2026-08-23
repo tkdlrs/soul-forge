@@ -47,5 +47,6 @@ export async function deleteRole(id: string) {
         return;
     } catch (err) {
         console.error('issue');
+        throw err;
     }
 }
