@@ -31,7 +31,7 @@
     let skills = $state<Array<SkillsWithActiveSkillSessions>>(data.skills);
     //
     async function deleteSkill(id: string) {
-        if (confirm('Are you certain you want to delte this Skill?')) {
+        if (confirm('Are you certain you want to delete this Skill?')) {
             try {
                 const response = await fetch(`/api/skills/${id}`, {
                     method: 'DELETE',

@@ -83,11 +83,16 @@ export async function updateSkillSession(id: string, data: SkillSession) {
     return;
 }
 //
-export async function deleteSkillSession(id: string) {
+export async function deleteSkillSession(id: string, userId: number) {
     try {
         await db
             .delete(skillSessionsTable)
-            .where(eq(skillSessionsTable.id, id))
+            .where(
+                and(
+                    eq(skillSessionsTable.id, id),
+                    eq(skillSessionsTable.userId, userId),
+                ),
+            )
             .returning();
         //
         return;

@@ -3,6 +3,7 @@
      * Frontend 'Skill' page SHOW
      * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
      **/
+    import { onMount } from 'svelte';
     import { resolve } from '$app/paths';
     import LineChart from '$lib/components/charts/LineChart.svelte';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
@@ -31,10 +32,8 @@
         TrainSkillPageData,
         SkillSession,
     } from '$lib/schemas/skillSessionSchema';
-    import { onMount } from 'svelte';
     //
     let { data }: { data: TrainSkillPageData } = $props();
-    // $inspect(data);
     //
     let skillSessions = $state<SkillSession[]>(data.skillSessions);
     skillSessions = skillSessions.sort(
@@ -46,18 +45,19 @@
         //
         for (let i = 0; i < skillSessions.length; i++) {
             const session = skillSessions[i];
+            console.log('session', session);
             if (!session.endDateTime) {
                 continue;
             }
             //
-            const START_ISO_DATE = new Date(session.startDateTime)
-                .toISOString()
-                .slice(0, 10);
-            const END_ISO_DATE = new Date(session.endDateTime)
-                .toISOString()
-                .slice(0, 10);
+            const START_ISO_DATE = toDateTimeLocal(
+                new Date(session.startDateTime),
+            );
+            console.log('START_ISO_DATE', START_ISO_DATE);
+            const END_ISO_DATE = toDateTimeLocal(new Date(session.endDateTime));
+            console.log('END_ISO_DATE', END_ISO_DATE);
             //
-            if (START_ISO_DATE !== END_ISO_DATE) {
+            if (START_ISO_DATE.slice(0, 10) !== END_ISO_DATE.slice(0, 10)) {
                 throw new Error(
                     'Skill Session Start and Skill Session End are on different days.',
                 );
@@ -80,7 +80,6 @@
         //
         return output;
     });
-    $inspect(skillSessions);
     //
     let arrayEachSkillSessionDurationInMilliseconds = $derived.by<number[]>(
         () => {
@@ -190,7 +189,6 @@
         //
         return updatedArr;
     });
-    $inspect(currentViewLabels);
     //
     let currentViewData = $derived.by<Array<number | null>>(() => {
         const today = new Date();
@@ -218,7 +216,6 @@
         //
         return updatedArr;
     });
-    $inspect(currentViewData);
 
     /**
      *
@@ -227,12 +224,9 @@
      **/
     let startDateTime = $state<Date | string | null>(null);
     if (currentSkillSession != -1) {
-        console.log('heello');
-        console.log('startDateTime', startDateTime);
         startDateTime = toDateTimeLocal(
             data.skillSessions[currentSkillSession].startDateTime,
         );
-        console.log('startDateTime', startDateTime);
     }
 
     let endDateTime = $state<Date | string | null>(null);
