@@ -19,6 +19,7 @@ import { requireRole } from '$lib/server/auth.js';
 import {
     SkillCreateSchema,
     SkillWithIdSchema,
+    type SkillCreate,
 } from '$lib/schemas/skillSchema.js';
 import { skillsTable } from '$lib/server/db/schema/skills';
 import { eq } from 'drizzle-orm';
@@ -57,7 +58,7 @@ export async function POST({ request, locals }) {
         }
         //
         const body = await request.json();
-        const newSkill = {
+        const newSkill: SkillCreate = {
             name: body.name,
             icon: body.icon,
             userId: user.id,

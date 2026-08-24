@@ -76,7 +76,7 @@ export async function PUT({ request, locals }) {
             bodyChecked.id,
             bodyChecked,
         );
-        // not sure what status code to use...
+        //
         return json(skillSession);
     } catch (err) {
         console.log('caught:', err, 'is HttpError:', isHttpError(err));
@@ -86,7 +86,7 @@ export async function PUT({ request, locals }) {
 //
 export async function DELETE({ params, locals }) {
     try {
-        //
+        // ToDo:// See this in the console at least once before removing.
         console.log('WHATS LOVE GOT TO DO GOTTA DO WITH IT?');
         //
         requireRole('User');

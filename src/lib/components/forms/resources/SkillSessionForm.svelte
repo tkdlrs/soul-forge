@@ -18,7 +18,7 @@
     // $inspect(data);
     // Form config
     const skillSessionConfig = {
-        ///app/skill-sessions
+        // skill-sessions
         slug: `/skills`,
         schema: SkillSessionCreateSchema,
 

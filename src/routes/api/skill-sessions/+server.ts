@@ -13,11 +13,10 @@ import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
 import { getSkillSessions } from '$lib/server/repositories/skillSession.repository';
 import { isHttpError, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-
+//
 export async function GET({ url, locals }) {
     try {
         requireRole('User');
-        // ToDo:// add a check that this skill session belongs to current user.
         //
         const user = locals.user;
         if (!user) {
@@ -43,3 +42,4 @@ export async function GET({ url, locals }) {
         throw err;
     }
 }
+//

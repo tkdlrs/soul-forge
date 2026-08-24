@@ -14,14 +14,18 @@ import { randomUUID } from 'crypto';
 import { and, eq, sql } from 'drizzle-orm';
 //
 export async function getSkills(conditions: any[]): Promise<SkillWithId[]> {
-    const query = db.select().from(skillsTable);
-    if (conditions.length > 0) {
-        query.where(and(...conditions));
+    try {
+        const query = db.select().from(skillsTable);
+        if (conditions.length > 0) {
+            query.where(and(...conditions));
+        }
+        //
+        const skills = await query;
+        //
+        return skills;
+    } catch (err) {
+        throw new Error(`Error getting skills. ${err}`);
     }
-    //
-    const skills = await query;
-    //
-    return skills;
 }
 //
 export async function createSkill(data: SkillCreate) {
@@ -36,38 +40,70 @@ export async function createSkill(data: SkillCreate) {
     }
 }
 //
-export async function getSkill(id: string) {
-    const result = await db
-        .select()
-        .from(skillsTable)
-        .where(eq(skillsTable.id, id));
-    //
-    return result[0] ?? null;
+export async function getSkill(id: string, userId: number) {
+    try {
+        const result = await db
+            .select()
+            .from(skillsTable)
+            .where(and(eq(skillsTable.id, id), eq(skillsTable.userId, userId)));
+        //
+        return result[0] ?? null;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
+    }
 }
 //
-export async function getSkillByName(name: string) {
-    const result = await db
-        .select()
-        .from(skillsTable)
-        .where(sql`lower(${skillsTable.name}) = lower(${name})`)
-        .limit(1);
-    //
-    return result[0] ?? null;
+export async function getSkillByName(name: string, userId: number) {
+    try {
+        const result = await db
+            .select()
+            .from(skillsTable)
+            .where(
+                and(
+                    sql`lower(${skillsTable.name}) = lower(${name})`,
+                    eq(skillsTable.userId, userId),
+                ),
+            )
+            .limit(1);
+        //
+        return result[0] ?? null;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
+    }
 }
 //
 export async function updateSkill(id: string, data: Partial<SkillCreate>) {
-    await db.update(skillsTable).set(data).where(eq(skillsTable.id, id));
-    //
-    return getSkill(id);
-}
-//
-export async function deleteSkill(id: string) {
     try {
-        await db.delete(skillsTable).where(eq(skillsTable.id, id)).returning();
+        if (!data.userId) {
+            throw new Error('No user id provided. Unable to continue');
+        }
+        //
+        await db
+            .update(skillsTable)
+            .set(data)
+            .where(
+                and(
+                    eq(skillsTable.id, id),
+                    eq(skillsTable.userId, data.userId),
+                ),
+            );
         //
         return;
     } catch (err) {
-        console.error('deleteSkill failed:', err);
+        throw new Error(`Error was ${err}`);
+    }
+}
+//
+export async function deleteSkill(id: string, userId: number) {
+    try {
+        await db
+            .delete(skillsTable)
+            .where(and(eq(skillsTable.id, id), eq(skillsTable.userId, userId)))
+            .returning();
+        //
+        return;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
     }
 }
 //

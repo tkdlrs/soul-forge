@@ -9,7 +9,7 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand" href="/app">Soul Forge</a>
+            <a class="navbar-brand" href="/">Soul Forge</a>
             <button
                 class="navbar-toggler"
                 type="button"
@@ -40,21 +40,21 @@
                     {#if user && user.roles.includes('Admin')}
                         <li
                             class="nav-item"
-                            aria-current={page.url.pathname === '/app/users'
+                            aria-current={page.url.pathname === '/users'
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/app/users')}>
+                            <a class="nav-link" href={resolve('/users')}>
                                 All Users
                             </a>
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                aria-current={page.url.pathname === '/app/roles'
+                                aria-current={page.url.pathname === '/roles'
                                     ? 'page'
                                     : undefined}
-                                href={resolve('/app/roles')}
+                                href={resolve('/roles')}
                             >
                                 Roles
                             </a>
@@ -63,10 +63,10 @@
                             <a
                                 class="nav-link"
                                 aria-current={page.url.pathname ===
-                                '/app/user-roles'
+                                '/user-roles'
                                     ? 'page'
                                     : undefined}
-                                href={resolve('/app/user-roles')}
+                                href={resolve('/user-roles')}
                             >
                                 User Roles
                             </a>
@@ -77,17 +77,17 @@
                     {#if user}
                         <li
                             class="nav-item"
-                            aria-current={page.url.pathname === '/app/skills'
+                            aria-current={page.url.pathname === '/skills'
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/app/skills')}>
+                            <a class="nav-link" href={resolve('/skills')}>
                                 Skills
                             </a>
                         </li>
                         <li class="nav-item">
                             <!-- svelte-ignore component_name_lowercase -->
-                            <form action="/app/logout" method="POST">
+                            <form action="/logout" method="POST">
                                 <button class="nav-link btn btn-link">
                                     Logout
                                 </button>
@@ -97,15 +97,12 @@
                     <!--  -->
                     {#if !user}
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href={resolve('/app/users/create')}
-                            >
+                            <a class="nav-link" href={resolve('/users/create')}>
                                 Create Account
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={resolve('/app/login')}>
+                            <a class="nav-link" href={resolve('/login')}>
                                 Login
                             </a>
                         </li>

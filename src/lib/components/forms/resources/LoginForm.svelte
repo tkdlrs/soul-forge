@@ -19,7 +19,7 @@
     // $inspect(data);
     // Form config
     const loginConfig = {
-        ///app/
+        //
         slug: `/`,
         schema: LoginSchema,
 

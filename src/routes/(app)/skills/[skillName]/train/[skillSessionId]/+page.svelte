@@ -248,7 +248,7 @@
     onMount(() => {
         if (endDateTime != null) {
             window.location.assign(
-                `/app/skills/${data.skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
+                `/skills/${data.skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
             );
         }
     });
@@ -511,7 +511,7 @@
                                                         <a
                                                             class="btn btn-sm btn-warning"
                                                             href={resolve(
-                                                                `/app/skill-sessions/${session.id}`,
+                                                                `/skill-sessions/${session.id}`,
                                                             )}
                                                         >
                                                             Edit

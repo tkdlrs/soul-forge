@@ -5,46 +5,50 @@
 import { and, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { skillSessionsTable } from '$lib/server/db/schema/skill-sessions';
-import {
-    SkillSessionSchema,
-    type SkillSession,
-} from '$lib/schemas/skillSessionSchema';
+import { type SkillSession } from '$lib/schemas/skillSessionSchema';
 
-// ToDo:// also add in filtering by userId -later
+//
 export async function getSkillSessions(
     conditions: any[],
 ): Promise<SkillSession[]> {
-    const query = db.select().from(skillSessionsTable);
-    if (conditions.length > 0) {
-        query.where(and(...conditions));
+    try {
+        const query = db.select().from(skillSessionsTable);
+        if (conditions.length > 0) {
+            query.where(and(...conditions));
+        }
+        //
+        const sessions = await query;
+        //
+        return sessions;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
     }
-    //
-    const sessions = await query;
-    //
-    return sessions;
 }
 //
 export async function getSkillSession(skillSessionId: string, userId: number) {
-    const [skillSession] = await db
-        .select()
-        .from(skillSessionsTable)
-        .where(
-            and(
-                eq(skillSessionsTable.id, skillSessionId),
-                eq(skillSessionsTable.userId, userId),
-            ),
-        );
-    //
-    return skillSession;
+    try {
+        const [skillSession] = await db
+            .select()
+            .from(skillSessionsTable)
+            .where(
+                and(
+                    eq(skillSessionsTable.id, skillSessionId),
+                    eq(skillSessionsTable.userId, userId),
+                ),
+            );
+        //
+        return skillSession;
+    } catch (err) {
+        throw new Error(`Error ${err}`);
+    }
 }
 //
 async function createSkillSession(data: SkillSession) {
     try {
-        console.log('Attempting to createSkillSession');
-        //
         const newSkillSession = await db
             .insert(skillSessionsTable)
             .values({ ...data });
+        //
         return newSkillSession;
     } catch (err) {
         throw new Error(`Error was ${err}`);
@@ -52,35 +56,39 @@ async function createSkillSession(data: SkillSession) {
 }
 //
 export async function updateSkillSession(id: string, data: SkillSession) {
-    if (!id) {
-        throw new Error('Nope. Need an id. ');
+    try {
+        if (!id) {
+            throw new Error('Nope. Need an id.');
+        }
+        if (!data.id) {
+            throw new Error('data needs an id.');
+        }
+        if (!data.endDateTime) {
+            data.endDateTime = null;
+        }
+        // look for in database
+        const skillSessionData = await getSkillSession(data.id, data.userId);
+        // if doesn't exist we create.
+        if (!skillSessionData) {
+            await createSkillSession(data);
+        }
+        // if exists do this
+        else {
+            await db
+                .update(skillSessionsTable)
+                .set(data)
+                .where(
+                    and(
+                        eq(skillSessionsTable.id, id),
+                        eq(skillSessionsTable.userId, data.userId),
+                    ),
+                );
+        }
+        //
+        return;
+    } catch (err) {
+        throw new Error(`Error was ${err}`);
     }
-    if (!data.id) {
-        throw new Error('data needs an id');
-    }
-    if (!data.endDateTime) {
-        data.endDateTime = null;
-    }
-    console.log('='.repeat(100));
-    console.log(`Updated Skill Session called`);
-    // look for in database
-    const skillSessionData = await getSkillSession(data.id, data.userId);
-    console.log('skillSessionData', skillSessionData);
-    // if doesn't exist we create.
-    if (!skillSessionData) {
-        console.log('if not skillSessionData then we call create');
-        await createSkillSession(data);
-    }
-    // if exists do this
-    else {
-        await db
-            .update(skillSessionsTable)
-            .set(data)
-            .where(eq(skillSessionsTable.id, id));
-    }
-    //
-    console.log('='.repeat(100));
-    return;
 }
 //
 export async function deleteSkillSession(id: string, userId: number) {
@@ -97,7 +105,7 @@ export async function deleteSkillSession(id: string, userId: number) {
         //
         return;
     } catch (err) {
-        console.error('issue');
-        throw err;
+        throw new Error(`Error was ${err}`);
     }
 }
+//

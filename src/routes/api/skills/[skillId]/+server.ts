@@ -22,15 +22,18 @@ import {
     getSkillByName,
     updateSkill,
 } from '$lib/server/repositories/skill.repository';
-import { error, isHttpError, json } from '@sveltejs/kit';
+import { isHttpError, json } from '@sveltejs/kit';
 import { requireRole } from '$lib/server/auth.js';
 
-// ToDo:// Add Authorization and test it manually
 // Get all the sessions for a single skill that belongs to a single user
-export async function GET({ params }) {
+export async function GET({ params, locals }) {
     try {
-        // requireRole('User');
-        // ToDo:// add a check that this skill belongs to current user.
+        requireRole('User');
+        //
+        const user = locals.user;
+        if (!user) {
+            throw new Error('User not found');
+        }
         //
         let skillData: SkillWithId = {
             id: '',
@@ -43,9 +46,9 @@ export async function GET({ params }) {
         const typeTest = z.uuid().safeParse(skillId);
         //
         if (typeTest.success) {
-            skillData = await getSkill(skillId);
+            skillData = await getSkill(skillId, user.id);
         } else {
-            skillData = await getSkillByName(skillId);
+            skillData = await getSkillByName(skillId, user.id);
         }
         //
         const checkedSkillData = SkillWithIdSchema.parse(skillData);
@@ -56,20 +59,17 @@ export async function GET({ params }) {
         throw err;
     }
 }
-//
 // Allow user to Edit/ Update the skill name and icon.
 export async function PUT({ params, request }) {
     try {
-        // requireRole('User');
-        // ToDo:// add a check that this skill belongs to current user.
+        requireRole('User');
         //
         const body = await request.json();
         const modifiedSkill = { name: body.name, icon: body.icon };
+        const checkedSkill = SkillEditSchema.parse(modifiedSkill);
         //
         const skillId = params.skillId;
         const checkedSkillId = z.uuid().parse(skillId);
-        const checkedSkill = SkillEditSchema.parse(modifiedSkill);
-        //
         const skill = await updateSkill(checkedSkillId, checkedSkill);
         //
         return json(skill);
@@ -79,15 +79,19 @@ export async function PUT({ params, request }) {
     }
 }
 //
-export async function DELETE({ params }) {
+export async function DELETE({ params, locals }) {
     try {
-        // requireRole('User');
-        // ToDo:// add a check that this skill belongs to current user.
+        requireRole('User');
+        //
+        const user = locals.user;
+        if (!user) {
+            throw new Error(`User not found`);
+        }
         //
         const skillId = params.skillId;
         const checkedSkillId = z.uuid().parse(skillId);
         //
-        await deleteSkill(checkedSkillId);
+        await deleteSkill(checkedSkillId, user.id);
         //
         return new Response(null, { status: 204 });
     } catch (err) {
@@ -95,3 +99,4 @@ export async function DELETE({ params }) {
         throw err;
     }
 }
+//

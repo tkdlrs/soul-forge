@@ -74,7 +74,7 @@
                                                 <a
                                                     class="btn btn-sm btn-warning"
                                                     href={resolve(
-                                                        `/app/users/${user.id}`,
+                                                        `/users/${user.id}`,
                                                     )}
                                                 >
                                                     Edit

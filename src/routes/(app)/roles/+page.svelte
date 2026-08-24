@@ -73,7 +73,7 @@
                                                 <div class="p-1">
                                                     <a
                                                         href={resolve(
-                                                            `/app/roles/${role.id}`,
+                                                            `/roles/${role.id}`,
                                                         )}
                                                         class="btn btn-sm btn-warning"
                                                     >

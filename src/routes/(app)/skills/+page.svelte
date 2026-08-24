@@ -212,7 +212,7 @@
                                                             data-sveltekit-preload-data="false"
                                                             class="btn btn-sm btn-success"
                                                             href={resolve(
-                                                                `/app/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
+                                                                `/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
                                                             )}
                                                         >
                                                             Train
@@ -223,7 +223,7 @@
                                                             data-sveltekit-preload-data="false"
                                                             class="btn btn-sm btn-warning"
                                                             href={resolve(
-                                                                `/app/skills/${skill.id}`,
+                                                                `/skills/${skill.id}`,
                                                             )}
                                                         >
                                                             Edit
