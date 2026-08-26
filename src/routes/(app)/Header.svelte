@@ -48,26 +48,23 @@
                                 All Users
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                aria-current={page.url.pathname === '/roles'
-                                    ? 'page'
-                                    : undefined}
-                                href={resolve('/roles')}
-                            >
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/roles'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a class="nav-link" href={resolve('/roles')}>
                                 Roles
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                aria-current={page.url.pathname ===
-                                '/user-roles'
-                                    ? 'page'
-                                    : undefined}
-                                href={resolve('/user-roles')}
-                            >
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/user-roles'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a class="nav-link" href={resolve('/user-roles')}>
                                 User Roles
                             </a>
                         </li>
@@ -96,14 +93,38 @@
                     {/if}
                     <!--  -->
                     {#if !user}
-                        <li class="nav-item">
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/users/create'
+                                ? 'page'
+                                : undefined}
+                        >
                             <a class="nav-link" href={resolve('/users/create')}>
                                 Create Account
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname === '/login'
+                                ? 'page'
+                                : undefined}
+                        >
                             <a class="nav-link" href={resolve('/login')}>
                                 Login
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item"
+                            aria-current={page.url.pathname ===
+                            '/reset-password'
+                                ? 'page'
+                                : undefined}
+                        >
+                            <a
+                                class="nav-link"
+                                href={resolve('/reset-password')}
+                            >
+                                Reset Password
                             </a>
                         </li>
                     {/if}

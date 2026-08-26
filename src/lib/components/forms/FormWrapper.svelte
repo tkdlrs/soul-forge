@@ -154,12 +154,16 @@
                                         <button
                                             type="button"
                                             class="btn btn-danger"
-                                            onclick={(e) =>
+                                            onclick={(e) => {
+                                                alert(
+                                                    'this shoulda delete something. One day...',
+                                                );
                                                 // ToDo://
                                                 // handleDelete(e, config.docId)
                                                 console.log(
                                                     'this shoulda delete something. One day...',
-                                                )}
+                                                );
+                                            }}
                                         >
                                             <!--  -->
                                             Delete

@@ -1,3 +1,6 @@
+/**
+ * APP Server Side Login page
+ **/
 import type { LoginPageData } from '$lib/schemas/loginSchema.js';
 
 //

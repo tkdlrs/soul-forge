@@ -10,8 +10,8 @@ import {
 } from '$lib/server/auth.js';
 import { saveRefreshToken } from '$lib/server/repositories/refresh.repository.js';
 import { getUserByEmail } from '$lib/server/repositories/user.repository';
-import { config } from '../../../config.js';
-import type { UserResponse } from '../users/+server.js';
+import { config } from '../../../../config.js';
+import type { UserResponse } from '../../users/+server.js';
 //
 type LoginResponse = UserResponse & {
     token: string;
