@@ -96,7 +96,7 @@ export function extractBearerToken(header: string) {
     return splitAuth[1];
 }
 //
-export function makeRefreshToken() {
+export function makeToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 //

@@ -1,10 +1,11 @@
 /**
  * API VERBS for Resetting password/authentication
  **/
-
-import { UserNotAuthenticatedError } from '$lib/errors.js';
 import { ResetPasswordSchema } from '$lib/schemas/resetPasswordSchema.js';
+import { makeToken } from '$lib/server/auth.js';
+import { createResetPasswordToken } from '$lib/server/repositories/passwordReset.repository';
 import { getUserByEmail } from '$lib/server/repositories/user.repository.js';
+import argon2 from 'argon2';
 
 //
 export async function POST({ request }) {
@@ -16,12 +17,19 @@ export async function POST({ request }) {
         }
         const checkedBody = ResetPasswordSchema.parse(body);
         //
-        const user = getUserByEmail(checkedBody.email);
-        if (!user) {
-            throw new UserNotAuthenticatedError('incorrect email');
+        const user = await getUserByEmail(checkedBody.email);
+        // Return success always. - avoids email enumeration
+        if (user) {
+            const token = makeToken();
+            const tokenHash = await argon2.hash(token);
+            //
+            await createResetPasswordToken(tokenHash, (await user).id);
+            // Send email
+            // ToDo:// set this up
+            //  await sendResetPasswordEmail(checkedBody.email, token);
         }
         //
-        return;
+        return new Response(null, { status: 204 });
     } catch (err) {
         throw new Error(`Err was ${err}`);
     }

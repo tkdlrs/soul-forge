@@ -3,11 +3,7 @@
  **/
 import { json } from '@sveltejs/kit';
 import { UserNotAuthenticatedError } from '$lib/errors.js';
-import {
-    checkPasswordHash,
-    makeJWT,
-    makeRefreshToken,
-} from '$lib/server/auth.js';
+import { checkPasswordHash, makeJWT, makeToken } from '$lib/server/auth.js';
 import { saveRefreshToken } from '$lib/server/repositories/refresh.repository.js';
 import { getUserByEmail } from '$lib/server/repositories/user.repository';
 import { config } from '../../../../config.js';
@@ -52,7 +48,7 @@ export async function POST({ request, cookies }) {
         config.jwt.secret,
     );
     // ToDo:// make refreshtoken work
-    const refreshToken = makeRefreshToken();
+    const refreshToken = makeToken();
     //
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);

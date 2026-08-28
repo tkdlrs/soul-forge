@@ -1,11 +1,10 @@
+/**
+ * Reset Password Tokens database schema
+ **/
 import { sql } from 'drizzle-orm';
 import { integer, text, sqliteTable } from 'drizzle-orm/sqlite-core';
 import { usersTable } from './users';
-
 /**
- *  ToDo:// Finishup.
- *  Generate migration.
- *  Migrate migration.
  *  Continue with repository for interacting with resource.
  **/
 export const resetPasswordTokensTable = sqliteTable('reset_password_tokens', {
@@ -24,8 +23,9 @@ export const resetPasswordTokensTable = sqliteTable('reset_password_tokens', {
     //
     expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
 });
-// ToDo: settup types
-
 //
-
+export type InsertResetPasswordToken =
+    typeof resetPasswordTokensTable.$inferInsert;
+export type SelectResetPasswordToken =
+    typeof resetPasswordTokensTable.$inferSelect;
 //

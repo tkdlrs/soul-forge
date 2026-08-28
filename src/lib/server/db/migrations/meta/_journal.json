@@ -43,6 +43,13 @@
       "when": 1786224701263,
       "tag": "0005_concerned_medusa",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1787880647571,
+      "tag": "0006_plain_silver_sable",
+      "breakpoints": true
     }
   ]
 }
