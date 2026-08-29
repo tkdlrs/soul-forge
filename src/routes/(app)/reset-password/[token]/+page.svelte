@@ -18,7 +18,7 @@
             <h1>Update Password</h1>
         </div>
         <div class="col-12">
-            <!-- ToDo:// this needes an endpoint. isn't able to do much without one... -->
+            <!--  -->
             <UpdatePasswordForm
                 action="/api/auth/update-password"
                 method="POST"

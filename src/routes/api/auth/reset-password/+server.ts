@@ -6,7 +6,6 @@ import { makeToken } from '$lib/server/auth.js';
 import { createResetPasswordToken } from '$lib/server/repositories/passwordReset.repository';
 import { getUserByEmail } from '$lib/server/repositories/user.repository.js';
 import argon2 from 'argon2';
-
 //
 export async function POST({ request }) {
     try {
@@ -21,6 +20,7 @@ export async function POST({ request }) {
         // Return success always. - avoids email enumeration
         if (user) {
             const token = makeToken();
+            console.log(`token ${token}`);
             const tokenHash = await argon2.hash(token);
             //
             await createResetPasswordToken(tokenHash, (await user).id);

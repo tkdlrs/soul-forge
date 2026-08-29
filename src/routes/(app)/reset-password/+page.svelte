@@ -1,8 +1,8 @@
 <script lang="ts">
-    import ResetPasswordForm from '$lib/components/forms/resources/ResetPasswordForm.svelte';
     /**
      * App Frontend for Reseting Password
      **/
+    import ResetPasswordForm from '$lib/components/forms/resources/ResetPasswordForm.svelte';
     import type { ResetPasswordPageData } from '$lib/schemas/resetPasswordSchema';
     //
     let { data }: { data: ResetPasswordPageData } = $props();
@@ -17,7 +17,7 @@
             <h1>Reset Password</h1>
         </div>
         <div class="col-12">
-            <!-- ToDo:// this needes an endpoint. isn't able to do much without one... -->
+            <!--  -->
             <ResetPasswordForm
                 action="/api/auth/reset-password"
                 method="POST"
