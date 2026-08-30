@@ -7,6 +7,7 @@ export const UpdatePasswordSchema = z
     .object({
         password: z.string(),
         confirmPassword: z.string(),
+        userId: z.number(),
     })
     .superRefine((data, ctx) => {
         if (data.password !== data.confirmPassword) {
@@ -21,7 +22,7 @@ export const UpdatePasswordSchema = z
 export type UpdatePassword = z.infer<typeof UpdatePasswordSchema>;
 //
 export const UpdatePasswordPageDataSchema = z.object({
-    UpdatePassword: UpdatePasswordSchema,
+    updatePassword: UpdatePasswordSchema,
     isLoading: z.boolean(),
 });
 export type UpdatePasswordPageData = z.infer<

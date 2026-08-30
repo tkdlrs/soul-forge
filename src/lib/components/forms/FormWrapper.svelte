@@ -74,6 +74,9 @@
                 console.log('actionResultData', actionResultData);
                 config.postCallback(actionResultData);
             }
+            if (config.hasOwnProperty('postFunctionCall')) {
+                config.postFunctionCall();
+            }
             //
             successMessage = 'Success';
             isSubmitted = true;

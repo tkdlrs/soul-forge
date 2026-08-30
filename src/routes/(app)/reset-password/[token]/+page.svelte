@@ -9,6 +9,7 @@
     //
     let password = $state<string>(''); //data.UpdatePassword.password
     let confirmPassword = $state<string>(''); //data.UpdatePassword.confirmPassword
+    let userId = $state<number>(data.updatePassword.userId);
     //
 </script>
 
@@ -22,7 +23,7 @@
             <UpdatePasswordForm
                 action="/api/auth/update-password"
                 method="POST"
-                data={{ password, confirmPassword }}
+                data={{ password, confirmPassword, userId }}
                 isLoading={data.isLoading}
             />
         </div>

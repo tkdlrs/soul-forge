@@ -32,14 +32,8 @@
         action,
         method,
         //
-        postCallback: (...args: any[]) => {
-            console.log('Post Call back');
-            console.log('args', args);
-            const actResult = args[0];
-            console.log('Action Result (aka actResult)', actResult);
-            const accessToken = actResult.token;
-            console.log('accessToken', accessToken);
-            sessionStorage.setItem('accessToken', accessToken);
+        postFunctionCall: (...args: any[]) => {
+            alert('Success. Check your inbox to update your password');
         },
     };
     //

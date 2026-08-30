@@ -46,6 +46,14 @@ export async function updateUser(id: number, data: Partial<UserCreateData>) {
     return getUser(id);
 }
 //
+export async function updateUserPassword(id: number, hashedPassword: string) {
+    await db
+        .update(usersTable)
+        .set({ hashedPassword })
+        .where(eq(usersTable.id, id));
+    return getUser(id);
+}
+//
 export async function deleteUser(id: number) {
     await db.delete(usersTable).where(eq(usersTable.id, id));
 }

@@ -15,7 +15,7 @@ export async function createResetPasswordToken(
         await db.insert(resetPasswordTokensTable).values({
             token: tokenHash,
             userId,
-            expiresAt: new Date(Date.now() + 1000 + 60 * 15), // 15 min
+            expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 min
         });
         //
         return;

@@ -2,7 +2,7 @@ import { BadRequestError, UserNotAuthenticatedError } from '$lib/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
-import crypto from 'crypto';
+import crypto, { createHash } from 'crypto';
 import { getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 //
@@ -110,4 +110,10 @@ export function requireRole(...roles: string[]) {
         throw error(403, 'Forbidden');
     //
     return locals.user;
+}
+// For password reset.
+// Do NOT use for encrypting password.
+// That is what Argon2 is for
+export function sha256(input: string): string {
+    return createHash('sha256').update(input).digest('hex');
 }

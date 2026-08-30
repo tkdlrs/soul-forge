@@ -26,6 +26,7 @@
         initial: {
             password: data.password,
             confirmPassword: data.confirmPassword,
+            userId: data.userId,
         } satisfies UpdatePassword,
         errors: null satisfies UpdatePasswordErrors,
 
@@ -33,15 +34,15 @@
         action,
         method,
         //
-        postCallback: (...args: any[]) => {
-            console.log('Post Call back');
-            console.log('args', args);
-            const actResult = args[0];
-            console.log('Action Result (aka actResult)', actResult);
-            const accessToken = actResult.token;
-            console.log('accessToken', accessToken);
-            sessionStorage.setItem('accessToken', accessToken);
-        },
+        // postCallback: (...args: any[]) => {
+        //     console.log('Post Call back');
+        //     console.log('args', args);
+        //     const actResult = args[0];
+        //     console.log('Action Result (aka actResult)', actResult);
+        //     const accessToken = actResult.token;
+        //     console.log('accessToken', accessToken);
+        //     sessionStorage.setItem('accessToken', accessToken);
+        // },
     };
     //
     let formData = $state<UpdatePassword>(loginConfig.initial);

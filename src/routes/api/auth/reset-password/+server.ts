@@ -1,11 +1,14 @@
 /**
  * API VERBS for Resetting password/authentication
+ *
+ * This part sends an email to request getting to change
+ * your password
+ *
  **/
 import { ResetPasswordSchema } from '$lib/schemas/resetPasswordSchema.js';
-import { makeToken } from '$lib/server/auth.js';
+import { makeToken, sha256 } from '$lib/server/auth.js';
 import { createResetPasswordToken } from '$lib/server/repositories/passwordReset.repository';
 import { getUserByEmail } from '$lib/server/repositories/user.repository.js';
-import argon2 from 'argon2';
 //
 export async function POST({ request }) {
     try {
@@ -20,10 +23,13 @@ export async function POST({ request }) {
         // Return success always. - avoids email enumeration
         if (user) {
             const token = makeToken();
-            console.log(`token ${token}`);
-            const tokenHash = await argon2.hash(token);
+            console.log('+'.padEnd(100, '+'));
+            console.log(`Is first token ${token}`);
+            const tokenHash = sha256(token);
+            console.log('tokenHash', tokenHash);
+            console.log('+'.padEnd(100, '+'));
             //
-            await createResetPasswordToken(tokenHash, (await user).id);
+            await createResetPasswordToken(tokenHash, user.id);
             // Send email
             // ToDo:// set this up
             //  await sendResetPasswordEmail(checkedBody.email, token);
