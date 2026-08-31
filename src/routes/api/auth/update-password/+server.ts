@@ -20,7 +20,7 @@ export async function POST({ request }) {
             throw new Error('Missing required fields');
         }
         const checkedBody = UpdatePasswordSchema.parse(body);
-        // ToDo:// update password
+        //
         const hashedNewPassword = await hashPassword(checkedBody.password);
         await updateUserPassword(checkedBody.userId, hashedNewPassword);
         // cleanup reset password tokens

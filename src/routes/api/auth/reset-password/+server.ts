@@ -7,6 +7,7 @@
  **/
 import { ResetPasswordSchema } from '$lib/schemas/resetPasswordSchema.js';
 import { makeToken, sha256 } from '$lib/server/auth.js';
+import { sendResetPasswordEmail } from '$lib/server/emails';
 import { createResetPasswordToken } from '$lib/server/repositories/passwordReset.repository';
 import { getUserByEmail } from '$lib/server/repositories/user.repository.js';
 //
@@ -31,8 +32,7 @@ export async function POST({ request }) {
             //
             await createResetPasswordToken(tokenHash, user.id);
             // Send email
-            // ToDo:// set this up
-            //  await sendResetPasswordEmail(checkedBody.email, token);
+            await sendResetPasswordEmail(checkedBody.email, token);
         }
         //
         return new Response(null, { status: 204 });

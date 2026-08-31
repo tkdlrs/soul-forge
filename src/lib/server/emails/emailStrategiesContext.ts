@@ -11,4 +11,4 @@ const EmailStrategyContext = function () {
     };
 };
 
-const emailStrategyContext = new EmailStrategyContext();
+export const emailStrategyContext = new EmailStrategyContext();

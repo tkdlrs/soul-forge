@@ -1,6 +1,7 @@
 type Config = {
     db: DBConfig;
     jwt: JWTConfig;
+    email: EmailConfig;
 };
 //
 type DBConfig = {
@@ -13,6 +14,13 @@ type JWTConfig = {
     refreshDuration: number;
     secret: string;
     issuer: string;
+};
+//
+type EmailConfig = {
+    host: string;
+    port: number;
+    accountName: string;
+    accountPW: string;
 };
 //
 process.loadEnvFile();
@@ -35,5 +43,11 @@ export const config: Config = {
         refreshDuration: 60 * 60 * 24 * 60 * 1000, // 60 days in milliseconds
         secret: envOrThrow('JWT_SECRET'),
         issuer: 'soulforge',
+    },
+    email: {
+        host: envOrThrow('GMAIL_HOST'),
+        port: Number(envOrThrow('GMAIL_PORT')),
+        accountName: envOrThrow('GMAIL_AUTH_USER'),
+        accountPW: envOrThrow('GMAIL_AUTH_PASSWORD'),
     },
 };
