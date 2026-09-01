@@ -1,14 +1,21 @@
 /**
  *
  **/
-const EmailStrategyContext = function () {
-    this.styling = ``;
-    this.setStrategy = (styling) => {
-        this.styling = styling;
-    };
-    this.finalTemplate = (campaignData) => {
-        return this.styling.finalTemplate(campaignData);
-    };
-};
+// The contract every strategy must follow
+export interface FormatEmailStrategy<T> {
+    format(data: T): string;
+}
+// Context class that consumes a strategy
+export class EmailStrategyContext<T> {
+    constructor(private strategy: FormatEmailStrategy<T>) {}
+    //
+    setStrategy(strategy: FormatEmailStrategy<T>): void {
+        this.strategy = strategy;
+    }
+    //
+    format(data: T): string {
+        return this.strategy.format(data);
+    }
+}
 
-export const emailStrategyContext = new EmailStrategyContext();
+//

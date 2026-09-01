@@ -1,12 +1,23 @@
 /**
- *
+ * Concrete Strategies for the various kinds of emails
  **/
-const ResetPassword = function () {
-    this.finalTemplate = (campaignData) => {
-        const template = `${campaignData.link}`;
-        return template;
-    };
-};
+import {
+    EmailStrategyContext,
+    type FormatEmailStrategy,
+} from '../emailStrategiesContext';
 //
-export const resetPasswordEmail = new ResetPassword();
+interface PasswordEmail {
+    link: string;
+}
+//
+class ResetPasswordStrategy implements FormatEmailStrategy<PasswordEmail> {
+    format(data: PasswordEmail): string {
+        const template = `http://localhost:5173${data.link}`;
+        return template;
+    }
+}
+//
+export const resetPasswordEmail = new EmailStrategyContext<PasswordEmail>(
+    new ResetPasswordStrategy(),
+);
 //

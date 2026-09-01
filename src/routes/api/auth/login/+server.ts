@@ -63,7 +63,7 @@ export async function POST({ request, cookies }) {
         secure: true,
         sameSite: 'strict',
         path: '/',
-        maxAge: 60 * 60, // hour
+        maxAge: 60 * 60, // hour ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
     });
     //
     return json(

@@ -24,11 +24,7 @@ export async function POST({ request }) {
         // Return success always. - avoids email enumeration
         if (user) {
             const token = makeToken();
-            console.log('+'.padEnd(100, '+'));
-            console.log(`Is first token ${token}`);
             const tokenHash = sha256(token);
-            console.log('tokenHash', tokenHash);
-            console.log('+'.padEnd(100, '+'));
             //
             await createResetPasswordToken(tokenHash, user.id);
             // Send email

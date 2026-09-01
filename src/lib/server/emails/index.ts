@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 import { currentAppURI } from '$lib/helpers/navigators';
 import { resetPasswordEmail } from './tactics/resetPasswordTemplate';
 import { config } from '../../../config';
-import { emailStrategyContext } from './emailStrategiesContext';
+import type Mail from 'nodemailer/lib/mailer';
 
 //
 const mailTransport = nodemailer.createTransport({
@@ -20,10 +20,8 @@ const mailTransport = nodemailer.createTransport({
 //
 export async function sendResetPasswordEmail(email: string, token: string) {
     const resetURL = `${currentAppURI}/reset-password/${token}`;
-    // Set the context
-    emailStrategyContext.setStrategy(resetPasswordEmail);
     //
-    const outputTemplate = emailStrategyContext.finalTemplate({
+    const outputTemplate = resetPasswordEmail.format({
         link: resetURL,
     });
     //
@@ -38,7 +36,7 @@ async function sendEmail(
     attach = [],
     setReplyTo = '',
 ) {
-    let mailOptions = {
+    let mailOptions: Mail.Options = {
         from: '',
         to: `${recipient}`,
         bcc: `tkd.lsanchez@gmail.com, ${blindCopy}`,

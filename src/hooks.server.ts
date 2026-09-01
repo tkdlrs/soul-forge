@@ -34,6 +34,7 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
             const userRoles = await getSpecificUsersRoles(user.id);
             event.locals.user.roles = userRoles.map((item) => item.roleName);
             console.log('event.locals.user.roles', event.locals.user.roles);
+            //
         } catch (err) {
             event.locals.user = null;
             // Invalid token; leave locals unathenticated.

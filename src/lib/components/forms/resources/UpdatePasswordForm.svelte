@@ -54,12 +54,14 @@
             <Input
                 text="Password"
                 id="password"
+                type="password"
                 bind:defaultValue={formData.password}
                 errorText={errorsObj?.password}
             />
             <Input
                 text="Confirm Password"
                 id="confirm-password"
+                type="password"
                 bind:defaultValue={formData.confirmPassword}
                 errorText={errorsObj?.confirmPassword}
             />
