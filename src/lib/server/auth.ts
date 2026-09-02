@@ -6,6 +6,9 @@ import crypto, { createHash } from 'crypto';
 import { getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 //
+import type { Cookies, RequestEvent } from '@sveltejs/kit';
+import { refreshTokensTable } from './db/schema/refresh-tokens';
+//
 const TOKEN_ISSUER = 'soulforge';
 //
 export async function hashPassword(password: string): Promise<string> {
@@ -117,3 +120,94 @@ export function requireRole(...roles: string[]) {
 export function sha256(input: string): string {
     return createHash('sha256').update(input).digest('hex');
 }
+//
+interface RefreshResult {
+    accessToken: string;
+    refreshToken: string;
+    user: { id: number; email: string };
+}
+//
+interface LoginResult {
+    accessToken: string;
+    refreshToken: string;
+    user: { id: number; email: string };
+}
+//
+let refreshPromise: Promise<RefreshResult | null> | null = null;
+//
+export async function refreshTokens(
+    refreshToken: string,
+): Promise<RefreshResult | null> {
+    if (!refreshPromise) {
+        refreshPromise = doRefresh(refreshToken);
+        void clearRefreshPromiseWhenSettled(refreshPromise);
+    }
+    return refreshPromise;
+}
+//
+async function clearRefreshPromiseWhenSettled(
+    promise: Promise<RefreshResult | null>,
+): Promise<void> {
+    try {
+        await promise;
+    } finally {
+        refreshPromise = null;
+    }
+}
+//
+async function doRefresh(refreshToken: string): Promise<RefreshResult | null> {
+    const res = await fetch(`/api/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+}
+// ToDo:// Not convinced that I need this... Do some figuring
+// export async function login(
+//     email: string,
+//     password: string,
+// ): Promise<LoginResult | null> {
+//     const res = await fetch(`/api/login`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ email, password }),
+//     });
+//     if (!res.ok) return null;
+//     return res.json();
+// }
+//
+export function setAuthCookies(
+    cookies: Cookies,
+    result: RefreshResult | LoginResult,
+): void {
+    // Setting cookies.
+    cookies.set('accessToken', result.accessToken, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict', // 'lax' // ToDo:// figure out the difference between 'lax' and 'strict'
+        maxAge: 60 * 3, // 3 min // ToDo:// change to 15 min after learning. ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
+    });
+    cookies.set('refreshToken', result.refreshToken, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict', // 'lax' // ToDo:// figure out the difference between 'lax' and 'strict'
+        maxAge: 60 * 60 * 24 * 30, // thirty (30) days
+    });
+}
+export function clearAuthCookies(event: RequestEvent): void {
+    event.cookies.delete('accessToken', { path: '/' });
+    event.cookies.delete('refreshToken', { path: '/' });
+}
+//
+export async function revokeRefreshToken(refreshToken: string): Promise<void> {
+    try {
+    } catch (err) {
+        //
+        console.error(err);
+    }
+}
+//

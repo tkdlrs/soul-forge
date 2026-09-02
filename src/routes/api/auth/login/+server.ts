@@ -3,7 +3,12 @@
  **/
 import { json } from '@sveltejs/kit';
 import { UserNotAuthenticatedError } from '$lib/errors.js';
-import { checkPasswordHash, makeJWT, makeToken } from '$lib/server/auth.js';
+import {
+    checkPasswordHash,
+    makeJWT,
+    makeToken,
+    setAuthCookies,
+} from '$lib/server/auth.js';
 import { saveRefreshToken } from '$lib/server/repositories/refresh.repository.js';
 import { getUserByEmail } from '$lib/server/repositories/user.repository';
 import { config } from '../../../../config.js';
@@ -50,21 +55,26 @@ export async function POST({ request, cookies }) {
     // ToDo:// make refreshtoken work
     const refreshToken = makeToken();
     //
-    console.log('accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
+    console.log('accessToken (/api/auth/login)', accessToken);
+    console.log('refreshToken (/api/auth/login)', refreshToken);
     //
     const saved = await saveRefreshToken(user.id, refreshToken);
     if (!saved) {
         throw new UserNotAuthenticatedError('Could not save refresh token');
     }
-    // Setting cookies.
-    cookies.set('accessToken', accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60, // hour ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
+    // // Setting cookies.
+    setAuthCookies(cookies, {
+        accessToken,
+        refreshToken,
+        user: { id: user.id, email: user.email },
     });
+    // cookies.set('accessToken', accessToken, {
+    //     httpOnly: true,
+    //     secure: true,
+    //     sameSite: 'strict',
+    //     path: '/',
+    //     maxAge: 60, // * 15, // 15 min ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
+    // });
     //
     return json(
         {
@@ -81,4 +91,3 @@ export async function POST({ request, cookies }) {
     );
 }
 //
-// Progress doesn't need to be loud. Sometimes just touching the project to remind yourself what you're doing and commit to continuing tomorrow is enough. AND THAT'S OKAY.
