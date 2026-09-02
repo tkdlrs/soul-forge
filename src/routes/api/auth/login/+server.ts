@@ -81,3 +81,4 @@ export async function POST({ request, cookies }) {
     );
 }
 //
+// Progress doesn't need to be loud. Sometimes just touching the project to remind yourself what you're doing and commit to continuing tomorrow is enough. AND THAT'S OKAY.
