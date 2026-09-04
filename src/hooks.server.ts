@@ -17,6 +17,7 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
     console.log('='.repeat(100));
     console.log('='.repeat(100));
     console.log('handle from hooks.sever.ts ran');
+    console.log('event route?', event.route);
     const accessToken = event.cookies.get('accessToken');
     const refreshToken = event.cookies.get('refreshToken');
     console.log('auth token is', accessToken);
@@ -24,11 +25,13 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
     console.log('='.repeat(100));
     //
     event.locals.user = null;
-    event.locals.user = { id: 0, email: '', roles: [] };
-    // event.locals.accessToken = null;
     //
+    if (!accessToken && !refreshToken) {
+        return resolve(event);
+    }
+    //
+    event.locals.user = { id: 0, email: '', roles: [] };
     if (accessToken) {
-        console.log('authToken before trying to get bearer?', accessToken);
         try {
             const userId = validateJWT(accessToken, config.jwt.secret);
             console.log('userId (from validateJWT call)', userId);
@@ -61,10 +64,9 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
                 }
                 //
                 setAuthCookies(event.cookies, refreshResult);
-                event.locals.user.id = refreshResult.id;
-                event.locals.user.email = refreshResult.email;
+                //
             } else {
-                clearAuthCookies(event);
+                clearAuthCookies(event.cookies);
             }
         } catch (err) {
             throw new Error('Issue with refresh Token');

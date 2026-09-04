@@ -186,7 +186,7 @@ async function refreshTokens(
         refreshToken,
     };
 }
-// ToDo:// confirm that login works
+//
 export async function handleLogin(
     email: string,
     password: string,
@@ -208,11 +208,11 @@ export async function handleLogin(
         config.jwt.defaultDuration,
         config.jwt.secret,
     );
-    // ToDo:// make refreshtoken work
+    //
     const refreshToken = makeToken();
     //
-    console.log('accessToken (server/auth.ts)', accessToken);
-    console.log('refreshToken (server/auth.ts)', refreshToken);
+    // console.log('accessToken (server/auth.ts)', accessToken);
+    // console.log('refreshToken (server/auth.ts)', refreshToken);
     //
     const saved = await saveRefreshToken(user.id, refreshToken);
     if (!saved) {
@@ -226,17 +226,26 @@ export async function handleLogin(
     };
 }
 //
+export async function handleLogout(cookies: Cookies) {
+    const refreshToken = cookies.get('refreshToken');
+    if (refreshToken) {
+        await handleRevokeRefreshToken(refreshToken);
+    }
+    clearAuthCookies(cookies);
+}
+//
 export function setAuthCookies(
     cookies: Cookies,
     result: RefreshResponse | LoginResponse,
 ): void {
+    console.log('Set some cookies');
     // Setting cookies.
     cookies.set('accessToken', result.accessToken, {
         path: '/',
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 60 * 3, // 3 min // ToDo:// change to 15 min after learning. ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
+        maxAge: 60, // * 15, // 15 min
     });
     cookies.set('refreshToken', result.refreshToken, {
         path: '/',
@@ -246,11 +255,11 @@ export function setAuthCookies(
         maxAge: 60 * 60 * 24 * 30, // thirty (30) days
     });
 }
-export function clearAuthCookies(event: RequestEvent): void {
-    event.cookies.delete('accessToken', { path: '/' });
-    event.cookies.delete('refreshToken', { path: '/' });
+export function clearAuthCookies(cookies: Cookies): void {
+    cookies.delete('accessToken', { path: '/' });
+    cookies.delete('refreshToken', { path: '/' });
 }
-// ToDo:// figure out 'revoke' endpoint in API
+// ToDo:// figure out 'revoke' endpoint in API -So they can me manualy revoked if needed?
 export async function handleRevokeRefreshToken(
     refreshToken: string,
 ): Promise<void> {

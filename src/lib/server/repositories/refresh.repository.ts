@@ -43,7 +43,7 @@ export async function userForRefreshToken(token: string) {
     //
     return result;
 }
-// ToDo:// set up revoke
+//
 export async function revokeRefreshToken(token: string) {
     const rows = await db
         .update(refreshTokensTable)

@@ -85,7 +85,7 @@
                         <li class="nav-item">
                             <!-- ToDo:// fix logout -->
                             <!-- svelte-ignore component_name_lowercase -->
-                            <form action="/logout" method="POST">
+                            <form action="/api/auth/logout" method="POST">
                                 <button class="nav-link btn btn-link">
                                     Logout
                                 </button>

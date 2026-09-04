@@ -1,11 +1,10 @@
 /**
- * ToDo:// figure out wtf is going on...
- *  logging out/authentication
+ * API VERBS for logging out/authentication
  **/
+import { handleLogout } from '$lib/server/auth.js';
+//
 export async function POST({ cookies }) {
-    cookies.delete('accessToken', {
-        path: '/',
-    });
+    await handleLogout(cookies);
     //
     return new Response(null, {
         status: 303,
@@ -14,3 +13,4 @@ export async function POST({ cookies }) {
         },
     });
 }
+//

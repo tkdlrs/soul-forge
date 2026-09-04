@@ -8,8 +8,6 @@ import {
     type LoginResponse,
 } from '$lib/server/auth.js';
 //
-
-//
 export async function POST({ request, cookies }) {
     type Parameters = {
         password: string;
@@ -18,8 +16,6 @@ export async function POST({ request, cookies }) {
     //
     const body: Parameters = await request.json();
     console.log('body', body);
-    console.log('body.email', body.email);
-    console.log('body.password', body.password);
     //
     if (!body.email || !body.password) {
         throw new Error('Missing required fields');
