@@ -1,6 +1,6 @@
 /**
  * Reset Password  Repository.
- * Function for ineracting with 'Reset Password Tokens' in database.
+ * Function for interacting with 'Reset Password Tokens' in database.
  *
  **/
 import { db } from '../db';

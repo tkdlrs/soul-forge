@@ -12,9 +12,14 @@
 import z from 'zod/v4';
 import { isHttpError, json } from '@sveltejs/kit';
 import { getUsers, createUser } from '$lib/server/repositories/user.repository';
-import { hashPassword, requireRole } from '$lib/server/auth.js';
+import {
+    hashPassword,
+    requireRole,
+    type UserResponse,
+} from '$lib/server/auth.js';
 import type { InsertUser } from '$lib/server/db/schema/users.js';
 import { UserCreateSchema, UserWithIdSchema } from '$lib/schemas/userSchema.js';
+
 //
 export async function GET() {
     try {
@@ -29,8 +34,6 @@ export async function GET() {
         throw err;
     }
 }
-//
-export type UserResponse = Omit<InsertUser, 'hashedPassword'>;
 //
 export async function POST({ request }) {
     try {

@@ -2,7 +2,7 @@ import type { Handle } from '@sveltejs/kit';
 //
 import {
     validateJWT,
-    refreshTokens,
+    handleRefresh,
     setAuthCookies,
     clearAuthCookies,
 } from '$lib/server/auth';
@@ -11,11 +11,7 @@ import { getUser } from '$lib/server/repositories/user.repository';
 import { getSpecificUsersRoles } from '$lib/server/repositories/userRoles.repository';
 
 //
-export async function handle({
-    event,
-    cookies,
-    resolve,
-}: Parameters<Handle>[0]) {
+export async function handle({ event, resolve }: Parameters<Handle>[0]) {
     //
     console.log('='.repeat(100));
     console.log('='.repeat(100));
@@ -58,11 +54,15 @@ export async function handle({
     //
     if (refreshToken) {
         try {
-            const result = await refreshTokens(refreshToken);
-            if (result) {
-                setAuthCookies(cookies, result);
-                event.locals.user.id = result.user.id;
-                event.locals.user.email = result.user.email;
+            const refreshResult = await handleRefresh(refreshToken);
+            if (refreshResult) {
+                if (!refreshResult.id) {
+                    throw new Error('no');
+                }
+                //
+                setAuthCookies(event.cookies, refreshResult);
+                event.locals.user.id = refreshResult.id;
+                event.locals.user.email = refreshResult.email;
             } else {
                 clearAuthCookies(event);
             }

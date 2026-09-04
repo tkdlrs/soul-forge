@@ -7,7 +7,15 @@ import { getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 //
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
-import { refreshTokensTable } from './db/schema/refresh-tokens';
+import {
+    revokeRefreshToken,
+    saveRefreshToken,
+    userForRefreshToken,
+} from './repositories/refresh.repository';
+import type { InsertUser } from './db/schema/users';
+import { getUserByEmail } from './repositories/user.repository';
+import { config } from '../../config';
+import { json } from '@sveltejs/kit';
 //
 const TOKEN_ISSUER = 'soulforge';
 //
@@ -121,32 +129,32 @@ export function sha256(input: string): string {
     return createHash('sha256').update(input).digest('hex');
 }
 //
-interface RefreshResult {
+export type RefreshResponse = UserResponse & {
     accessToken: string;
     refreshToken: string;
-    user: { id: number; email: string };
-}
+};
 //
-interface LoginResult {
+export type UserResponse = Omit<InsertUser, 'hashedPassword'>;
+//
+export type LoginResponse = UserResponse & {
     accessToken: string;
     refreshToken: string;
-    user: { id: number; email: string };
-}
+};
 //
-let refreshPromise: Promise<RefreshResult | null> | null = null;
+let refreshPromise: Promise<RefreshResponse | null> | null = null;
 //
-export async function refreshTokens(
+export async function handleRefresh(
     refreshToken: string,
-): Promise<RefreshResult | null> {
+): Promise<RefreshResponse | null> {
     if (!refreshPromise) {
-        refreshPromise = doRefresh(refreshToken);
+        refreshPromise = refreshTokens(refreshToken);
         void clearRefreshPromiseWhenSettled(refreshPromise);
     }
     return refreshPromise;
 }
 //
 async function clearRefreshPromiseWhenSettled(
-    promise: Promise<RefreshResult | null>,
+    promise: Promise<RefreshResponse | null>,
 ): Promise<void> {
     try {
         await promise;
@@ -155,46 +163,86 @@ async function clearRefreshPromiseWhenSettled(
     }
 }
 //
-async function doRefresh(refreshToken: string): Promise<RefreshResult | null> {
-    const res = await fetch(`/api/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-    });
-    if (!res.ok) return null;
-    return res.json();
+async function refreshTokens(
+    refreshToken: string,
+): Promise<RefreshResponse | null> {
+    //
+    const result = await userForRefreshToken(refreshToken);
+    if (!result) {
+        throw new Error('Invalid refresh token');
+    }
+    //
+    const { hashedPassword, ...unhashedUser } = result.user;
+    //
+    const accessToken = makeJWT(
+        unhashedUser.id,
+        config.jwt.defaultDuration,
+        config.jwt.secret,
+    );
+    //
+    return {
+        ...unhashedUser,
+        accessToken,
+        refreshToken,
+    };
 }
-// ToDo:// Not convinced that I need this... Do some figuring
-// export async function login(
-//     email: string,
-//     password: string,
-// ): Promise<LoginResult | null> {
-//     const res = await fetch(`/api/login`, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ email, password }),
-//     });
-//     if (!res.ok) return null;
-//     return res.json();
-// }
+// ToDo:// confirm that login works
+export async function handleLogin(
+    email: string,
+    password: string,
+): Promise<LoginResponse> {
+    // get user with email
+    const user = await getUserByEmail(email);
+    if (!user) {
+        throw new UserNotAuthenticatedError('incorrect email');
+    }
+    const { hashedPassword, ...unhashedUser } = user;
+    //
+    const matching = await checkPasswordHash(password, hashedPassword);
+    if (!matching) {
+        throw new UserNotAuthenticatedError('incorrect password');
+    }
+    //
+    const accessToken = makeJWT(
+        user.id,
+        config.jwt.defaultDuration,
+        config.jwt.secret,
+    );
+    // ToDo:// make refreshtoken work
+    const refreshToken = makeToken();
+    //
+    console.log('accessToken (server/auth.ts)', accessToken);
+    console.log('refreshToken (server/auth.ts)', refreshToken);
+    //
+    const saved = await saveRefreshToken(user.id, refreshToken);
+    if (!saved) {
+        throw new UserNotAuthenticatedError('Could not save refresh token');
+    }
+    //
+    return {
+        ...unhashedUser,
+        accessToken,
+        refreshToken,
+    };
+}
 //
 export function setAuthCookies(
     cookies: Cookies,
-    result: RefreshResult | LoginResult,
+    result: RefreshResponse | LoginResponse,
 ): void {
     // Setting cookies.
     cookies.set('accessToken', result.accessToken, {
         path: '/',
         httpOnly: true,
         secure: true,
-        sameSite: 'strict', // 'lax' // ToDo:// figure out the difference between 'lax' and 'strict'
+        sameSite: 'strict',
         maxAge: 60 * 3, // 3 min // ToDo:// change to 15 min after learning. ToDo:// test this out and see it expire while you're logged in. Just to get a feel for it.
     });
     cookies.set('refreshToken', result.refreshToken, {
         path: '/',
         httpOnly: true,
         secure: true,
-        sameSite: 'strict', // 'lax' // ToDo:// figure out the difference between 'lax' and 'strict'
+        sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 30, // thirty (30) days
     });
 }
@@ -202,9 +250,14 @@ export function clearAuthCookies(event: RequestEvent): void {
     event.cookies.delete('accessToken', { path: '/' });
     event.cookies.delete('refreshToken', { path: '/' });
 }
-//
-export async function revokeRefreshToken(refreshToken: string): Promise<void> {
+// ToDo:// figure out 'revoke' endpoint in API
+export async function handleRevokeRefreshToken(
+    refreshToken: string,
+): Promise<void> {
     try {
+        await revokeRefreshToken(refreshToken);
+        // send 204 status...
+        return;
     } catch (err) {
         //
         console.error(err);
