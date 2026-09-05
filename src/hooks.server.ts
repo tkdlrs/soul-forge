@@ -57,7 +57,10 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
     //
     if (refreshToken) {
         try {
-            const refreshResult = await handleRefresh(refreshToken);
+            const refreshResult = await handleRefresh(
+                refreshToken,
+                event.cookies,
+            );
             if (refreshResult) {
                 if (!refreshResult.id) {
                     throw new Error('no');

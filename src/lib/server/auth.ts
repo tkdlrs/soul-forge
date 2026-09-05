@@ -15,7 +15,7 @@ import {
 import type { InsertUser } from './db/schema/users';
 import { getUserByEmail } from './repositories/user.repository';
 import { config } from '../../config';
-import { json } from '@sveltejs/kit';
+import { goto } from '$app/navigation';
 //
 const TOKEN_ISSUER = 'soulforge';
 //
@@ -41,9 +41,7 @@ export function makeJWT(
 ): string {
     const issuedAt = Math.floor(Date.now() / 1000);
     const expiresAt = issuedAt + expiresIn;
-    // ToDo:// the thing. Where the roles get added to this.
-    // OR maybe do it where it gets the user and their roles then assigns it
-    // (instead of putting roles in the JWT )
+    //
     const token = jwt.sign(
         {
             iss: TOKEN_ISSUER,
@@ -129,25 +127,32 @@ export function sha256(input: string): string {
     return createHash('sha256').update(input).digest('hex');
 }
 //
+type TokenWithExpiration = {
+    token: string;
+    expiresAt: Date;
+};
+//
 export type RefreshResponse = UserResponse & {
     accessToken: string;
-    refreshToken: string;
+    refreshToken: TokenWithExpiration;
 };
 //
 export type UserResponse = Omit<InsertUser, 'hashedPassword'>;
 //
 export type LoginResponse = UserResponse & {
     accessToken: string;
-    refreshToken: string;
+    refreshToken: TokenWithExpiration;
 };
 //
 let refreshPromise: Promise<RefreshResponse | null> | null = null;
 //
 export async function handleRefresh(
     refreshToken: string,
+    cookies: Cookies,
 ): Promise<RefreshResponse | null> {
+    console.log('handle Refresh');
     if (!refreshPromise) {
-        refreshPromise = refreshTokens(refreshToken);
+        refreshPromise = refreshTokens(refreshToken, cookies);
         void clearRefreshPromiseWhenSettled(refreshPromise);
     }
     return refreshPromise;
@@ -165,10 +170,14 @@ async function clearRefreshPromiseWhenSettled(
 //
 async function refreshTokens(
     refreshToken: string,
+    cookies: Cookies,
 ): Promise<RefreshResponse | null> {
+    console.log('refresh Tokens ');
     //
     const result = await userForRefreshToken(refreshToken);
     if (!result) {
+        clearAuthCookies(cookies);
+        console.error('Invalid refresh token. Clearing cookies');
         throw new Error('Invalid refresh token');
     }
     //
@@ -183,7 +192,10 @@ async function refreshTokens(
     return {
         ...unhashedUser,
         accessToken,
-        refreshToken,
+        refreshToken: {
+            token: refreshToken,
+            expiresAt: result.expiresAt,
+        },
     };
 }
 //
@@ -222,7 +234,10 @@ export async function handleLogin(
     return {
         ...unhashedUser,
         accessToken,
-        refreshToken,
+        refreshToken: {
+            token: saved.token,
+            expiresAt: saved.expiresAt,
+        },
     };
 }
 //
@@ -247,17 +262,24 @@ export function setAuthCookies(
         sameSite: 'strict',
         maxAge: 60, // * 15, // 15 min
     });
-    cookies.set('refreshToken', result.refreshToken, {
+    // Expiration time should match what the database has
+    // const refreshTokenMaxAge = result.refreshToken.expiresAt.getTime() / 60000;
+    cookies.set('refreshToken', result.refreshToken.token, {
         path: '/',
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 30, // thirty (30) days
+        // maxAge: refreshTokenMaxAge,
+        expires: result.refreshToken.expiresAt,
     });
 }
 export function clearAuthCookies(cookies: Cookies): void {
-    cookies.delete('accessToken', { path: '/' });
-    cookies.delete('refreshToken', { path: '/' });
+    if (cookies.get('accessToken') !== undefined) {
+        cookies.delete('accessToken', { path: '/' });
+    }
+    if (cookies.get('refreshToken') !== undefined) {
+        cookies.delete('refreshToken', { path: '/' });
+    }
 }
 // ToDo:// figure out 'revoke' endpoint in API -So they can me manualy revoked if needed?
 export async function handleRevokeRefreshToken(

@@ -11,7 +11,7 @@ import { usersTable } from '../db/schema/users';
 import { eq, isNull, and, gt } from 'drizzle-orm';
 //
 export async function saveRefreshToken(userID: number, token: string) {
-    const rows = await db
+    const [rows] = await db
         .insert(refreshTokensTable)
         .values({
             userId: userID,
@@ -21,12 +21,13 @@ export async function saveRefreshToken(userID: number, token: string) {
         })
         .returning();
     //
-    return rows.length > 0;
+    // return rows.length > 0;
+    return rows;
 }
 //
 export async function userForRefreshToken(token: string) {
     const [result] = await db
-        .select({ user: usersTable })
+        .select({ user: usersTable, expiresAt: refreshTokensTable.expiresAt })
         .from(usersTable)
         .innerJoin(
             refreshTokensTable,
