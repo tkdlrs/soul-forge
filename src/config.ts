@@ -40,7 +40,7 @@ export const config: Config = {
     },
     jwt: {
         defaultDuration: 60 * 60, // 1 hour in seconds
-        refreshDuration: 180000, // 3 min. to see things //60 * 60 * 24 * 60 * 1000, // 60 days in milliseconds
+        refreshDuration: 60 * 60 * 24 * 60 * 1000, // 60 days in milliseconds
         secret: envOrThrow('JWT_SECRET'),
         issuer: 'soulforge',
     },

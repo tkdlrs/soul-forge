@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 import crypto, { createHash } from 'crypto';
 import { getRequestEvent } from '$app/server';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 //
-import type { Cookies, RequestEvent } from '@sveltejs/kit';
+import type { Cookies } from '@sveltejs/kit';
 import {
     revokeRefreshToken,
     saveRefreshToken,
@@ -15,7 +15,7 @@ import {
 import type { InsertUser } from './db/schema/users';
 import { getUserByEmail } from './repositories/user.repository';
 import { config } from '../../config';
-import { goto } from '$app/navigation';
+
 //
 const TOKEN_ISSUER = 'soulforge';
 //
@@ -150,12 +150,17 @@ export async function handleRefresh(
     refreshToken: string,
     cookies: Cookies,
 ): Promise<RefreshResponse | null> {
-    console.log('handle Refresh');
-    if (!refreshPromise) {
-        refreshPromise = refreshTokens(refreshToken, cookies);
-        void clearRefreshPromiseWhenSettled(refreshPromise);
+    try {
+        console.log('handle Refresh');
+        if (!refreshPromise) {
+            refreshPromise = refreshTokens(refreshToken, cookies);
+            void clearRefreshPromiseWhenSettled(refreshPromise);
+        }
+        return refreshPromise;
+    } catch (err) {
+        console.log('caught the error in the handle refresh?');
+        throw err;
     }
-    return refreshPromise;
 }
 //
 async function clearRefreshPromiseWhenSettled(
@@ -163,6 +168,9 @@ async function clearRefreshPromiseWhenSettled(
 ): Promise<void> {
     try {
         await promise;
+    } catch (err) {
+        console.log(`Did this err?:::`, err);
+        throw err;
     } finally {
         refreshPromise = null;
     }
@@ -176,8 +184,8 @@ async function refreshTokens(
     //
     const result = await userForRefreshToken(refreshToken);
     if (!result) {
-        clearAuthCookies(cookies);
         console.error('Invalid refresh token. Clearing cookies');
+        clearAuthCookies(cookies);
         throw new Error('Invalid refresh token');
     }
     //
@@ -260,16 +268,15 @@ export function setAuthCookies(
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 60, // * 15, // 15 min
+        maxAge: 60 * 15, // 15 min
     });
     // Expiration time should match what the database has
-    // const refreshTokenMaxAge = result.refreshToken.expiresAt.getTime() / 60000;
     cookies.set('refreshToken', result.refreshToken.token, {
         path: '/',
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        // maxAge: refreshTokenMaxAge,
+        // maxAge: ,
         expires: result.refreshToken.expiresAt,
     });
 }

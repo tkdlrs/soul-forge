@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 //
 import {
     validateJWT,
@@ -72,6 +72,8 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
                 clearAuthCookies(event.cookies);
             }
         } catch (err) {
+            console.log('logged Issue with refresh Token');
+            // throw redirect(303, '/login');
             throw new Error('Issue with refresh Token');
         }
     }
