@@ -36,3 +36,14 @@
     </main>
     <!--  -->
 </div>
+
+<style>
+    :root {
+        --bs-body-bg: #112435;
+        --bs-body-color: #f7d62f;
+        --bs-emphasis-color: #ffa500;
+        /* #2ebe31; */
+
+        /* --bs-navbar-brand-color */
+    }
+</style>

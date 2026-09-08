@@ -7,7 +7,8 @@
 </script>
 
 <header>
-    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <!-- bg-primary" data-bs-theme="dark -->
+    <nav class="navbar navbar-expand-lg" id="navbar">
         <div class="container">
             <a class="navbar-brand" href="/">Soul Forge</a>
             <button
@@ -134,3 +135,14 @@
         </div>
     </nav>
 </header>
+
+<style>
+    .navbar {
+        background-color: #141414;
+        --bs-navbar-brand-color: #c8c8c8;
+        --bs-navbar-hover-color: #82c6e0;
+        --bs-navbar-active-color: #ff00ff;
+        --bs-navbar-brand-hover-color: var(--bs-navbar-hover-color);
+        --bs-navbar-color: #2ebe31;
+    }
+</style>

@@ -434,7 +434,7 @@
                 <!--  -->
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-10">
-                        <!--  -->
+                        <!-- ToDo:// put in table wrapper -->
                         <div class="table-responsive">
                             <table
                                 class="table table-bordered table-sm table-hover"
@@ -555,3 +555,9 @@
         </div>
     </div>
 </section>
+
+<style>
+    .card {
+        --bs-card-border-color: #c8c8c8;
+    }
+</style>
