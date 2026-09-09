@@ -1,10 +1,13 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
+    //
     interface Props {
         additionalCSS?: string;
         headers?: string[];
-        children?: import('svelte').Snippet;
+        tbody?: Snippet;
+        tfoot?: Snippet;
     }
-    let { additionalCSS = '', headers = [], children }: Props = $props();
+    let { additionalCSS = '', headers = [], tbody, tfoot }: Props = $props();
 </script>
 
 <div class="table-responsive">
@@ -18,14 +21,25 @@
                 {/each}
             </tr>
         </thead>
-        <tbody>
-            {@render children?.()}
-        </tbody>
+        {#if tbody != undefined}
+            <tbody>
+                {@render tbody()}
+            </tbody>
+        {/if}
+        {#if tfoot != undefined}
+            <tfoot>
+                {@render tfoot()}
+            </tfoot>
+        {/if}
     </table>
 </div>
 
 <style>
-    table.table > thead {
+    table.table {
+        --bs-table-color: --bs-body-color();
+    }
+    table.table > thead,
+    tfoot {
         --bs-table-bg: #141414 !important;
         --bs-table-color: #c8c8c8 !important;
     }

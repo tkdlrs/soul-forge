@@ -47,3 +47,12 @@
         {/if}
     {/each}
 </div>
+
+<style>
+    .nav-link {
+        --bs-nav-link-color: #2ebe31;
+    }
+    .nav-tabs .nav-link.active {
+        color: #ff00ff;
+    }
+</style>

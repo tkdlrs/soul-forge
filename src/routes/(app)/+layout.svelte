@@ -42,6 +42,7 @@
         --bs-body-bg: #112435;
         --bs-body-color: #f7d62f;
         --bs-emphasis-color: #ffa500;
+        --bs-link-hover-color: #82c6e0;
         /* #2ebe31; */
 
         /* --bs-navbar-brand-color */

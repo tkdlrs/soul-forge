@@ -124,139 +124,147 @@
                                 'Options',
                             ]}
                         >
-                            {#each skills as skill}
-                                {@const timeSpentOnSkill =
-                                    getSkillsTotalMilliseconds(
-                                        skillIdToSkillSessionsMap[skill.id],
+                            {#snippet tbody()}
+                                {#each skills as skill}
+                                    {@const timeSpentOnSkill =
+                                        getSkillsTotalMilliseconds(
+                                            skillIdToSkillSessionsMap[skill.id],
+                                        )}
+                                    {@const formattedTimeSpentOnSkill =
+                                        formatTimeSpentInMilliseconds(
+                                            timeSpentOnSkill,
+                                        )}
+                                    <!-- Monies  -->
+                                    {@const minimumWageRange =
+                                        convertToCurrancyRange(
+                                            timeSpentOnSkill,
+                                        )}
+                                    <!-- Experience points -->
+                                    {@const currentExp = minutesToXP(
+                                        convertMillisecondsToMinutes(
+                                            timeSpentOnSkill,
+                                        ),
                                     )}
-                                {@const formattedTimeSpentOnSkill =
-                                    formatTimeSpentInMilliseconds(
-                                        timeSpentOnSkill,
-                                    )}
-                                <!-- Monies  -->
-                                {@const minimumWageRange =
-                                    convertToCurrancyRange(timeSpentOnSkill)}
-                                <!-- Experience points -->
-                                {@const currentExp = minutesToXP(
-                                    convertMillisecondsToMinutes(
-                                        timeSpentOnSkill,
-                                    ),
-                                )}
-                                {@const currentLvl =
-                                    xpToLevel(currentExp).toFixed(0)}
-                                {@const xpNextLvl = xpToNextLevel(currentExp)}
-                                <tr>
-                                    <!-- <th scope="row"> {skill.id} </th> -->
-                                    <td> {@html skill.icon} </td>
-                                    <td> {skill.name} </td>
-                                    <td>
-                                        <!--    -->
-                                        {#if skill.isActive}
-                                            <div
-                                                class="text-danger d-flex justify-content-center"
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="32"
-                                                    height="32"
-                                                    fill="currentColor"
-                                                    class="bi bi-stopwatch"
-                                                    viewBox="0 0 16 16"
+                                    {@const currentLvl =
+                                        xpToLevel(currentExp).toFixed(0)}
+                                    {@const xpNextLvl =
+                                        xpToNextLevel(currentExp)}
+                                    <tr>
+                                        <!-- <th scope="row"> {skill.id} </th> -->
+                                        <td> {@html skill.icon} </td>
+                                        <td> {skill.name} </td>
+                                        <td>
+                                            <!--    -->
+                                            {#if skill.isActive}
+                                                <div
+                                                    class="text-danger d-flex justify-content-center"
                                                 >
-                                                    <path
-                                                        d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"
-                                                    />
-                                                    <path
-                                                        d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.012-.013.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5M8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3"
-                                                    />
-                                                </svg>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="32"
+                                                        height="32"
+                                                        fill="currentColor"
+                                                        class="bi bi-stopwatch"
+                                                        viewBox="0 0 16 16"
+                                                    >
+                                                        <path
+                                                            d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"
+                                                        />
+                                                        <path
+                                                            d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.012-.013.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5M8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {@html formattedTimeSpentOnSkill}
+                                        </td>
+                                        <td class="text-nowrap">
+                                            {@html minimumWageRange}
+                                        </td>
+                                        <td>
+                                            {currentExp.toFixed(0)} <br />
+                                        </td>
+                                        <td>
+                                            {currentLvl} <br />
+                                        </td>
+                                        <td>
+                                            {xpNextLvl}
+                                        </td>
+                                        <td>
+                                            {@html formatTimeSpentInMilliseconds(
+                                                xpToMilliseconds(xpNextLvl),
+                                            )}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <div class="p-1">
+                                                    <a
+                                                        data-sveltekit-preload-data="false"
+                                                        class="btn btn-sm btn-success"
+                                                        href={resolve(
+                                                            `/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
+                                                        )}
+                                                    >
+                                                        Train
+                                                    </a>
+                                                </div>
+                                                <div class="p-1">
+                                                    <a
+                                                        data-sveltekit-preload-data="false"
+                                                        class="btn btn-sm btn-warning"
+                                                        href={resolve(
+                                                            `/skills/${skill.id}`,
+                                                        )}
+                                                    >
+                                                        Edit
+                                                    </a>
+                                                </div>
+                                                <div class="p-1">
+                                                    <button
+                                                        data-sveltekit-preload-data="false"
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick={() =>
+                                                            deleteSkill(
+                                                                skill.id,
+                                                            )}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </div>
-                                        {/if}
-                                    </td>
-                                    <td>
-                                        {@html formattedTimeSpentOnSkill}
-                                    </td>
-                                    <td class="text-nowrap">
-                                        {@html minimumWageRange}
-                                    </td>
-                                    <td>
-                                        {currentExp.toFixed(0)} <br />
-                                    </td>
-                                    <td>
-                                        {currentLvl} <br />
-                                    </td>
-                                    <td>
-                                        {xpNextLvl}
-                                    </td>
+                                        </td>
+                                    </tr>
+                                {/each}
+                            {/snippet}
+                            {#snippet tfoot()}
+                                <tr>
+                                    <td>Totals</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                     <td>
                                         {@html formatTimeSpentInMilliseconds(
-                                            xpToMilliseconds(xpNextLvl),
+                                            totalTime,
                                         )}
                                     </td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <div class="p-1">
-                                                <a
-                                                    data-sveltekit-preload-data="false"
-                                                    class="btn btn-sm btn-success"
-                                                    href={resolve(
-                                                        `/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
-                                                    )}
-                                                >
-                                                    Train
-                                                </a>
-                                            </div>
-                                            <div class="p-1">
-                                                <a
-                                                    data-sveltekit-preload-data="false"
-                                                    class="btn btn-sm btn-warning"
-                                                    href={resolve(
-                                                        `/skills/${skill.id}`,
-                                                    )}
-                                                >
-                                                    Edit
-                                                </a>
-                                            </div>
-                                            <div class="p-1">
-                                                <button
-                                                    data-sveltekit-preload-data="false"
-                                                    class="btn btn-sm btn-danger"
-                                                    onclick={() =>
-                                                        deleteSkill(skill.id)}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <td class="text-nowrap">
+                                        {@html totalWage}
                                     </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
-                            {/each}
+                            {/snippet}
                         </TableWrapper>
                         <!--  -->
                         <div class="table-responsive">
                             <table
                                 class="table table-bordered table-sm table-hover"
                             >
-                                <tfoot class="table-dark text-white">
-                                    <tr>
-                                        <td>Totals</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            {@html formatTimeSpentInMilliseconds(
-                                                totalTime,
-                                            )}
-                                        </td>
-                                        <td class="text-nowrap">
-                                            {@html totalWage}
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
+                                <tfoot class="table-dark text-white"> </tfoot>
                             </table>
                         </div>
                         <!--  -->
