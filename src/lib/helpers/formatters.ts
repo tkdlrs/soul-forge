@@ -207,3 +207,21 @@ export function formatDateTimeToLocale(date: Date): string {
     return `${get('year')}-${get('month')}-${get('day')} <br /> ${get('hour')}:${get('minute')}:${get('second')} ${get('timeZoneName')}`;
 }
 //
+export function getWeekDay(date: Date): number {
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Denver',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        //
+    }).formatToParts(date);
+    //
+    const get = (type: string) => parts.find((p) => p.type === type)?.value;
+    //
+    const y = Number(get('year'));
+    const m = Number(get('month'));
+    const d = Number(get('day'));
+    //
+    return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+}
+//

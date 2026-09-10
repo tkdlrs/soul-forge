@@ -1,35 +1,69 @@
 <script lang="ts">
+    /*
+     * Tabs for training a skill
+     **/
     import {
         calculateSessionDurationInMilliseconds,
         convertMillisecondsToMinutes,
+        getWeekDay,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema';
     import LineChart from '../charts/LineChart.svelte';
     import TabsWrapper from './TabsWrapper.svelte';
-    /*
-     * TABS stuff
-     **/
-
+    //
     interface Props {
         skillSessions: SkillSession[];
     }
     let { skillSessions }: Props = $props();
+    //
+    const WEEKDAYS = $state<string[][]>([
+        ['Sunday'],
+        ['Monday'],
+        ['Tuesday'],
+        ['Wednesday'],
+        ['Thursday'],
+        ['Friday'],
+        ['Saturday'],
+    ]);
+    // Tabs stuff
+    const tabs = [
+        {
+            id: 'current-view',
+            title: 'Current View',
+            content: currentView,
+        },
+        {
+            id: 'week-view',
+            title: 'Week View',
+            content: weekView,
+        },
+        {
+            id: 'sales',
+            title: 'Sales',
+            content: sales,
+        },
+    ];
+    //
+    let active = $state('current-view');
+    // date as string to milliseconds
     let dateToSessionDuration = $derived.by<Record<string, number>>(() => {
         const output: Record<string, number> = {};
         //
         for (let i = 0; i < skillSessions.length; i++) {
             const session = skillSessions[i];
-            console.log('session', session);
+            // console.log('session', session);
             if (!session.endDateTime) {
                 continue;
             }
             //
             const START_ISO_DATE = toDateTimeLocal(
                 new Date(session.startDateTime),
-            );
+            ).slice(0, 10);
             console.log('START_ISO_DATE', START_ISO_DATE);
-            const END_ISO_DATE = toDateTimeLocal(new Date(session.endDateTime));
+            const END_ISO_DATE = toDateTimeLocal(
+                new Date(session.endDateTime),
+            ).slice(0, 10);
             console.log('END_ISO_DATE', END_ISO_DATE);
             //
             if (START_ISO_DATE.slice(0, 10) !== END_ISO_DATE.slice(0, 10)) {
@@ -55,46 +89,27 @@
         //
         return output;
     });
-    //
-    let active = $state('current-view');
+    $inspect(dateToSessionDuration);
 
-    const tabs = [
-        {
-            id: 'current-view',
-            title: 'Current View',
-            content: currentView,
-        },
-        {
-            id: 'week-view',
-            title: 'Week View',
-            content: weekView,
-        },
-        {
-            id: 'sales',
-            title: 'Sales',
-            content: sales,
-        },
-    ];
-    //
-    const WEEKDAYS = $state<string[]>([
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-    ]);
     const toy = [65, 59, NaN, 48, 56, 57, 40];
     //
-    let currentViewLabels = $derived.by<string[]>(() => {
-        const today = new Date();
+    let currentViewLabels = $derived.by<string[][]>(() => {
+        const TODAY = new Date();
         const len = WEEKDAYS.length;
+        //
+        const TODAY_AS_ISO_STRING = toDateTimeLocal(TODAY).slice(0, 10);
+        const TODAY_YEAR_MONTH = TODAY_AS_ISO_STRING.slice(0, 8);
+        const TODAY_DATE = Number(TODAY_AS_ISO_STRING.slice(8, 10));
+        const TODAY_DAY: number = Number(getWeekDay(TODAY));
         //
         const updatedArr = [];
         for (let offset = -3; offset <= 3; offset++) {
-            const wrappedIndex = (today.getDay() + offset + len) % len;
-            const currentDay = WEEKDAYS[wrappedIndex];
+            const wrappedIndex = (TODAY_DAY + offset + len) % len;
+            const dateOfInterest: number = TODAY_DATE + offset;
+            const currentDay = [
+                `${WEEKDAYS[wrappedIndex]}`,
+                `${TODAY_YEAR_MONTH}${dateOfInterest.toString().padStart(2, '0')}`,
+            ];
             updatedArr.push(currentDay);
         }
         //
@@ -102,11 +117,11 @@
     });
     //
     let currentViewData = $derived.by<Array<number | null>>(() => {
-        const today = new Date();
-        const TODAY_AS_ISO_STRING = today.toISOString().slice(0, 10);
+        const TODAY = new Date();
+        const TODAY_AS_ISO_STRING = toDateTimeLocal(TODAY).slice(0, 10);
         const TODAY_YEAR_MONTH = TODAY_AS_ISO_STRING.slice(0, 8);
         console.log('TODAY_YEAR_MONTH', TODAY_YEAR_MONTH);
-        const TODAY_DAY = Math.abs(Number(TODAY_AS_ISO_STRING.slice(7, 10)));
+        const TODAY_DAY = Number(TODAY_AS_ISO_STRING.slice(8, 10));
         console.log('TODAY_DAY', TODAY_DAY);
         //
         const updatedArr = [];
@@ -115,13 +130,15 @@
             const dateIndex = `${TODAY_YEAR_MONTH}${(TODAY_DAY + offset).toString().padStart(2, '0')}`;
             console.log('dateIndex', dateIndex);
             const currentInMilliseconds = dateToSessionDuration[dateIndex];
-
+            console.log('currentInMilliseconds', currentInMilliseconds);
             const currentInMinutes = convertMillisecondsToMinutes(
                 currentInMilliseconds,
             );
+            console.log('currentInMinutes', currentInMinutes);
             if (currentInMilliseconds) {
                 updatedArr.push(currentInMinutes);
             } else {
+                console.log('push a null');
                 updatedArr.push(null);
             }
         }
@@ -129,6 +146,7 @@
         console.log('updatedArr:', updatedArr);
         return updatedArr;
     });
+    //
 </script>
 
 <!--  -->
@@ -174,7 +192,7 @@
         </div>
         <div class="col-10">
             <LineChart
-                labels={['one', 'two', 'null', 'three', 'four']}
+                labels={[['one'], ['two'], ['null'], ['three'], ['four']]}
                 data={[0, 2, null, 3, 4]}
             />
         </div>

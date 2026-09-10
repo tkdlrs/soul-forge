@@ -7,7 +7,7 @@
     let chart: Chart;
     //
     type Props = {
-        labels: string[];
+        labels: string[][];
         data: Array<number | null>;
         colorStringRGB?: string;
     };
