@@ -232,3 +232,4 @@
     <TabsWrapper {tabs} bind:active></TabsWrapper>
     <p>Current: {active}</p>
 </div>
+<!-- exhaustion -->
