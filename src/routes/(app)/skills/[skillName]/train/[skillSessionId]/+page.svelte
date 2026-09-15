@@ -135,18 +135,22 @@
     <div class="row">
         <div class="col-12">
             <!--  -->
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <SkillCard
-                        {skillName}
-                        {currentLevel}
-                        {levelProgressAsPercent}
-                        {currentTotalXp}
-                    />
+            <div class="row align-items-center">
+                <div class="col-12 col-md-4">
+                    <div class="mb-5">
+                        <SkillCard
+                            {skillName}
+                            {currentLevel}
+                            {levelProgressAsPercent}
+                            {currentTotalXp}
+                        />
+                    </div>
                 </div>
-                <!--  -->
-                <TrainingSkillTabs {skillSessions} />
-                <!--  -->
+                <div class="col-12 col-md-8">
+                    <!--  -->
+                    <TrainingSkillTabs {skillSessions} />
+                    <!--  -->
+                </div>
             </div>
             <div class="col-12">
                 <!--  -->

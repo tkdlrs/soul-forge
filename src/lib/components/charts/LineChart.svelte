@@ -9,10 +9,16 @@
     type Props = {
         labels: string[][];
         data: Array<number | null>;
-        colorStringRGB?: string;
+        strLineColorRGB?: string;
+        strFillColorRGBA?: string;
     };
     //
-    let { labels, data, colorStringRGB = '0, 0, 0' }: Props = $props();
+    let {
+        labels,
+        data,
+        strLineColorRGB = '0, 0, 0',
+        strFillColorRGBA = `${strLineColorRGB}, .3`,
+    }: Props = $props();
     //
     let verticalMax = $derived.by<number>(() => {
         const dynamicMax = data.reduce((max: number, val: number | null) => {
@@ -47,9 +53,9 @@
                 datasets: [
                     {
                         data,
-                        borderColor: `rgba(${colorStringRGB})`,
+                        borderColor: `rgba(${strLineColorRGB})`,
                         spanGaps: false,
-                        backgroundColor: `rgba(${colorStringRGB}, .3)`,
+                        backgroundColor: `rgba(${strFillColorRGBA})`,
                         fill: true,
                     },
                 ],

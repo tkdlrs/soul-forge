@@ -10,39 +10,34 @@
         currentLevel: number;
         levelProgressAsPercent: number;
         currentTotalXp: number;
+        skillDescription?: string | '';
     }
     let {
         skillName,
         currentLevel,
         levelProgressAsPercent,
         currentTotalXp,
+        skillDescription = '',
     }: Props = $props();
 </script>
 
 <div class="card px-2 py-3">
-    <div>
-        <p>Skill Name</p>
-        <h1>
-            {skillName}
-        </h1>
-        <p class="lead">
-            This would be an index page for listing out all the skills sessions.
-        </p>
-    </div>
-    <div>
-        <h2 class="">
-            <span class="h5"> Current Level: </span>
-            <span class="font-weight-bold">
-                {currentLevel}
-            </span>
-        </h2>
-    </div>
-
-    <div class="row align-middle align-items-center my-3">
-        <div class="col-12 col-md-3">
-            <p class="align-bottom p-0 m-0">Next Level:</p>
+    <div class="row">
+        <div class="col-8">
+            <p>Skill Name</p>
+            <h1 class="h2">{skillName}</h1>
+            {#if skillDescription != ''}
+                <p class="lead">{skillDescription}</p>
+            {/if}
         </div>
-        <div class="col-12 col-md-9">
+        <div class="col-4">
+            <p class="text-sm-center text-md-start">Current Level</p>
+            <h2 class="text-center">{currentLevel}</h2>
+        </div>
+    </div>
+    <div class="row align-middle align-items-center my-3">
+        <div class="col-12">
+            <p class="align-bottom p-0 m-0 mb-2">Next Level:</p>
             <div
                 class="progress"
                 role="progressbar"
