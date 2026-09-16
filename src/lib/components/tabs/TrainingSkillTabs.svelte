@@ -9,6 +9,7 @@
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema';
+    import { WEEKDAYS, weekViewBaseLabels } from '$lib/utils/timeUtils';
     import LineChart from '../charts/LineChart.svelte';
     import Arrow from '../icon-buttons/Arrow.svelte';
     import TabsWrapper from './TabsWrapper.svelte';
@@ -18,15 +19,12 @@
     }
     let { skillSessions }: Props = $props();
     //
-    const WEEKDAYS = $state<string[][]>([
-        ['Sunday'],
-        ['Monday'],
-        ['Tuesday'],
-        ['Wednesday'],
-        ['Thursday'],
-        ['Friday'],
-        ['Saturday'],
-    ]);
+    const TODAY = new Date();
+    const TODAY_DAY: number = Number(getWeekDay(TODAY));
+    //
+    const WEEKDAYS_AS_ARRAYS = $state<string[][]>(
+        WEEKDAYS.map((item) => [item]),
+    );
     // Tabs stuff
     const tabs = [
         {
@@ -56,11 +54,11 @@
             const START_ISO_DATE = toDateTimeLocal(
                 new Date(session.startDateTime),
             ).slice(0, 10);
-            console.log('START_ISO_DATE', START_ISO_DATE);
+            // console.log('START_ISO_DATE', START_ISO_DATE);
             const END_ISO_DATE = toDateTimeLocal(
                 new Date(session.endDateTime),
             ).slice(0, 10);
-            console.log('END_ISO_DATE', END_ISO_DATE);
+            // console.log('END_ISO_DATE', END_ISO_DATE);
             //
             if (START_ISO_DATE.slice(0, 10) !== END_ISO_DATE.slice(0, 10)) {
                 throw new Error(
@@ -88,20 +86,18 @@
     $inspect(dateToSessionDuration);
     //
     let currentViewLabels = $derived.by<string[][]>(() => {
-        const TODAY = new Date();
-        const len = WEEKDAYS.length;
+        const len = WEEKDAYS_AS_ARRAYS.length;
         //
         const TODAY_AS_ISO_STRING = toDateTimeLocal(TODAY).slice(0, 10);
         const TODAY_YEAR_MONTH = TODAY_AS_ISO_STRING.slice(0, 8);
         const TODAY_DATE = Number(TODAY_AS_ISO_STRING.slice(8, 10));
-        const TODAY_DAY: number = Number(getWeekDay(TODAY));
         //
         const updatedArr = [];
         for (let offset = -3; offset <= 3; offset++) {
             const wrappedIndex = (TODAY_DAY + offset + len) % len;
             const dateOfInterest: number = TODAY_DATE + offset;
             const currentDay = [
-                `${WEEKDAYS[wrappedIndex]}`,
+                `${WEEKDAYS_AS_ARRAYS[wrappedIndex]}`,
                 `${TODAY_YEAR_MONTH}${dateOfInterest.toString().padStart(2, '0')}`,
             ];
             updatedArr.push(currentDay);
@@ -109,19 +105,17 @@
         //
         return updatedArr;
     });
-    //
     let currentViewData = $derived.by<Array<number | null>>(() => {
-        const TODAY = new Date();
         const TODAY_AS_ISO_STRING = toDateTimeLocal(TODAY).slice(0, 10);
         const TODAY_YEAR_MONTH = TODAY_AS_ISO_STRING.slice(0, 8);
         console.log('TODAY_YEAR_MONTH', TODAY_YEAR_MONTH);
-        const TODAY_DAY = Number(TODAY_AS_ISO_STRING.slice(8, 10));
-        console.log('TODAY_DAY', TODAY_DAY);
+        const TODAY_DATE = Number(TODAY_AS_ISO_STRING.slice(8, 10));
+        console.log('TODAY_DATE', TODAY_DATE);
         //
         const updatedArr = [];
         for (let offset = -3; offset <= 3; offset++) {
             // const
-            const dateIndex = `${TODAY_YEAR_MONTH}${(TODAY_DAY + offset).toString().padStart(2, '0')}`;
+            const dateIndex = `${TODAY_YEAR_MONTH}${(TODAY_DATE + offset).toString().padStart(2, '0')}`;
             console.log('dateIndex', dateIndex);
             const currentInMilliseconds = dateToSessionDuration[dateIndex];
             console.log('currentInMilliseconds', currentInMilliseconds);
@@ -140,17 +134,17 @@
         console.log('updatedArr:', updatedArr);
         return updatedArr;
     });
-    // ToDo:// make works good
-    // ['one'],
-    // ['two'],
-    // ['three'],
-    // ['four'],
-    // ['five'],
-    // ['six'],
-    // ['seven'],
-    let currentWeekViewLabels = $state<string[][]>([[]]);
     //
-    let currentWeekViewData = $state<number[]>([]);
+
+    let weekViewChartLabels = $derived.by<string[][]>(() => {
+        let outputArray = weekViewBaseLabels(TODAY);
+        //
+        console.log('outputArray', outputArray);
+        return [outputArray];
+    });
+    let weekViewChartData = $derived.by<Array<number | null>>(() => {
+        return [];
+    });
     //
 </script>
 
@@ -192,7 +186,7 @@
             />
         </div>
         <div class="col-8">
-            <LineChart labels={[[]]} data={[]} />
+            <LineChart labels={weekViewChartLabels} data={weekViewChartData} />
         </div>
         <div class="col-2 align-self-center d-flex justify-content-center">
             <Arrow direction="right" />
