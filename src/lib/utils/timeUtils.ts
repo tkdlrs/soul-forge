@@ -9,28 +9,33 @@ export const WEEKDAYS = [
     'Friday',
     'Saturday',
 ];
-// ToDo:// get this working and have it tested
-export function weekViewBaseLabels(today: Date): Array<string> {
-    const FLAT_WEEK = WEEKDAYS.flat();
-    const WEEK_DAY = getWeekDay(today);
-    const TODAY_WEEK = FLAT_WEEK[WEEK_DAY];
-    console.log('TODAY_WEEK:', TODAY_WEEK);
+//
+export function weekViewBaseLabels(today: Date): Array<string[]> {
     let outputArray = new Array(7);
+    //
+    const WEEK_DAY_INDEX = getWeekDay(today);
+    const TODAY_WEEK = WEEKDAYS[WEEK_DAY_INDEX];
+    //
     let count = 6;
+    let dayBeforeIndex = WEEK_DAY_INDEX;
+    //
     outputArray[count] = [TODAY_WEEK];
-    count--;
-    let weekDay = WEEK_DAY - 1;
+    //
     do {
-        console.log('FLAT_WEEK[weekDay]', FLAT_WEEK[weekDay]);
-        outputArray[count] = [FLAT_WEEK[weekDay]];
         //
         count--;
-        console.log('count', count);
-        if (weekDay <= 0) {
-            weekDay += 7;
+        dayBeforeIndex--;
+        //
+        if (dayBeforeIndex < 0) {
+            dayBeforeIndex += 7;
         }
-        weekDay--;
-    } while (count >= 0);
+        if (dayBeforeIndex < 0 || dayBeforeIndex > 6) {
+            throw new Error('Out of bounds');
+        }
+        //
+        outputArray[count] = [WEEKDAYS[dayBeforeIndex]];
+        //
+    } while (count > 0);
     //
     return outputArray;
 }
