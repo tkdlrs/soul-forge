@@ -1,4 +1,4 @@
-import { getWeekDay } from '$lib/helpers/formatters';
+import { formatDateTimeToLocale, getWeekDay } from '$lib/helpers/formatters';
 //
 export const WEEKDAYS = [
     'Sunday',
@@ -38,4 +38,26 @@ export function weekViewBaseLabels(today: Date): Array<string[]> {
     } while (count > 0);
     //
     return outputArray;
+}
+//
+export function getSevenDatesToToday(today: Date): string[] {
+    let outputArray = new Array(7);
+    //
+    let thisDay = today;
+    for (let i = 6; i >= 0; i--) {
+        outputArray[i] = formatDateTimeToLocale(thisDay).slice(0, 10);
+        thisDay = daysBefore(thisDay, 1);
+    }
+    //
+    if (outputArray.length !== 7) {
+        throw new Error('Incorrect length for seven dates array ');
+    }
+    return outputArray;
+}
+//
+function daysBefore(from: Date, n: number): Date {
+    const d = new Date(from);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - n);
+    return d;
 }

@@ -1,8 +1,8 @@
-import type { SkillSession } from '$lib/schemas/skillSessionSchema';
-
 /**
  *
  **/
+import type { SkillSession } from '$lib/schemas/skillSessionSchema';
+//
 export function printJSON(obj: any): string {
     return JSON.stringify(obj, null, 2);
 }

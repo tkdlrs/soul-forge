@@ -9,7 +9,11 @@
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema';
-    import { WEEKDAYS, weekViewBaseLabels } from '$lib/utils/timeUtils';
+    import {
+        getSevenDatesToToday,
+        WEEKDAYS,
+        weekViewBaseLabels,
+    } from '$lib/utils/timeUtils';
     import LineChart from '../charts/LineChart.svelte';
     import Arrow from '../icon-buttons/Arrow.svelte';
     import TabsWrapper from './TabsWrapper.svelte';
@@ -135,15 +139,30 @@
         return updatedArr;
     });
     //
-
-    let weekViewChartLabels = $derived.by<string[][]>(() => {
-        let outputArray = weekViewBaseLabels(TODAY);
+    // $inspect(currentViewData);
+    let weekViewChartLabels = $derived.by<Array<string[]>>(() => {
+        const baseLabels = weekViewBaseLabels(TODAY);
+        const dateLabels = getSevenDatesToToday(TODAY);
         //
-        console.log('outputArray', outputArray);
-        return [outputArray];
+        console.log('TODAY is?', TODAY);
+        //
+        let outputArray = baseLabels.map((item, idx) => {
+            const current = item;
+            return [...current, dateLabels[idx]];
+        });
+        //
+
+        return outputArray;
     });
     let weekViewChartData = $derived.by<Array<number | null>>(() => {
-        return [];
+        const dateLabels = getSevenDatesToToday(TODAY);
+        const output = dateLabels.map((item) =>
+            convertMillisecondsToMinutes(dateToSessionDuration[item]),
+        );
+
+        //
+        console.log('output', output);
+        return output;
     });
     //
 </script>
@@ -186,10 +205,26 @@
             />
         </div>
         <div class="col-8">
-            <LineChart labels={weekViewChartLabels} data={weekViewChartData} />
+            <!--  -->
+            <div class="row">
+                <div class="col-12">
+                    <LineChart
+                        labels={weekViewChartLabels}
+                        data={weekViewChartData}
+                        strLineColorRGB={'255, 0, 255'}
+                        strFillColorRGBA={'46, 190, 49, .8'}
+                    />
+                </div>
+            </div>
+            <!--  -->
         </div>
         <div class="col-2 align-self-center d-flex justify-content-center">
-            <Arrow direction="right" />
+            <Arrow
+                direction="right"
+                callMethod={() => {
+                    alert('bye');
+                }}
+            />
         </div>
     </div>
 {/snippet}

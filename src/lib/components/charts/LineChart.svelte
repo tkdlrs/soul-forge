@@ -80,4 +80,6 @@
     //
 </script>
 
-<canvas bind:this={canvas}></canvas>
+<div>
+    <canvas bind:this={canvas}></canvas>
+</div>
