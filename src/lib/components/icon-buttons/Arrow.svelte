@@ -2,14 +2,22 @@
     //
     type Props = {
         direction: 'left' | 'right';
+        disabled?: boolean;
         callMethod?: (() => void) | undefined;
     };
     //
-    let { direction, callMethod = undefined }: Props = $props();
+    let {
+        direction,
+        disabled = false,
+        callMethod = undefined,
+    }: Props = $props();
 </script>
 
 <button
-    class="btn btn-primary btn-sm text-white rounded-4 overflow-hidden"
+    class="btn btn-primary btn-sm text-white rounded-4 overflow-hidden{disabled
+        ? ' disabled'
+        : ''}"
+    {disabled}
     onclick={() => {
         if (callMethod) {
             callMethod();

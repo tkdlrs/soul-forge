@@ -5,11 +5,14 @@
     import {
         calculateSessionDurationInMilliseconds,
         convertMillisecondsToMinutes,
+        formatDateTimeToLocale,
         getWeekDay,
         toDateTimeLocal,
     } from '$lib/helpers/formatters';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema';
     import {
+        daysAhead,
+        daysBefore,
         getSevenDatesToToday,
         WEEKDAYS,
         weekViewBaseLabels,
@@ -24,6 +27,7 @@
     let { skillSessions }: Props = $props();
     //
     const TODAY = new Date();
+    let today = $state<Date>(TODAY);
     const TODAY_DAY: number = Number(getWeekDay(TODAY));
     //
     const WEEKDAYS_AS_ARRAYS = $state<string[][]>(
@@ -87,7 +91,7 @@
         //
         return output;
     });
-    $inspect(dateToSessionDuration);
+    // $inspect(dateToSessionDuration);
     //
     let currentViewLabels = $derived.by<string[][]>(() => {
         const len = WEEKDAYS_AS_ARRAYS.length;
@@ -139,29 +143,40 @@
         return updatedArr;
     });
     //
-    // $inspect(currentViewData);
+    let leftArrowDisabled = $state<boolean>(false);
+    let rightArrowDisabled = $derived.by<boolean>(() => {
+        return (
+            formatDateTimeToLocale(today).slice(0, 10) >=
+            formatDateTimeToLocale(TODAY).slice(0, 10)
+        );
+    });
+    $inspect(today);
+    $inspect(rightArrowDisabled);
+    //
     let weekViewChartLabels = $derived.by<Array<string[]>>(() => {
-        const baseLabels = weekViewBaseLabels(TODAY);
-        const dateLabels = getSevenDatesToToday(TODAY);
+        const baseLabels = weekViewBaseLabels(today);
+        const dateLabels = getSevenDatesToToday(today);
         //
-        console.log('TODAY is?', TODAY);
+        // console.log('weekViewChartLabels. did something?');
+        // console.log('today is?', today);
         //
         let outputArray = baseLabels.map((item, idx) => {
             const current = item;
             return [...current, dateLabels[idx]];
         });
         //
-
         return outputArray;
     });
+    // $inspect(weekViewChartLabels);
     let weekViewChartData = $derived.by<Array<number | null>>(() => {
-        const dateLabels = getSevenDatesToToday(TODAY);
+        const dateLabels = getSevenDatesToToday(today);
         const output = dateLabels.map((item) =>
             convertMillisecondsToMinutes(dateToSessionDuration[item]),
         );
-
         //
-        console.log('output', output);
+        // console.log('weekViewChartData did something');
+        // console.log('output', output);
+        //
         return output;
     });
     //
@@ -198,9 +213,11 @@
         <div class="col-2 align-self-center d-flex justify-content-center">
             <Arrow
                 direction="left"
+                disabled={leftArrowDisabled}
                 callMethod={() => {
-                    alert('hi');
-                    //
+                    console.log('today (before)', today);
+                    today = daysBefore(today, 7);
+                    console.log('today (after)', today);
                 }}
             />
         </div>
@@ -221,8 +238,9 @@
         <div class="col-2 align-self-center d-flex justify-content-center">
             <Arrow
                 direction="right"
+                disabled={rightArrowDisabled}
                 callMethod={() => {
-                    alert('bye');
+                    today = daysAhead(today, 7);
                 }}
             />
         </div>

@@ -55,9 +55,16 @@ export function getSevenDatesToToday(today: Date): string[] {
     return outputArray;
 }
 //
-function daysBefore(from: Date, n: number): Date {
+export function daysBefore(from: Date, n: number): Date {
     const d = new Date(from);
     d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - n);
+    return d;
+}
+//
+export function daysAhead(from: Date, n: number): Date {
+    const d = new Date(from);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + n);
     return d;
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Chart, registerables } from 'chart.js';
     import { onMount } from 'svelte';
+    import Error from '../../../routes/(app)/+error.svelte';
     //
     Chart.register(...registerables);
     let canvas: HTMLCanvasElement;
@@ -76,6 +77,18 @@
         });
         //
         return () => chart.destroy();
+    });
+    //
+    $effect(() => {
+        if (!chart) return;
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        // ToDo:// make this not red.
+        chart.options.scales.y.min = verticalMin;
+        chart.options.scales.y.max = verticalMax;
+
+        //
+        chart.update();
     });
     //
 </script>
