@@ -24,20 +24,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav" data-sveltekit-preload-data="false">
-                    <li
-                        class="nav-item"
-                        aria-current={page.url.pathname === '/'
-                            ? 'page'
-                            : undefined}
-                    >
-                        <a
-                            class="nav-link active"
-                            aria-current="page"
-                            href={resolve('/')}
-                        >
-                            Home
-                        </a>
-                    </li>
                     {#if user && user.roles.includes('Admin')}
                         <li
                             class="nav-item"
@@ -45,7 +31,12 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/users')}>
+                            <a
+                                class="nav-link {page.url.pathname === '/users'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/users')}
+                            >
                                 All Users
                             </a>
                         </li>
@@ -55,7 +46,12 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/roles')}>
+                            <a
+                                class="nav-link {page.url.pathname === '/roles'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/roles')}
+                            >
                                 Roles
                             </a>
                         </li>
@@ -65,7 +61,13 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/user-roles')}>
+                            <a
+                                class="nav-link {page.url.pathname ===
+                                '/user-roles'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/user-roles')}
+                            >
                                 User Roles
                             </a>
                         </li>
@@ -79,12 +81,16 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/skills')}>
+                            <a
+                                class="nav-link {page.url.pathname === '/skills'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/skills')}
+                            >
                                 Skills
                             </a>
                         </li>
                         <li class="nav-item">
-                            <!-- ToDo:// fix logout -->
                             <!-- svelte-ignore component_name_lowercase -->
                             <form action="/api/auth/logout" method="POST">
                                 <button class="nav-link btn btn-link">
@@ -101,7 +107,13 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/users/create')}>
+                            <a
+                                class="nav-link {page.url.pathname ===
+                                '/users/create'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/users/create')}
+                            >
                                 Create Account
                             </a>
                         </li>
@@ -111,7 +123,12 @@
                                 ? 'page'
                                 : undefined}
                         >
-                            <a class="nav-link" href={resolve('/login')}>
+                            <a
+                                class="nav-link {page.url.pathname === '/login'
+                                    ? 'active'
+                                    : ''}"
+                                href={resolve('/login')}
+                            >
                                 Login
                             </a>
                         </li>
@@ -123,7 +140,10 @@
                                 : undefined}
                         >
                             <a
-                                class="nav-link"
+                                class="nav-link {page.url.pathname ===
+                                '/reset-password'
+                                    ? 'active'
+                                    : ''}"
                                 href={resolve('/reset-password')}
                             >
                                 Reset Password

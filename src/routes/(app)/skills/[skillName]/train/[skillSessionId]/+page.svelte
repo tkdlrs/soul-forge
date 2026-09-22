@@ -30,8 +30,10 @@
     import TrainingSkillTabs from '$lib/components/tabs/TrainingSkillTabs.svelte';
     //
     let { data }: { data: TrainSkillPageData } = $props();
-    //
-    let skillSessions = $state<SkillSession[]>(data.skillSessions);
+    // ToDo:// this pattern is  suggested for what I'm trying to do (closer?) claude "SvelteKit state reference warning fix"
+    let skillSessions = $state<SkillSession[]>(
+        $state.snapshot(data.skillSessions),
+    );
     skillSessions = skillSessions.sort(
         (a, b) => b.startDateTime.getTime() - a.startDateTime.getTime(),
     );

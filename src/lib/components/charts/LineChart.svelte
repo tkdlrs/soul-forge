@@ -1,11 +1,10 @@
 <script lang="ts">
-    import { Chart, registerables } from 'chart.js';
+    import { Chart as ChartJS, registerables } from 'chart.js';
     import { onMount } from 'svelte';
-    import Error from '../../../routes/(app)/+error.svelte';
     //
-    Chart.register(...registerables);
+    ChartJS.register(...registerables);
     let canvas: HTMLCanvasElement;
-    let chart: Chart;
+    let chart: ChartJS;
     //
     type Props = {
         labels: string[][];
@@ -47,7 +46,7 @@
     //
     onMount(() => {
         //
-        chart = new Chart(canvas, {
+        chart = new ChartJS(canvas, {
             type: 'line',
             data: {
                 labels,
@@ -83,10 +82,15 @@
         if (!chart) return;
         chart.data.labels = labels;
         chart.data.datasets[0].data = data;
-        // ToDo:// make this not red.
+        //
+        if (!chart.options.scales) {
+            throw new Error('chart.options.scales is not defined');
+        }
+        if (!chart.options.scales.y) {
+            throw new Error('chart.options.scales.y is not defined');
+        }
         chart.options.scales.y.min = verticalMin;
         chart.options.scales.y.max = verticalMax;
-
         //
         chart.update();
     });
