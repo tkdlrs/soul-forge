@@ -150,8 +150,8 @@
             formatDateTimeToLocale(TODAY).slice(0, 10)
         );
     });
-    $inspect(today);
-    $inspect(rightArrowDisabled);
+    // $inspect(today);
+    // $inspect(rightArrowDisabled);
     //
     let weekViewChartLabels = $derived.by<Array<string[]>>(() => {
         const baseLabels = weekViewBaseLabels(today);

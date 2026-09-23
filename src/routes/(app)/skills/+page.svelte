@@ -4,13 +4,9 @@
      **/
     import { resolve } from '$app/paths';
     //
-    import {
-        type SkillsWithActiveSkillSessions,
-        type SkillWithId,
-    } from '$lib/schemas/skillSchema';
+    import { type SkillsWithActiveSkillSessions } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
     import {
-        getDateDeltaParts,
         convertToCurrancyRange,
         formatTimeSpentInMilliseconds,
         getSkillsTotalMilliseconds,
@@ -18,7 +14,6 @@
     } from '$lib/helpers/formatters.js';
     import type { SkillSession } from '$lib/schemas/skillSessionSchema.js';
     import {
-        levelProgress,
         minutesToXP,
         xpToLevel,
         xpToMilliseconds,

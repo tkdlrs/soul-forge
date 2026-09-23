@@ -30,12 +30,12 @@
     import TrainingSkillTabs from '$lib/components/tabs/TrainingSkillTabs.svelte';
     //
     let { data }: { data: TrainSkillPageData } = $props();
-    // ToDo:// this pattern is  suggested for what I'm trying to do (closer?) claude "SvelteKit state reference warning fix"
-    let skillSessions = $state<SkillSession[]>(
-        $state.snapshot(data.skillSessions),
-    );
-    skillSessions = skillSessions.sort(
-        (a, b) => b.startDateTime.getTime() - a.startDateTime.getTime(),
+    $inspect(data);
+    //
+    let skillSessions = $derived<SkillSession[]>(
+        [...data.skillSessions].sort(
+            (a, b) => b.startDateTime.getTime() - a.startDateTime.getTime(),
+        ),
     );
     //
     let arrayEachSkillSessionDurationInMilliseconds = $derived.by<number[]>(
@@ -61,18 +61,18 @@
         minutesToXP(currentMinutesOnSkill),
     );
     //
-    let currentLevel = $derived.by<number>(() => xpToLevel(currentTotalXp));
+    let currentLevel = $derived<number>(xpToLevel(currentTotalXp));
     //
-    const skillName = data.skillName;
+    const skillName = $derived<string>(data.skillName);
+    const userId = $derived<number>(data.userId);
+    const skillId = $derived<string>(data.skillId);
     //
-    let userId = data.userId;
-    let skillId = data.skillId;
+    let currentSessionId = $derived<string>(data.currentSessionId);
     //
-    let currentSessionId = data?.currentSessionId;
-    //
-    const currentSkillSession = data?.skillSessions.findIndex(
-        (item) => item.id === currentSessionId,
+    const currentSkillSession = $derived<number>(
+        skillSessions.findIndex((item) => item.id === currentSessionId),
     );
+    $inspect(currentSkillSession);
     //
     async function deleteSkillSession(id: string, name: string) {
         if (confirm('Are you certain you want to delete this Skill Session?')) {
@@ -99,28 +99,32 @@
      * FORM Stuff
      *
      **/
-    let startDateTime = $state<Date | string | null>(null);
-    if (currentSkillSession != -1) {
-        startDateTime = toDateTimeLocal(
-            data.skillSessions[currentSkillSession].startDateTime,
+    let startDateTime = $derived.by<Date | string | null>(() => {
+        if (currentSkillSession === -1) {
+            return null;
+        }
+        //
+        return toDateTimeLocal(
+            skillSessions[currentSkillSession].startDateTime,
         );
-    }
+    });
 
-    let endDateTime = $state<Date | string | null>(null);
-    if (
-        currentSkillSession != -1 &&
-        data.skillSessions[currentSkillSession].endDateTime != null
-    ) {
-        endDateTime = toDateTimeLocal(
-            data.skillSessions[currentSkillSession].endDateTime,
-        );
-    }
+    let endDateTime = $derived.by<Date | string | null>(() => {
+        if (currentSkillSession === -1) {
+            return null;
+        }
+        if (skillSessions[currentSkillSession].endDateTime === null) {
+            return null;
+        }
+        //
+        return toDateTimeLocal(skillSessions[currentSkillSession].endDateTime);
+    });
     //
     let levelProgressAsPercent = $derived<number>(
         levelProgress(currentTotalXp) * 100,
     );
     //
-    const action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
+    const action = $derived<string>(`/api/skill-sessions/${currentSessionId}`);
     //
     onMount(() => {
         if (endDateTime != null) {
