@@ -2,23 +2,23 @@
     /**
      * App Frontend 'User' page SHOW & EDIT
      **/
+    import { untrack } from 'svelte';
     import UserForm from '$lib/components/forms/resources/UserForm.svelte';
-    import { UserWithIdSchema } from '$lib/schemas/userSchema.js';
-    //
-    let firstName = $state<string>('');
-    let lastName = $state<string>('');
-    let email = $state<string>('');
+    import {
+        UserWithIdSchema,
+        type UserWithId,
+    } from '$lib/schemas/userSchema.js';
     //
     let { data } = $props();
     //
-    const user = data.user;
-    UserWithIdSchema.parse(user);
+    const user = $state<UserWithId>(structuredClone(untrack(() => data.user)));
+    const checkedUser = $derived<UserWithId>(UserWithIdSchema.parse(user));
     //
-    firstName = user.firstName;
-    lastName = user.lastName;
-    email = user.email;
+    let firstName = $state<string>(untrack(() => checkedUser.firstName));
+    let lastName = $state<string>(untrack(() => checkedUser.lastName));
+    let email = $state<string>(untrack(() => checkedUser.email));
     //
-    const actionRoute = `/api/users/${user.id}`;
+    const actionRoute = `/api/users/${untrack(() => checkedUser.id)}`;
 </script>
 
 <section class="p-5">
@@ -28,9 +28,9 @@
         </div>
         <div class="col-12 col-md-6">
             <h2 class="h4 fw-bold">Show</h2>
-            <p><strong>First Name</strong>: {data.user.firstName}</p>
-            <p><strong>Last Name</strong>: {data.user.lastName}</p>
-            <p><strong>Email</strong>: {data.user.email}</p>
+            <p><strong>First Name</strong>: {user.firstName}</p>
+            <p><strong>Last Name</strong>: {user.lastName}</p>
+            <p><strong>Email</strong>: {user.email}</p>
         </div>
         <div class="col-12 col-md-6">
             <h2 class="h4 fw-bold">Edit User</h2>
