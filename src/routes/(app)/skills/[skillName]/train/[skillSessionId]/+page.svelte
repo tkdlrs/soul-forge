@@ -3,7 +3,7 @@
      * Frontend 'Skill' page SHOW
      * INDEX for a specific the 'Skill Sessions' of a specific 'Skill'
      **/
-    import { onMount } from 'svelte';
+    import { onMount, untrack } from 'svelte';
     import { resolve } from '$app/paths';
     import TrainASkillForm from '$lib/components/forms/resources/TrainASkillForm.svelte';
     import {
@@ -30,10 +30,15 @@
     import TrainingSkillTabs from '$lib/components/tabs/TrainingSkillTabs.svelte';
     //
     let { data }: { data: TrainSkillPageData } = $props();
-    $inspect(data);
+    // derived is correct here because Users shouldn't be changing these.
+    const skillName = $derived<string>(data.skillName);
+    const userId = $derived<number>(data.userId);
+    const skillId = $derived<string>(data.skillId);
     //
-    let skillSessions = $derived<SkillSession[]>(
-        [...data.skillSessions].sort(
+    let currentSessionId = $derived<string>(data.currentSessionId);
+    //
+    let skillSessions = $state<SkillSession[]>(
+        structuredClone(untrack(() => [...data.skillSessions])).sort(
             (a, b) => b.startDateTime.getTime() - a.startDateTime.getTime(),
         ),
     );
@@ -63,16 +68,9 @@
     //
     let currentLevel = $derived<number>(xpToLevel(currentTotalXp));
     //
-    const skillName = $derived<string>(data.skillName);
-    const userId = $derived<number>(data.userId);
-    const skillId = $derived<string>(data.skillId);
-    //
-    let currentSessionId = $derived<string>(data.currentSessionId);
-    //
     const currentSkillSession = $derived<number>(
         skillSessions.findIndex((item) => item.id === currentSessionId),
     );
-    $inspect(currentSkillSession);
     //
     async function deleteSkillSession(id: string, name: string) {
         if (confirm('Are you certain you want to delete this Skill Session?')) {
@@ -124,12 +122,14 @@
         levelProgress(currentTotalXp) * 100,
     );
     //
-    const action = $derived<string>(`/api/skill-sessions/${currentSessionId}`);
+    const action = $state<string>(
+        untrack(() => `/api/skill-sessions/${currentSessionId}`),
+    );
     //
     onMount(() => {
         if (endDateTime != null) {
             window.location.assign(
-                `/skills/${data.skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
+                `/skills/${skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
             );
         }
     });

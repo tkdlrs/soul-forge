@@ -6,10 +6,11 @@
     import UserForm from '$lib/components/forms/resources/UserForm.svelte';
     import {
         UserWithIdSchema,
+        type UserPageData,
         type UserWithId,
     } from '$lib/schemas/userSchema.js';
     //
-    let { data } = $props();
+    let { data }: { data: UserPageData } = $props();
     //
     const user = $state<UserWithId>(structuredClone(untrack(() => data.user)));
     const checkedUser = $derived<UserWithId>(UserWithIdSchema.parse(user));
@@ -22,24 +23,26 @@
 </script>
 
 <section class="p-5">
-    <div class="row">
-        <div class="col-12 mb-5">
-            <h1>User</h1>
+    {#key data.user.id}
+        <div class="row">
+            <div class="col-12 mb-5">
+                <h1>User</h1>
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="h4 fw-bold">Show</h2>
+                <p><strong>First Name</strong>: {user.firstName}</p>
+                <p><strong>Last Name</strong>: {user.lastName}</p>
+                <p><strong>Email</strong>: {user.email}</p>
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="h4 fw-bold">Edit User</h2>
+                <UserForm
+                    action={actionRoute}
+                    method="PUT"
+                    data={{ firstName, lastName, email }}
+                    isLoading={data.isLoading}
+                />
+            </div>
         </div>
-        <div class="col-12 col-md-6">
-            <h2 class="h4 fw-bold">Show</h2>
-            <p><strong>First Name</strong>: {user.firstName}</p>
-            <p><strong>Last Name</strong>: {user.lastName}</p>
-            <p><strong>Email</strong>: {user.email}</p>
-        </div>
-        <div class="col-12 col-md-6">
-            <h2 class="h4 fw-bold">Edit User</h2>
-            <UserForm
-                action={actionRoute}
-                method="PUT"
-                data={{ firstName, lastName, email }}
-                isLoading={data.isLoading}
-            />
-        </div>
-    </div>
+    {/key}
 </section>

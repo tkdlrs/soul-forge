@@ -4,6 +4,7 @@
 import { z } from 'zod/v4';
 import { trimStrings } from './_preprocessing';
 import { withId } from './_shared';
+import { SkillSessionSchema } from './skillSessionSchema';
 //
 export const SkillSchema = z.object({
     name: z.string(),
@@ -30,6 +31,16 @@ export const SkillEditSchema = z.object({
     icon: z.string(),
 });
 export type SkillEdit = z.infer<typeof SkillEditSchema>;
+/**
+ * Page Data
+ **/
+export const SkillPageDataSchema = z.object({
+    skills: z.array(SkillsWithActiveSkillSessionsSchema),
+    skillSessions: z.array(SkillSessionSchema),
+    //
+    isLoading: z.boolean(),
+});
+export type SkillPageData = z.infer<typeof SkillPageDataSchema>;
 /**
  * ERROR TYPES
  **/

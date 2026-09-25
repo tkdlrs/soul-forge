@@ -35,6 +35,15 @@ export type UserWithId = z.infer<typeof UserWithIdSchema>;
 export const UserEditSchema = z.preprocess(trimStrings, UserSchema);
 export type UserEdit = z.infer<typeof UserEditSchema>;
 /**
+ * Page Data
+ **/
+export const UserPageDataSchema = z.object({
+    user: UserWithIdSchema,
+    //
+    isLoading: z.boolean(),
+});
+export type UserPageData = z.infer<typeof UserPageDataSchema>;
+/**
  *  ERROR TYPES
  **/
 export type UserErrors = {

@@ -5,6 +5,7 @@ import z from 'zod/v4';
 import {
     SkillsWithActiveSkillSessionsSchema,
     SkillWithIdSchema,
+    type SkillPageData,
     type SkillsWithActiveSkillSessions,
 } from '$lib/schemas/skillSchema.js';
 import {
@@ -13,8 +14,7 @@ import {
 } from '$lib/schemas/skillSessionSchema';
 
 //
-export async function load({ fetch, params }) {
-    //
+export async function load({ fetch }): Promise<SkillPageData> {
     try {
         //
         const response = await fetch('/api/skills');
@@ -64,10 +64,12 @@ export async function load({ fetch, params }) {
             }
         }
         //
-        z.array(SkillsWithActiveSkillSessionsSchema).parse(skillsWithActive);
+        const checkedSkillsWithActive = z
+            .array(SkillsWithActiveSkillSessionsSchema)
+            .parse(skillsWithActive);
         //
         return {
-            skills: skillsWithActive,
+            skills: checkedSkillsWithActive,
             skillSessions,
             //
             isLoading: false,

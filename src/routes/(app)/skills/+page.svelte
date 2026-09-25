@@ -4,7 +4,10 @@
      **/
     import { resolve } from '$app/paths';
     //
-    import { type SkillsWithActiveSkillSessions } from '$lib/schemas/skillSchema';
+    import {
+        type SkillPageData,
+        type SkillsWithActiveSkillSessions,
+    } from '$lib/schemas/skillSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
     import {
         convertToCurrancyRange,
@@ -20,11 +23,13 @@
         xpToNextLevel,
     } from '$lib/helpers/rpgLeveling';
     import TableWrapper from '$lib/components/tables/TableWrapper.svelte';
+    import { untrack } from 'svelte';
     //
-    // let { data }: { data: SkillPageData } = $props();
-    let { data } = $props();
+    let { data }: { data: SkillPageData } = $props();
     //
-    let skills = $state<Array<SkillsWithActiveSkillSessions>>(data.skills);
+    let skills = $state<Array<SkillsWithActiveSkillSessions>>(
+        structuredClone(untrack(() => data.skills)),
+    );
     //
     async function deleteSkill(id: string) {
         if (confirm('Are you certain you want to delete this Skill?')) {
@@ -46,21 +51,26 @@
             }
         }
     }
-    const rawDataSkillSessions = data.skillSessions;
-    //
-    const skillIdToSkillSessionsMap = $state<Record<string, SkillSession[]>>(
-        {},
+    const rawDataSkillSessions = $state<Array<SkillSession>>(
+        structuredClone(untrack(() => data.skillSessions)),
     );
-    for (const skillSessionData of rawDataSkillSessions) {
-        if (!skillIdToSkillSessionsMap[skillSessionData.skillId]) {
-            skillIdToSkillSessionsMap[skillSessionData.skillId] = [];
+    // ToDo:// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
+    const skillIdToSkillSessionsMap = $derived.by<
+        Record<string, SkillSession[]>
+    >(() => {
+        const idToSessionsMap = {};
+        //
+        for (const skillSessionData of rawDataSkillSessions) {
+            if (!idToSessionsMap[skillSessionData.skillId]) {
+                idToSessionsMap[skillSessionData.skillId] = [];
+            }
+            //
+            idToSessionsMap[skillSessionData.skillId].push(skillSessionData);
+            //
         }
         //
-        skillIdToSkillSessionsMap[skillSessionData.skillId].push(
-            skillSessionData,
-        );
-        //
-    }
+        return idToSessionsMap;
+    });
     //
     const skillMilliseconds = $derived.by<number[]>(() =>
         Object.keys(skillIdToSkillSessionsMap).map(
@@ -70,13 +80,11 @@
         ),
     );
     //
-    console.log('skillIdToSkillSessionsMap', skillIdToSkillSessionsMap);
-    const totalTime = $derived.by(() =>
+    const totalTime = $derived(
         skillMilliseconds.reduce((total, num) => total + num, 0),
     );
-    $inspect(totalTime);
     //
-    const totalWage = $derived.by(() => convertToCurrancyRange(totalTime));
+    const totalWage = $derived<string>(convertToCurrancyRange(totalTime));
     //
 </script>
 

@@ -1,7 +1,12 @@
 /**
  * App Serverside 'Users' : SHOW and EDIT
  **/
-export async function load({ params, fetch }) {
+import {
+    UserWithIdSchema,
+    type UserPageData,
+} from '$lib/schemas/userSchema.js';
+//
+export async function load({ params, fetch }): Promise<UserPageData> {
     try {
         const userId = String(params.id);
         //
@@ -11,13 +16,12 @@ export async function load({ params, fetch }) {
         }
         //
         const result = await response.json();
-        //
+        const checkedUser = UserWithIdSchema.parse(result);
         //
         return {
-            user: result,
+            user: checkedUser,
             isLoading: false,
         };
-        //
     } catch (err) {
         throw new Error(`Error was ${err}`);
     }
