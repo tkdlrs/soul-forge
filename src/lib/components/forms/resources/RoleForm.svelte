@@ -10,6 +10,7 @@
         type RoleErrors,
     } from '$lib/schemas/roleSchema';
     import Input from '$lib/components/form-elements/Input.svelte';
+    import { untrack } from 'svelte';
     //
     let errorsObj = $state<RoleErrors>(null);
     // props...
@@ -21,13 +22,13 @@
         schema: RoleSchema,
 
         initial: {
-            name: data.name,
+            name: untrack(() => data.name),
         } satisfies Role,
         errors: null satisfies RoleErrors,
 
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
     };
     //
@@ -44,6 +45,5 @@
                 errorText={errorsObj?.name}
             />
         </div>
-        <!--  -->
     {/snippet}
 </FormWrapper>

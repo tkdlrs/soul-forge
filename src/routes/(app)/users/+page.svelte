@@ -5,10 +5,13 @@
     import { resolve } from '$app/paths';
     import { type UserWithId } from '$lib/schemas/userSchema';
     import { currentAppURI } from '$lib/helpers/navigators';
+    import { untrack } from 'svelte';
     //
     let { data } = $props();
     //
-    let users = $state<Array<UserWithId>>(data.users);
+    let users = $state<Array<UserWithId>>(
+        structuredClone(untrack(() => data.users)),
+    );
     //
     async function deleteUser(id: number) {
         try {

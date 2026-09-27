@@ -8,13 +8,15 @@
     //
     let { data }: { data: SkillSessionPageData } = $props();
     //
-    let currentSessionId = data?.currentSessionId;
+    const currentSessionId = $derived(data?.currentSessionId);
     //
-    const userId = $state<number>(data.skillSession.userId);
-    let skillId = $state<string>(data.skillSession.skillId);
+    const userId = $derived<number>(data.skillSession.userId);
+    let skillId = $derived<string>(data.skillSession.skillId);
     //
-    let startDateTime = $state<Date | string | null>(null);
-    startDateTime = toDateTimeLocal(new Date(data.skillSession.startDateTime));
+    let startDateTime = $derived<Date | string | null>(
+        toDateTimeLocal(new Date(data?.skillSession.startDateTime)) || null,
+    );
+
     //
     let endDateTime = $state<Date | string | null>(null);
     const rawDataEndDateTime = data.skillSession.endDateTime

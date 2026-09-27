@@ -11,6 +11,7 @@
         type ResetPassword,
         type ResetPasswordErrors,
     } from '$lib/schemas/resetPasswordSchema';
+    import { untrack } from 'svelte';
 
     // Implementation
     let errorsObj = $state<ResetPasswordErrors>(null);
@@ -24,13 +25,13 @@
         schema: ResetPasswordSchema,
 
         initial: {
-            email: data.email,
+            email: untrack(() => data.email),
         } satisfies ResetPassword,
         errors: null satisfies ResetPasswordErrors,
 
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
         postFunctionCall: (...args: any[]) => {
             alert('Success. Check your inbox to update your password');

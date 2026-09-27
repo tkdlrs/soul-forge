@@ -11,12 +11,12 @@
         type Login,
         type LoginErrors,
     } from '$lib/schemas/loginSchema';
+    import { untrack } from 'svelte';
 
     // Implementation
     let errorsObj = $state<LoginErrors>(null);
     // props
     let { data, isLoading, action, method } = $props();
-    // $inspect(data);
     // Form config
     const loginConfig = {
         //
@@ -24,14 +24,14 @@
         schema: LoginSchema,
 
         initial: {
-            email: data.email,
-            password: data.password,
+            email: untrack(() => data.email),
+            password: untrack(() => data.password),
         } satisfies Login,
         errors: null satisfies LoginErrors,
 
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
         postCallback: (...args: any[]) => {
             console.log('Post Call back');

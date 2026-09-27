@@ -10,6 +10,7 @@
         type SkillCreate,
         type SkillErrors,
     } from '$lib/schemas/skillSchema';
+    import { untrack } from 'svelte';
 
     // Implementation
     let errorsObj = $state<SkillErrors>(null);
@@ -22,15 +23,15 @@
         schema: SkillSchema,
 
         initial: {
-            name: data.name,
-            icon: data.icon,
+            name: untrack(() => data.name),
+            icon: untrack(() => data.icon),
             userId: 1,
         } satisfies SkillCreate,
         errors: null satisfies SkillErrors,
 
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
     };
     //

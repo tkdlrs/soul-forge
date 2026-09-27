@@ -55,29 +55,19 @@
         structuredClone(untrack(() => data.skillSessions)),
     );
     //
-    // ToDo:// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
     const skillIdToSkillSessionsMap = $derived.by<
-        Record<string, SkillSession[]>
+        Record<SkillSession['skillId'], SkillSession[]>
     >(() => {
-        const idToSessionsMap = {};
-        //
+        const map: Record<SkillSession['skillId'], SkillSession[]> = {};
         for (const skillSessionData of rawDataSkillSessions) {
-            if (!idToSessionsMap[skillSessionData.skillId]) {
-                idToSessionsMap[skillSessionData.skillId] = [];
-            }
-            //
-            idToSessionsMap[skillSessionData.skillId].push(skillSessionData);
-            //
+            (map[skillSessionData.skillId] ??= []).push(skillSessionData);
         }
-        //
-        return idToSessionsMap;
+        return map;
     });
     //
     const skillMilliseconds = $derived.by<number[]>(() =>
-        Object.keys(skillIdToSkillSessionsMap).map(
-            (
-                skill, //skillIdToSkillSessionsMap[skill],
-            ) => getSkillsTotalMilliseconds(skillIdToSkillSessionsMap[skill]),
+        Object.keys(skillIdToSkillSessionsMap).map((skill) =>
+            getSkillsTotalMilliseconds(skillIdToSkillSessionsMap[skill] ?? []),
         ),
     );
     //

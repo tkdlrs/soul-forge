@@ -4,11 +4,12 @@
      **/
     import { currentAppURI } from '$lib/helpers/navigators';
     import type { UserRolesBridgedWithId } from '$lib/schemas/userRolesSchema.js';
+    import { untrack } from 'svelte';
     //
     let { data } = $props();
     //
     let userRolesBridged = $state<UserRolesBridgedWithId[]>(
-        data.userRolesBridged,
+        structuredClone(untrack(() => data.userRolesBridged)),
     );
     //
     async function deleteUserRole(id: string) {

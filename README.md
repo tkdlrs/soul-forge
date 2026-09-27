@@ -15,4 +15,5 @@ Project Decrees
       but not subscribed to.
 4. Don't suppress compilar warnings. They are their to help.
 5. To go in production all TypeScript errors need to be removed.
-   #. ...
+
+x. ...

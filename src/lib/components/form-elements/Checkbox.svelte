@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+    import { untrack } from 'svelte';
+
     interface Props {
         value: T;
         group: T[];
@@ -27,14 +29,16 @@
     }: Props = $props();
 
     const inputId = `cb-${crypto.randomUUID()}`;
-    const helpId = helpText ? `${inputId}-help` : undefined;
-    const errorId = errorMessage ? `${inputId}-error` : undefined;
-
+    const helpId = untrack(() => helpText) ? `${inputId}-help` : undefined;
+    const errorId = untrack(() => errorMessage)
+        ? `${inputId}-error`
+        : undefined;
+    //
     const describedBy =
         [helpId, errorId].filter(Boolean).join(' ') || undefined;
-
+    //
     let checked = $derived(group.some((item) => isEqual(item, value)));
-
+    //
     function handleChange(event: Event) {
         const input = event.target as HTMLInputElement;
         if (input.checked) {
