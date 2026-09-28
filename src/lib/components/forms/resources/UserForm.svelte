@@ -11,27 +11,28 @@
         type UserCreateData,
         type UserErrors,
     } from '$lib/schemas/userSchema';
+    import { untrack } from 'svelte';
     //
     let errorsObj = $state<UserErrors>(null);
-    // props...
+    //
     let { data, isLoading, action, method } = $props();
+
     // Form config
     const userConfig = {
         //
         slug: '/users/',
         schema: UserCreateSchema,
-
+        //
         initial: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            password: data.password,
+            firstName: untrack(() => data.firstName),
+            lastName: untrack(() => data.lastName),
+            email: untrack(() => data.email),
+            password: untrack(() => data.password),
         } satisfies UserCreateData,
         errors: null satisfies UserErrors,
-
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
     };
     //

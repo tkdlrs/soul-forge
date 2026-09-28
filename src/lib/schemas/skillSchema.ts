@@ -34,6 +34,7 @@ export type SkillEdit = z.infer<typeof SkillEditSchema>;
 /**
  * Page Data
  **/
+// index
 export const SkillPageDataSchema = z.object({
     skills: z.array(SkillsWithActiveSkillSessionsSchema),
     skillSessions: z.array(SkillSessionSchema),
@@ -41,6 +42,13 @@ export const SkillPageDataSchema = z.object({
     isLoading: z.boolean(),
 });
 export type SkillPageData = z.infer<typeof SkillPageDataSchema>;
+// edit
+export const SkillEditPageDataSchema = z.object({
+    skill: SkillSchema,
+    //
+    isLoading: z.boolean(),
+});
+export type SkillEditPageData = z.infer<typeof SkillEditPageDataSchema>;
 /**
  * ERROR TYPES
  **/

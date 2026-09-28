@@ -3,7 +3,7 @@
      * Form for a User Role
      * For CREATE
      **/
-    import { onMount } from 'svelte';
+    import { onMount, untrack } from 'svelte';
     // Schema
     import { UserRoleSchema } from '$lib/schemas/userRolesSchema';
     import type {
@@ -26,13 +26,13 @@
         schema: UserRoleSchema,
         //
         inital: {
-            userId: data.userId,
-            roleId: data.roleId,
+            userId: untrack(() => data.userId),
+            roleId: untrack(() => data.roleId),
         } satisfies UserRole,
         errors: null satisfies UserRoleErrors,
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
     };
     //

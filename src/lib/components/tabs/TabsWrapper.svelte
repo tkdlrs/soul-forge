@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Snippet } from 'svelte';
+    import { onMount, type Snippet } from 'svelte';
     //
     type Tab = {
         id: string;
@@ -15,10 +15,11 @@
         active?: string;
     } = $props();
     //
-    if (!active && tabs.length) {
-        active = tabs[0].id;
-    }
-    //
+    onMount(() => {
+        if (!active && tabs.length) {
+            active = tabs[0].id;
+        }
+    });
 </script>
 
 <!-- Nav tabs -->

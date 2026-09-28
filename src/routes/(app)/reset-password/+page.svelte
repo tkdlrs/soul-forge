@@ -4,10 +4,11 @@
      **/
     import ResetPasswordForm from '$lib/components/forms/resources/ResetPasswordForm.svelte';
     import type { ResetPasswordPageData } from '$lib/schemas/resetPasswordSchema';
+    import { untrack } from 'svelte';
     //
     let { data }: { data: ResetPasswordPageData } = $props();
     //
-    let email = $state<string>(data.resetPassword.email);
+    let email = $state<string>(untrack(() => data.resetPassword.email));
     //
 </script>
 

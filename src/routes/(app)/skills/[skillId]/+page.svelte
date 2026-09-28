@@ -3,20 +3,24 @@
      * Frontend 'Skill' page EDIT
      **/
     import SkillForm from '$lib/components/forms/resources/SkillForm.svelte';
-    import { SkillWithIdSchema } from '$lib/schemas/skillSchema';
+    import {
+        SkillWithIdSchema,
+        type SkillEditPageData,
+    } from '$lib/schemas/skillSchema';
+    import { untrack } from 'svelte';
+    //
+    let { data }: { data: SkillEditPageData } = $props();
     //
     let name = $state<string>('');
     let icon = $state<string>('');
     //
-    let { data } = $props();
+    const skill = structuredClone(untrack(() => data.skill));
+    const checkedSkill = SkillWithIdSchema.parse(skill);
     //
-    const skill = data.skill;
-    SkillWithIdSchema.parse(skill);
+    name = checkedSkill.name;
+    icon = checkedSkill.icon;
     //
-    name = skill.name;
-    icon = skill.icon;
-    //
-    const actionRoute = `/api/skills/${skill.id}`;
+    const actionRoute = $derived<string>(`/api/skills/${checkedSkill.id}`);
 </script>
 
 <section class="p-5">

@@ -10,30 +10,33 @@
         type SkillSession,
         SkillSessionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
-
+    import { slugCase } from '$lib/helpers/formatters';
+    import { untrack } from 'svelte';
     // Implementation
     let errorsObj = $state<SkillSessionErrors>(null);
     // props
     let { data, isLoading, action, method } = $props();
-    // $inspect(data);
+    //
+    const slug = $derived<string>(
+        `/skills/${slugCase(untrack(() => data.skillName))}/train/${data.currentSessionId}`,
+    );
     // Form config
     const trainingSessionConfig = {
         //
-        slug: `/skills/${data.skillName.toLowerCase().replace(' ', '-')}/train/${data.currentSessionId}`,
+        slug: untrack(() => slug),
         schema: SkillSessionCreateSchema,
 
         initial: {
-            userId: data.userId,
-            skillId: data.skillId,
-            startDateTime: data.startDateTime,
-            endDateTime: data.endDateTime,
-            id: data.currentSessionId,
+            userId: untrack(() => data.userId),
+            skillId: untrack(() => data.skillId),
+            startDateTime: untrack(() => data.startDateTime),
+            endDateTime: untrack(() => data.endDateTime),
+            id: untrack(() => data.currentSessionId),
         } satisfies SkillSession,
         errors: null satisfies SkillSessionErrors,
-
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
         callback: () => {
             const now = new Date();

@@ -10,30 +10,27 @@
         type SkillSession,
         SkillSessionCreateSchema,
     } from '$lib/schemas/skillSessionSchema';
-
+    import { untrack } from 'svelte';
     // Implementation
     let errorsObj = $state<SkillSessionErrors>(null);
     // props
     let { data, isLoading, action, method } = $props();
-    // $inspect(data);
     // Form config
     const skillSessionConfig = {
-        // skill-sessions
         slug: `/skills`,
         schema: SkillSessionCreateSchema,
-
+        //
         initial: {
-            userId: data.userId,
-            skillId: data.skillId,
-            startDateTime: data.startDateTime,
-            endDateTime: data.endDateTime,
-            id: data.currentSessionId,
+            userId: untrack(() => data.userId),
+            skillId: untrack(() => data.skillId),
+            startDateTime: untrack(() => data.startDateTime),
+            endDateTime: untrack(() => data.endDateTime),
+            id: untrack(() => data.currentSessionId),
         } satisfies SkillSession,
         errors: null satisfies SkillSessionErrors,
-
         //
-        action,
-        method,
+        action: untrack(() => action),
+        method: untrack(() => method),
         //
     };
     //

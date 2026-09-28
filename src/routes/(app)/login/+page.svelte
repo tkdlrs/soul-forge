@@ -4,11 +4,12 @@
      **/
     import LoginForm from '$lib/components/forms/resources/LoginForm.svelte';
     import type { LoginPageData } from '$lib/schemas/loginSchema';
+    import { untrack } from 'svelte';
     //
     let { data }: { data: LoginPageData } = $props();
     //
-    let email = $state<string>(data.login.email);
-    let password = $state<string>(data.login.password);
+    let email = $state<string>(untrack(() => data.login.email));
+    let password = $state<string>(untrack(() => data.login.password));
     //
 </script>
 

@@ -4,17 +4,16 @@
      **/
     import RoleForm from '$lib/components/forms/resources/RoleForm.svelte';
     import { RoleWithIdSchema } from '$lib/schemas/roleSchema';
-    import { onMount } from 'svelte';
+    import { untrack } from 'svelte';
     //
     let { data } = $props();
     let name = $state<string>('');
-    let actionRoute = $state<string>('');
     //
-    const role = data.role;
+    const role = structuredClone(untrack(() => data.role));
     const checked = RoleWithIdSchema.parse(role);
     //
     name = checked.name;
-    actionRoute = `/api/roles/${role.id}`;
+    const actionRoute = $derived<string>(`/api/roles/${role.id}`);
 </script>
 
 <!--  -->

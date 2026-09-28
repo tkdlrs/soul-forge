@@ -13,26 +13,26 @@ export function upperCaseFirstLetter(name: string) {
 }
 
 // // convert a string into slug-kabob-spinal-case
-export function slugCase(name: string): string {
-    if (!name) return '';
-    const symbolsRegex = /[^a-z \-]/gi;
-    //
-    name = name.toString().trim();
-    //
-    if (name.includes(' ')) {
-        return name
-            .toString()
-            .toLowerCase()
-            .trim()
-            .replace(symbolsRegex, '')
-            .split(' ')
-            .join('-');
-    } else {
-        return name.toString().toLowerCase().trim().replace(symbolsRegex, '');
+export function slugCase(str: string): string {
+    if (typeof str !== 'string') {
+        throw new TypeError(`slugCase expected a string, got ${typeof str}`);
     }
+    //
+    const result = str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    //
+    if (!result) {
+        throw new Error(`slugCase produced an empty string from: ${str}`);
+    }
+    //
+    return result;
 }
 // convert a string to Pascal Case.
-export function pascalCase(strOfWords: string) {
+export function pascalCase(strOfWords: string): string {
     const slugify = slugCase(strOfWords);
     const arrWords = slugify.split('-');
     const pascalCase = arrWords
@@ -80,29 +80,7 @@ type DateDeltaParts = {
     seconds: number;
     milliseconds: number;
 };
-// export function getDateDeltaParts(a: Date, b: Date): DateDeltaParts {
-//     let remaining = Math.abs(b.getTime() - a.getTime());
-//     //
-//     const days = Math.floor(remaining / 86_400_00);
-//     remaining %= 86_400_00;
-//     //
-//     const hours = Math.floor(remaining / 3_600_000);
-//     remaining %= 3_600_000;
-//     //
-//     const minutes = Math.floor(remaining / 60_000);
-//     remaining %= 60_000;
-//     //
-//     const seconds = Math.floor(remaining / 1_000);
-//     remaining %= 1_000;
-//     //
-//     return {
-//         days,
-//         hours,
-//         minutes,
-//         seconds,
-//         milliseconds: remaining,
-//     };
-// }
+//
 export function getDateDeltaParts(milliseconds: number): DateDeltaParts {
     let remaining = milliseconds;
     //

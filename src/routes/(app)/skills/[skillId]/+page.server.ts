@@ -14,10 +14,10 @@ export async function load({ fetch, params }) {
         const response = await fetch(`/api/skills/${skillId}`);
         const result = await response.json();
         //
-        // SkillWithIdSchema.parse(result);
+        const checkedSkill = SkillWithIdSchema.parse(result);
         //
         return {
-            skill: result,
+            skill: checkedSkill,
             isLoading: false,
         };
     } catch (err) {

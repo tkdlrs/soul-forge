@@ -7,9 +7,9 @@
     //
     let { data }: { data: UpdatePasswordPageData } = $props();
     //
-    let password = $state<string>(''); //data.UpdatePassword.password
-    let confirmPassword = $state<string>(''); //data.UpdatePassword.confirmPassword
-    let userId = $state<number>(data.updatePassword.userId);
+    let password = $state<string>('');
+    let confirmPassword = $state<string>('');
+    let userId = $derived<number>(data.updatePassword.userId);
     //
 </script>
 

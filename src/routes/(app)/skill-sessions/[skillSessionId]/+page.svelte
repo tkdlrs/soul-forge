@@ -8,25 +8,22 @@
     //
     let { data }: { data: SkillSessionPageData } = $props();
     //
-    const currentSessionId = $derived(data?.currentSessionId);
+    const currentSessionId = $derived<string>(data.currentSessionId);
     //
     const userId = $derived<number>(data.skillSession.userId);
-    let skillId = $derived<string>(data.skillSession.skillId);
+    const skillId = $derived<string>(data.skillSession.skillId);
     //
     let startDateTime = $derived<Date | string | null>(
         toDateTimeLocal(new Date(data?.skillSession.startDateTime)) || null,
     );
-
     //
-    let endDateTime = $state<Date | string | null>(null);
-    const rawDataEndDateTime = data.skillSession.endDateTime
-        ? new Date(data.skillSession.endDateTime)
-        : null;
-    if (rawDataEndDateTime) {
-        endDateTime = toDateTimeLocal(rawDataEndDateTime);
-    }
+    const endDateTime = $derived<Date | string | null>(
+        data.skillSession.endDateTime
+            ? toDateTimeLocal(new Date(data.skillSession.endDateTime))
+            : null,
+    );
     //
-    const action = $state<string>(`/api/skill-sessions/${currentSessionId}`);
+    const action = $derived<string>(`/api/skill-sessions/${currentSessionId}`);
 </script>
 
 <section class="p-5">

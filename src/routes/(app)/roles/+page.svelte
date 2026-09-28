@@ -5,10 +5,13 @@
     import { resolve } from '$app/paths';
     import { currentAppURI } from '$lib/helpers/navigators';
     import { type RoleWithId } from '$lib/schemas/roleSchema.js';
+    import { untrack } from 'svelte';
     //
     let { data } = $props();
     //
-    let roles = $state<RoleWithId[]>(data.roles);
+    let roles = $state<RoleWithId[]>(
+        structuredClone(untrack(() => data.roles)),
+    );
     //
     async function deleteRole(id: string) {
         if (confirm('Are you certain you want to delete this Role?')) {
