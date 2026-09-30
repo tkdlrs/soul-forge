@@ -1,4 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
+// import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 
@@ -26,6 +27,9 @@ export default defineConfig({
             },
         }),
     ],
+    ssr: {
+        external: ['@libsql/client', 'libsql'],
+    },
     test: {
         environment: 'node',
         globals: true,
