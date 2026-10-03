@@ -15,4 +15,3 @@
         intresting in developing.
     </p>
 </section>
-<!-- preserve the streak. -->

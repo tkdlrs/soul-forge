@@ -1,0 +1,14 @@
+services:
+    app:
+        build: .
+        container_name: soul-forge
+        restart: unless-stopped
+        ports:
+            - '3000:3000'
+        environment:
+            - ORIGIN=http://:3000
+            - HOST=0.0.0.0
+            - PORT=3000
+        env_file: .env
+        # volumes:
+        #   - ./data:/app/data
