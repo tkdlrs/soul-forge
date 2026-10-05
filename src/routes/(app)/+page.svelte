@@ -15,4 +15,7 @@
         intresting in developing.
     </p>
 </section>
-<!-- maybe old laptop is too old? -->
+<!-- 
+maybe old laptop is too old? 
+where is the line between sys-admin and backend developer? 
+-->
