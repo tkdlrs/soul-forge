@@ -8,7 +8,7 @@ import {
     type LoginResponse,
 } from '$lib/server/auth.js';
 //
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies, url }) {
     type Parameters = {
         password: string;
         email: string;
@@ -29,7 +29,7 @@ export async function POST({ request, cookies }) {
         throw new Error('Unable to get login result');
     }
     // Setting cookies.
-    setAuthCookies(cookies, loginResult);
+    setAuthCookies(cookies, loginResult, url);
     //
     return json(loginResult, { status: 200 });
 }

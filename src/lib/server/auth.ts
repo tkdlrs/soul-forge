@@ -260,13 +260,15 @@ export async function handleLogout(cookies: Cookies) {
 export function setAuthCookies(
     cookies: Cookies,
     result: RefreshResponse | LoginResponse,
+    url: URL,
 ): void {
     console.log('Set some cookies');
     // Setting cookies.
     cookies.set('accessToken', result.accessToken, {
         path: '/',
         httpOnly: true,
-        secure: true,
+        // secure: true,
+        secure: url.protocol === 'https:',
         sameSite: 'strict',
         maxAge: 60 * 15, // 15 min
     });
@@ -274,7 +276,8 @@ export function setAuthCookies(
     cookies.set('refreshToken', result.refreshToken.token, {
         path: '/',
         httpOnly: true,
-        secure: true,
+        // secure: true,
+        secure: url.protocol === 'https:',
         sameSite: 'strict',
         // maxAge: ,
         expires: result.refreshToken.expiresAt,

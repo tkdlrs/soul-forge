@@ -66,7 +66,7 @@ export async function handle({ event, resolve }: Parameters<Handle>[0]) {
                     throw new Error('no');
                 }
                 //
-                setAuthCookies(event.cookies, refreshResult);
+                setAuthCookies(event.cookies, refreshResult, event.url);
                 //
             } else {
                 clearAuthCookies(event.cookies);
