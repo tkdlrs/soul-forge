@@ -129,7 +129,7 @@
     onMount(() => {
         if (endDateTime != null) {
             window.location.assign(
-                `/skills/${skillName.toLowerCase()}/train/${crypto.randomUUID()}`,
+                `/skills/${skillName.toLowerCase()}/train/${data.newSessionId}`,
             );
         }
     });

@@ -30,6 +30,7 @@ export const TrainSkillPageDataSchema = z.object({
     skillName: z.string(),
     userId: z.number(),
     currentSessionId: z.string(),
+    newSessionId: z.string(),
     //
     isLoading: z.boolean(),
 });

@@ -71,6 +71,7 @@ export async function load({ fetch }): Promise<SkillPageData> {
         return {
             skills: checkedSkillsWithActive,
             skillSessions,
+            newRandomUUID: crypto.randomUUID(),
             //
             isLoading: false,
         };

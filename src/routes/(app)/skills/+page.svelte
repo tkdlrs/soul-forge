@@ -198,7 +198,7 @@
                                                         data-sveltekit-preload-data="false"
                                                         class="btn btn-sm btn-success"
                                                         href={resolve(
-                                                            `/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : crypto.randomUUID()}`,
+                                                            `/skills/${skill.name.toLowerCase()}/train/${skill.isActive && skill.activeId ? skill.activeId : data.newRandomUUID}`,
                                                         )}
                                                     >
                                                         Train

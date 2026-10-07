@@ -27,8 +27,18 @@
         isEqual = (a, b) => a === b,
         onchange,
     }: Props = $props();
-
-    const inputId = `cb-${crypto.randomUUID()}`;
+    //
+    function randomString(length = 36): string {
+        const chars =
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let out = '';
+        for (let i = 0; i < length; i++) {
+            out += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return out;
+    }
+    //
+    const inputId = `cb-${randomString()}`;
     const helpId = untrack(() => helpText) ? `${inputId}-help` : undefined;
     const errorId = untrack(() => errorMessage)
         ? `${inputId}-error`

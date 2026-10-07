@@ -66,6 +66,7 @@ export async function load({
             isLoading: false,
             userId,
             currentSessionId: checkedSkillSessionId,
+            newSessionId: crypto.randomUUID(),
         };
     } catch (err) {
         throw new Error(`Error was ${err}`);

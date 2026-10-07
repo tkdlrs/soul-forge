@@ -38,6 +38,7 @@ export type SkillEdit = z.infer<typeof SkillEditSchema>;
 export const SkillPageDataSchema = z.object({
     skills: z.array(SkillsWithActiveSkillSessionsSchema),
     skillSessions: z.array(SkillSessionSchema),
+    newRandomUUID: z.string(),
     //
     isLoading: z.boolean(),
 });
